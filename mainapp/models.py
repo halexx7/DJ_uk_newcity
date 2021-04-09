@@ -7,6 +7,8 @@ from django.db.models.lookups import In
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
 
+from authnapp.models import User
+
 
 class ServicesCategory(models.Model):
     name = models.CharField(verbose_name="Название", max_length=32)
@@ -158,7 +160,7 @@ class Appartament(models.Model):
     updated = models.DateTimeField(verbose_name="Обновлен", auto_now=True)
 
 
-class User(models.Model):
+class UserProfile(models.Model):
     SINGLE = '1'
     TWO = '2'
     MULTI = '3'
@@ -169,6 +171,7 @@ class User(models.Model):
         ( MULTI, 'многотарифный')
     )
 
+    user = models.OneToOneField(User, unique=True, null=False, db_index=True, on_delete=models.CASCADE)
     personal_account = models.CharField(verbose_name="Лицевой счет", max_length=32, unique=True)
     name = models.CharField(verbose_name="ФИО", max_length=128)
     appartament = models.ForeignKey(Appartament, on_delete=CASCADE, default=1)
@@ -181,7 +184,7 @@ class User(models.Model):
 
 # Текущие показания счетчиков (индивидуальные)
 class CurrentCounter(models.Model):
-    user = models.ForeignKey(User, on_delete=CASCADE, unique=True)
+    user = models.ForeignKey(UserProfile, on_delete=CASCADE, unique=True)
     col_water = models.PositiveIntegerField(verbose_name="Хол.вода", null=True)
     hot_water = models.PositiveIntegerField(verbose_name="Гор.вода", null=True)
     electric_day = models.PositiveIntegerField(verbose_name="Электр.день", null=True)
@@ -198,7 +201,7 @@ class CurrentCounter(models.Model):
 
 # История показания счетчиков (индивидуальные)
 class HistoryCounter(models.Model):
-    user = models.ForeignKey(User, on_delete=CASCADE)
+    user = models.ForeignKey(UserProfile, on_delete=CASCADE)
     period = models.DateField(verbose_name="Период")
     hist_col_water = models.PositiveIntegerField(verbose_name="Гор.вода")
     hist_hot_water = models.PositiveIntegerField(verbose_name="Хол.вода")
@@ -219,7 +222,7 @@ class HistoryCounter(models.Model):
 
 # Постоянные платежи (расчет по формуле = const*rate или = const)
 class ConstantPayments(models.Model):
-    user = models.ForeignKey(User, on_delete=CASCADE)
+    user = models.ForeignKey(UserProfile, on_delete=CASCADE)
     data = JSONField(verbose_name="data")
 
     created = models.DateTimeField(verbose_name="Создан", auto_now_add=True)
@@ -232,7 +235,7 @@ class ConstantPayments(models.Model):
 
 # Переменные платежи (зависящие от счетчиков)
 class VariablePayments(models.Model):
-    user = models.ForeignKey(User, on_delete=CASCADE)
+    user = models.ForeignKey(UserProfile, on_delete=CASCADE)
     period = models.DateField(verbose_name="Период")
     service = models.CharField(verbose_name="Услуга", max_length=128)
     unit = models.CharField(verbose_name="Ед.измерения", max_length=32)
@@ -257,7 +260,7 @@ class VariablePayments(models.Model):
 
 # Cубсидии
 class Subsidies(models.Model):
-    user = models.ForeignKey(User, on_delete=PROTECT)
+    user = models.ForeignKey(UserProfile, on_delete=PROTECT)
     service = models.ForeignKey(Services, on_delete=PROTECT)
     sale = models.PositiveIntegerField(verbose_name='Субсидии', default=0)
 
@@ -272,7 +275,7 @@ class Subsidies(models.Model):
 
 # Льготы
 class Privileges(models.Model):
-    user = models.ForeignKey(User, on_delete=PROTECT)
+    user = models.ForeignKey(UserProfile, on_delete=PROTECT)
     service = models.ForeignKey(Services, on_delete=PROTECT)
     sale = models.PositiveIntegerField(verbose_name='Льготы', default=0)
 
@@ -290,7 +293,7 @@ class Privileges(models.Model):
 
 # Начисления (Текущие)
 class Profit(models.Model):
-    user = models.ForeignKey(User, on_delete=PROTECT)
+    user = models.ForeignKey(UserProfile, on_delete=PROTECT)
     period = models.DateField(verbose_name="Период")
     amount_profit = models.DecimalField(verbose_name="Сумма", max_digits=7, decimal_places=2)
 
@@ -307,7 +310,7 @@ class Profit(models.Model):
 
 # Инфорамация по оплатам
 class Payment(models.Model):
-    user = models.ForeignKey(User, on_delete=PROTECT)
+    user = models.ForeignKey(UserProfile, on_delete=PROTECT)
     period = models.DateField(verbose_name="Период")
     amount_profit = models.DecimalField(verbose_name="Сумма", max_digits=7, decimal_places=2)
 
@@ -324,7 +327,7 @@ class Payment(models.Model):
 
 # Перерасчеты
 class Recalculations(models.Model):
-    user = models.ForeignKey(User, on_delete=CASCADE)
+    user = models.ForeignKey(UserProfile, on_delete=CASCADE)
     period = models.DateField(verbose_name="Период")
     recalc = models.DecimalField(verbose_name="Сумма", max_digits=7, decimal_places=2, default=0)
 

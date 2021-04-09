@@ -1,0 +1,35 @@
+[
+    {
+        "model": "invoice.appartament",
+        "pk": 1,
+        "fields": {
+            "house": 1,
+            "number": "1",
+            "add_number": "1",
+            "sq_appart": 80.54,
+            "num_owner": 4
+        }
+    },
+    {
+        "model": "invoice.appartament",
+        "pk": 1,
+        "fields": {
+            "house": 1,
+            "number": "2",
+            "add_number": "1",
+            "sq_appart": 75.54,
+            "num_owner": 2
+        }
+    },
+    {
+        "model": "invoice.appartament",
+        "pk": 1,
+        "fields": {
+            "house": 1,
+            "number": "3",
+            "add_number": "1",
+            "sq_appart": 50.20,
+            "num_owner": 2
+        }
+    }
+]

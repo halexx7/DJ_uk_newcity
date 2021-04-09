@@ -1,0 +1,16 @@
+[
+    {
+      "model": "invoice.servicescategory",
+      "pk": 1,
+      "fields": {
+        "name": "Тариф 1"
+      }
+    },
+    {
+      "model": "invoice.servicescategory",
+      "pk": 2,
+      "fields": {
+        "name": "Тариф 2"
+      }
+    }
+  ]
