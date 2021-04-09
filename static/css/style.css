@@ -1,0 +1,158 @@
+/* Стили по умолчанию */
+html {
+    font-size: 16px;
+}
+
+body {
+    margin: 0;
+
+    background-color: #fff;
+
+    font-family: 'PT Sans', sans-serif;
+    color: #000;
+    font-size: 1rem;
+    line-height: 1.4;
+
+    /* Сглаживаем шрифты */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+body .no-scroll,
+body .show-naw {
+    overflow: hidden;
+}
+
+*,
+*:before,
+*:after {
+    box-sizing: border-box;
+}
+
+/* Сбрасываем по умолчанию все отступы заголовков */
+h1, h2, h3, h4, h5, h6 {
+    margin: 0;
+}
+
+p {
+    margin: 0 0 10px;
+}
+
+/* Сбрасываем отступы и стилизацию списков */
+ul, ol {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+/* Прописываем класс для адаптивных картинок */
+.img {
+    display: block;
+    max-width: 100%;
+    height: auto;
+}
+
+/* Класс для выделения текста BOLD */
+.text-700 {
+    font-weight: bold;
+}
+
+
+/* ===============
+==== Home Page ====
+==================*/
+.footer {
+    background-color: darkgray;
+    padding: 15px;
+}
+
+.footer__city {
+    font-size: 1.5em;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.footer__link {
+    color: black;
+    text-decoration: none;
+}
+
+
+.footer__line {
+    color: white;
+    height: 4px;
+}
+
+.footer__bottom {
+    display: flex;
+    justify-content: space-between;
+}
+
+
+/* ===============
+=== Login Page ===
+==================*/
+.login {
+    padding: 100px 0;
+    display: flex;
+    justify-content: center;
+}
+
+.login__item {
+    width: 300px;
+}
+
+.login__form {
+    max-width: 100%;
+}
+
+
+/* ===============
+=== User Area ===
+==================*/
+
+.user-area__title {
+    text-decoration: underline;
+}
+
+.user-area__table {
+    max-width: 50rem;
+}
+
+.user-area__money {
+    font-size: 1.6rem;
+}
+
+.user-area__form-pwd {
+    max-width: 30rem;
+}
+
+.user-area__history-tab {
+    max-width: 50rem;
+}
+
+
+/* =================
+=== Manager Area ===
+====================*/
+
+.manager-tab__city {
+    max-width: 30rem;
+}
+
+.manager-tab__street-form {
+    margin-right: 2em;
+}
+
+.manager-area__counters-history table thead tr th,
+.manager-area__counters-history table tbody tr td {
+    text-align: center;
+}
+
+.manager-tab__link {
+    font-size: 1.2rem;
+}
+
+.manager-privileges__form {
+    max-width: 300px;
+}

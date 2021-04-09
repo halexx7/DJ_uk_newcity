@@ -1,0 +1,15 @@
+<div class="collapse navbar-collapse  d-flex  justify-content-between" id="navbarSupportedContent">
+    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item"> <a class="nav-link {% if request.resolver_match.url_name == 'main' %}active{% endif %}"
+                aria-current="page" href="/">Главная</a> </li>
+        <li class="nav-item"> <a class="nav-link {% if request.resolver_match.url_name == 'main' %}active{% endif %}"
+                aria-current="page" href="#">Новости</a> </li><!-- TODO Замениь 'main' на правильную ссылку -->
+        <li class="nav-item"> <a class="nav-link {% if request.resolver_match.url_name == 'main' %}active{% endif %}"
+                aria-current="page" href="#">Бонус</a> </li><!-- TODO Замениь 'main' на правильную ссылку -->
+        <li class="nav-item"> <a class="nav-link {% if request.resolver_match.url_name == 'main' %}active{% endif %}"
+                aria-current="page" href="#">Контакты</a> </li><!-- TODO Замениь 'main' на правильную ссылку -->
+    </ul>
+    <ul class="navbar-nav">
+        <li class="nav-item"><a class="nav-link text-dark" aria-current="page" href="/">Вход</a> </li>
+    </ul>
+</div>
