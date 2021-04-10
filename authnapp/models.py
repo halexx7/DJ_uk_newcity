@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
+from datetime import timedelta
 
 from django.db import models
 from django.core.mail import send_mail
@@ -9,14 +10,16 @@ from django.utils.translation import ugettext_lazy as _
 
 from .managers import UserManager
 
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+from django.utils.timezone import now
+
 
 class User(AbstractBaseUser, PermissionsMixin):
     personal_account = models.CharField(max_length=128, help_text="Введите номер лицевого счета", verbose_name="Лицевой счет", unique=True)
     password = models.CharField(verbose_name="Пароль", max_length=128)
 
-    first_name = models.CharField(verbose_name="Имя", max_length=30, blank=True)
-    last_name = models.CharField(verbose_name="Фамилия", max_length=30, blank=True)
-    patronymic = models.CharField(verbose_name="Отчество", max_length=30, blank=True)
+    name = models.CharField(verbose_name="ФИО", max_length=128, blank=True)
 
     email = models.EmailField(verbose_name="Email", unique=True)
     is_active = models.BooleanField(verbose_name="Активный", default=True)
@@ -24,6 +27,11 @@ class User(AbstractBaseUser, PermissionsMixin):
     is_superuser = models.BooleanField(default=False, verbose_name='Суперпользователь', help_text='Обозначает, что у этого пользователя есть все разрешения, без их явного назначения.')
 
     last_login = models.DateTimeField(blank=True, null=True, verbose_name='Последний вход')
+
+    activation_key = models.CharField(verbose_name="Ключ подтверждения", max_length=128, blank=True)
+    activation_key_expires = models.DateTimeField(
+        verbose_name="Актуальность ключа", default=(now() + timedelta(hours=48))
+    )
 
     objects = UserManager()
 
@@ -36,19 +44,28 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     def get_full_name(self):
         '''
-        Returns the first_name plus the last_name plus patronymic, with a space in between.
+        Returns the name plus the last_name plus patronymic, with a space in between.
         '''
-        full_name = f'{self.last_name} {self.first_name} {self.patronymic}'
+        full_name = f'{self.name}'
         return full_name.strip()
 
     def get_short_name(self):
         '''
         Returns the short name for the user.
         '''
-        return self.first_name
+        return self.name
 
     def email_user(self, subject, message, from_email=None, **kwargs):
         '''
         Sends an email to this User.
         '''
         send_mail(subject, message, from_email, [self.email], **kwargs)
+
+    def is_activation_key_expired(self):
+        '''
+        Checks if the key is up-to-date.
+        '''
+        if now() <= self.activation_key_expires:
+            return False
+        else:
+            return True

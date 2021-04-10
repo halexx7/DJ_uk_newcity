@@ -156,3 +156,11 @@ ul, ol {
 .manager-privileges__form {
     max-width: 300px;
 }
+
+
+/* ===============
+=== Register Page ===
+==================*/
+.main-form {
+    max-width: 400px;
+}
