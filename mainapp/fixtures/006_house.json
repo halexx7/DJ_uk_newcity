@@ -1,0 +1,15 @@
+[
+    {
+        "model": "invoice.house",
+        "pk": 1,
+        "fields": {
+            "number": "102",
+            "add_number": "2",
+            "city": 1,
+            "street": 2,
+            "sq_home": 876.49,
+            "uk": 1,
+            "category_rate": 1
+        }
+    }
+]

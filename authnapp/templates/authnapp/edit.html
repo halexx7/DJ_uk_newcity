@@ -1,0 +1,20 @@
+{% extends 'authnapp/base.html' %}
+{% load staticfiles %}
+
+{% block content %}
+
+<form class="form-horizontal" action="{% url 'auth:edit' %}" method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ edit_form.as_p }}
+    {{ profile_form.as_p }}
+    <input class="btn btn-outline-primary btn-block" type="submit" value="сохранить">
+</form>
+<a href="{% url 'main' %}" class="btn btn-outline-secondary btn-block" role="button">
+    на главную
+</a>
+
+{% if user.avatar %}
+<div class="user_avatar"><img src="{{ media_url }}{{ user.avatar }}"></div>
+{% endif %}
+
+{% endblock %}

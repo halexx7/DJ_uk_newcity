@@ -1,0 +1,39 @@
+{% load auth_extras %}
+
+<div class="collapse navbar-collapse  d-flex  justify-content-between" id="navbarSupportedContent">
+    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item"> <a class="nav-link {% if request.resolver_match.url_name == 'main' %}active{% endif %}"
+                aria-current="page" href="/">Главная</a> </li>
+        <li class="nav-item"> <a class="nav-link {% if request.resolver_match.url_name == 'main' %}active{% endif %}"
+                aria-current="page" href="#">Новости</a> </li><!-- TODO Замениь 'main' на правильную ссылку -->
+        <li class="nav-item"> <a class="nav-link {% if request.resolver_match.url_name == 'main' %}active{% endif %}"
+                aria-current="page" href="#">Бонус</a> </li><!-- TODO Замениь 'main' на правильную ссылку -->
+        <li class="nav-item"> <a class="nav-link {% if request.resolver_match.url_name == 'main' %}active{% endif %}"
+                aria-current="page" href="#">Контакты</a> </li><!-- TODO Замениь 'main' на правильную ссылку -->
+    </ul>
+    <ul class="navbar-nav">
+        <ul class="navbar-nav">
+            {% if user.is_authenticated %}
+                {% if request.user|has_group:"Client" %}
+                <li class="nav-item"> <a class="nav-link text-dark" aria-current="page"
+                    href="manager_account.html">Кабинет</a></li>                
+                {% elif request.user|has_group:"Manager" %}
+                <li class="nav-item"> <a class="nav-link text-dark" aria-current="page"
+                    href="user_account.html">Менеджер</a></li>
+                {% elif user.is_superuser %}
+                <li class="nav-item"> <a class="nav-link text-dark" aria-current="page"
+                    href="admin/">Админка</a></li>
+                {% endif %}
+            {% endif %}
+        </ul>
+        <li class="nav-item">
+            {% if user.is_authenticated %}
+            <a class="nav-link text-dark" aria-current="page" href="{% url 'auth:logout' %}">Выйти</a>
+            {% else %}
+            <a class="nav-link text-dark" aria-current="page" href="{% url 'auth:login' %}">Войти</a>
+            {% endif %}
+        </li>
+    </ul>
+</div>
+
+         
