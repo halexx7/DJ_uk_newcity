@@ -1,0 +1,194 @@
+{% extends 'mainapp/base.html' %}
+{% load staticfiles %}
+
+
+{% block menu %}
+    {% include 'mainapp/includes/inc_menu.html' %}
+{% endblock menu %}
+
+{% block content %}
+<div class="intro-user  mt-5">
+    <div class="container">
+        <h2 class="intro-user__title  text-center">Здравствуйте, Иванов Иван!</h2>
+    </div>
+</div>
+
+<div class="user-area">
+    <div class="container">
+
+        <h4 class="user-area__title  mt-3  mb-3">Личный кабинет</h4>
+
+    </div>
+</div>
+
+<div class="tenants">
+    <div class="container">
+        <div class="row  tenants__item">
+            <ul class="nav nav-tabs  mb-5" id="myTab" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab"
+                        aria-controls="home" aria-selected="true">Общая информация</a>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <a class="nav-link" id="profile-tab" data-toggle="tab" href="#testimony" role="tab"
+                        aria-controls="profile" aria-selected="false">Подать показания</a>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <a class="nav-link" id="contact-tab" data-toggle="tab" href="#changePass" role="tab"
+                        aria-controls="contact" aria-selected="false">Сменить пароль</a>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <a class="nav-link" id="contact-tab" data-toggle="tab" href="#history" role="tab"
+                        aria-controls="contact" aria-selected="false">История платежей</a>
+                </li>
+            </ul>
+            <div class="tab-content" id="myTabContent">
+                <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+                    
+                    <p class="user-area__subtitle  text-700  mb-4">Ваши персональные данные</p>
+                    <table class="table table-striped">
+                        <tbody>
+                            <tr>
+                                <th scope="row">ФИО</th>
+                                <td>Долгоруков Юрий</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Лицевой счет</th>
+                                <td>123456</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">E-mail</th>
+                                <td>yurka777@mail.com</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Телефон</th>
+                                <td>+7-999-777-77-77</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Город</th>
+                                <td>Тюмень</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Адрес</th>
+                                <td>ул.Советская, д.7, кв.19</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="tab-pane  fade" id="testimony" role="tabpanel" aria-labelledby="profile-tab">
+                    <h4 class="mb-3">Введите показания счетчиков в поля</h4>
+                    <ul class="mb-5">
+                        <li><span class="text-700">Счетчик ГВС</span>  (горячая вода), укажите целое число до запятой</li>
+                        <li><span class="text-700">Счетчик ХВС</span> (холодная вода), укажите целое число до запятой</li>
+                        <li><span class="text-700">Электроэнергия день</span> (горячая вода), укажите целое число до запятой</li>
+                        <li><span class="text-700">Электроэнергия ночь</span> (горячая вода), укажите целое число до запятой</li>
+                        <li>Нажать кнопку <span class="text-700">СОХРАНИТЬ</span></li>
+                    </ul>
+                    <h5 class="text-danger text-700">ВНИМАНИЕ! Показания принимаются с 20 по 26 число каждого месяца!</h5>
+                    <h4 class="mt-5">Таблица для заполнения</h4>
+                    <div class="user-area__table">
+                        <table class="user-area__table  table">
+                            <thead>
+                                <tr>
+                                    <th scope="col"></th>
+                                    <th scope="col">старые</th>
+                                    <th class="text-center" scope="col">новые</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <th scope="row">Горячая вода:</th>
+                                    <td>000000</td>
+                                    <td class="text-center"><input type="text"></td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">Холодная вода:</th>
+                                    <td>000000</td>
+                                    <td class="text-center"><input type="text"></td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">Электроэнергия день:</th>
+                                    <td>000000</td>
+                                    <td class="text-center"><input type="text"></td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">Электроэнергия ночь:</th>
+                                    <td>000000</td>
+                                    <td class="text-center"><input type="text"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <button type="button" class="btn  btn-primary  mt-4">Сохранить</button>
+                </div>
+                <div class="tab-pane fade" id="changePass" role="tabpanel" aria-labelledby="contact-tab">
+                    <h3 class="mb-3">Изменить пароль</h3>
+                    <p>Придумайте сложный пароль, который нельзя подобрать:<br>
+                        от 6 до 50 символов - цифры, английские буквы и спецсимволы.
+                    </p>
+                    <div class="user-area__form-pwd">
+                        <form class="mt-5">
+                            <div class="form-group  row  mb-3">
+                                <label for="inputPassword" class="col-sm-5 col-form-label">Текущий пароль</label>
+                                <div class="col-sm-7">
+                                    <input type="password" class="form-control" id="inputPassword">
+                                </div>
+                            </div>
+                            <div class="form-group  row  mb-3">
+                                <label for="inputPassword" class="col-sm-5 col-form-label">Новый пароль</label>
+                                <div class="col-sm-7">
+                                    <input type="password" class="form-control" id="inputPassword">
+                                </div>
+                            </div>
+                            <div class="form-group  row  mb-3">
+                                <label for="inputPassword" class="col-sm-5 col-form-label">Повторите новый пароль</label>
+                                <div class="col-sm-7">
+                                    <input type="password" class="form-control" id="inputPassword">
+                                </div>
+                            </div>
+                          </form>
+                    </div>
+                    
+                      <button type="submit" class="btn btn-primary  mt-3">Сохранить</button>
+                </div>
+                <div class="tab-pane fade" id="history" role="tabpanel" aria-labelledby="contact-tab">
+                    <h4 class="mb-3">История платежей</h4>
+                    <div class="user-area__history-tab">
+                        <table class="table">
+                            <thead class="thead-light">
+                                <tr>
+                                    <th scope="col">Месяц</th>
+                                    <th class="text-center" scope="col">Сумма</th>
+                                    <th class="text-center" scope="col">Квитанция</th>
+                                    <th class="text-center" scope="col">Оплатить</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>01.2021</td>
+                                    <td class="text-center">4500 руб.</td>
+                                    <td class="text-center"><button type="button" class="btn btn-light border border-secondary  btn-sm">Квитанция</button></td>
+                                    <td class="text-center"><a href="#" class="text-decoration-none">Оплатить</a></td>
+                                </tr>
+                                <tr>
+                                    <td>02.2021</td>
+                                    <td class="text-center">4200 руб.</td>
+                                    <td class="text-center"><button type="button" class="btn btn-light border border-secondary  btn-sm">Квитанция</button></td>
+                                    <td class="text-center"><a href="#" class="text-decoration-none">Оплатить</a></td>
+                                </tr>
+                                <tr>
+                                    <td>03.2021</td>
+                                    <td class="text-center">5100 руб.</td>
+                                    <td class="text-center"><button type="button" class="btn btn-light border border-secondary  btn-sm">Квитанция</button></td>
+                                    <td class="text-center"><a href="#" class="text-decoration-none">Оплатить</a></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

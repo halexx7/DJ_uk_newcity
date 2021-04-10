@@ -16,10 +16,10 @@
             {% if user.is_authenticated %}
                 {% if request.user|has_group:"Client" %}
                 <li class="nav-item"> <a class="nav-link text-dark" aria-current="page"
-                    href="manager_account.html">Кабинет</a></li>                
+                    href="{% url 'person:user' %}">Кабинет</a></li>                
                 {% elif request.user|has_group:"Manager" %}
                 <li class="nav-item"> <a class="nav-link text-dark" aria-current="page"
-                    href="user_account.html">Менеджер</a></li>
+                    href="{% url 'person:manager' %}">Менеджер</a></li>
                 {% elif user.is_superuser %}
                 <li class="nav-item"> <a class="nav-link text-dark" aria-current="page"
                     href="admin/">Админка</a></li>

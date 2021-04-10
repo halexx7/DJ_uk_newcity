@@ -1,0 +1,744 @@
+{% extends 'mainapp/base.html' %}
+{% load staticfiles %}
+
+
+{% block menu %}
+    {% include 'mainapp/includes/inc_menu.html' %}
+{% endblock menu %}
+
+{% block content %}
+<div class="intro-user  mt-5">
+    <div class="container">
+        <h2 class="intro-user__title  text-center">Здравствуйте, Ирина Петровна!</h2>
+    </div>
+</div>
+
+<div class="user-area">
+    <div class="container">
+
+        <h4 class="user-area__title  mt-3  mb-3">Кабинет менеджера</h4>
+
+    </div>
+</div>
+
+<!-- Content -->
+<div class="tenants">
+    <div class="container">
+        <div class="row  tenants__item">
+
+            <!-- Nav-TABS -->
+            <ul class="nav nav-tabs  mb-5" id="myTab" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab"
+                        aria-controls="home" aria-selected="true">Общая информация</a>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <a class="nav-link" id="counters-tab" data-toggle="tab" href="#counters" role="tab"
+                        aria-controls="counters" aria-selected="false">Домовые показания</a>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <a class="nav-link" id="recalc-tab" data-toggle="tab" href="#recalc" role="tab"
+                        aria-controls="recalc" aria-selected="false">Перерасчет</a>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <a class="nav-link" id="privileges-tab" data-toggle="tab" href="#privileges" role="tab"
+                        aria-controls="privileges" aria-selected="false">Субсидии и льготы</a>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <a class="nav-link" id="directory-tab" data-toggle="tab" href="#directory" role="tab"
+                        aria-controls="directory" aria-selected="false">Справочники</a>
+                </li>
+            </ul>
+
+            <!-- Tabs-CONTENT -->
+            <div class="tab-content" id="myTabContent">
+
+                <!-- Tab-HOME -->
+                <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+
+                    <p class="user-area__subtitle  text-700  mb-4">Информация о компании</p>
+                    <table class="table table-striped">
+                        <tbody>
+                            <tr>
+                                <th scope="row">Наименование</th>
+                                <td>ООО "УК Жилищный стандарт"</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Адрес</th>
+                                <td>г. Тюмень, ул.Комсомольская, д.57</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Телефон</th>
+                                <td>+7-999-777-77-77</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">E-mail</th>
+                                <td>newcity@mail.com</td>
+                            </tr>
+
+                            <tr>
+                                <th scope="row">Инн</th>
+                                <td>7202225426</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">р/с</th>
+                                <td>40702810538320000181</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">БИК</th>
+                                <td>046577964</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">к/с</th>
+                                <td>301018101000000000964</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Банк</th>
+                                <td>Филиал "Екатеринбургский" ОАО "Альфа-Банк"</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Tab-COUNTERS -->
+                <div class="tab-pane  fade" id="counters" role="tabpanel" aria-labelledby="counters-tab">
+                    <h4 class="mb-3">Введите показания счетчиков в поля</h4>
+                    <ul class="mb-4">
+                        <li><span class="text-700">Счетчик ГВС</span> (горячая вода), укажите целое число до запятой
+                        </li>
+                        <li><span class="text-700">Счетчик ХВС</span> (холодная вода), укажите целое число до
+                            запятой</li>
+                        <li><span class="text-700">Электроэнергия день</span> (горячая вода), укажите целое число до
+                            запятой</li>
+                        <li><span class="text-700">Электроэнергия ночь</span> (горячая вода), укажите целое число до
+                            запятой</li>
+                        <li>Нажать кнопку <span class="text-700">СОХРАНИТЬ</span></li>
+                    </ul>
+                    <p class="text-danger  text-700  pb-5">ВНИМАНИЕ! Показания вносятся в период с 20 по 26 число
+                        каждого
+                        месяца!</p>
+
+                    <h4 class="mt-2">Таблица для заполнения</h4>
+                    <form>
+                        <div class="form-row">
+
+                            <div class="form-group col-md-3  my-3">
+                                <label for="inputStreet">Улица</label>
+                                <select id="inputStreet" class="form-control">
+                                    <option selected>Выбрать из списка</option>
+                                    <option>ул.Советская</option>
+                                    <option>ул.Пушкинская</option>
+                                    <option>ул.Центральная</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group col-md-3  mb-3">
+                                <label for="inputHouse">Дом</label>
+                                <select id="inputHouse" class="form-control">
+                                    <option selected>Выбрать из списка</option>
+                                    <option>1</option>
+                                    <option>2</option>
+                                    <option>3</option>
+                                </select>
+                            </div>
+
+                        </div>
+                    </form>
+
+                    <div class="user-area__table">
+                        <table class="user-area__table  table">
+                            <thead>
+                                <tr>
+                                    <th scope="col"></th>
+                                    <th scope="col">старые</th>
+                                    <th class="text-center" scope="col">новые</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <th scope="row">Горячая вода:</th>
+                                    <td>000000</td>
+                                    <td class="text-center"><input type="text"></td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">Холодная вода:</th>
+                                    <td>000000</td>
+                                    <td class="text-center"><input type="text"></td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">Электроэнергия день:</th>
+                                    <td>000000</td>
+                                    <td class="text-center"><input type="text"></td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">Электроэнергия ночь:</th>
+                                    <td>000000</td>
+                                    <td class="text-center"><input type="text"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <button type="button" class="btn  btn-primary  my-2">Сохранить</button>
+
+                    <div class="my-5">
+                        <h4 class="mt-5">История показаний</h4>
+                        <div class="manager-area__counters-history  mb-5">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">#</th>
+                                        <th scope="col">Дата</th>
+                                        <th scope="col">Улица</th>
+                                        <th scope="col">Дом</th>
+                                        <th scope="col">ХВС</th>
+                                        <th scope="col">ХГС</th>
+                                        <th scope="col">Эл.день</th>
+                                        <th scope="col">Эл.ночь</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>1</td>
+                                        <td>25.01.2021</td>
+                                        <td>ул.Советская</td>
+                                        <td>59</td>
+                                        <td>1300</td>
+                                        <td>950</td>
+                                        <td>13390</td>
+                                        <td>1200</td>
+                                    </tr>
+                                    <tr>
+                                        <td>2</td>
+                                        <td>26.02.2021</td>
+                                        <td>ул.Советская</td>
+                                        <td>59</td>
+                                        <td>1300</td>
+                                        <td>950</td>
+                                        <td>13390</td>
+                                        <td>1200</td>
+                                    </tr>
+                                    <tr>
+                                        <td>3</td>
+                                        <td>24.03.2021</td>
+                                        <td>ул.Советская</td>
+                                        <td>59</td>
+                                        <td>1300</td>
+                                        <td>950</td>
+                                        <td>13390</td>
+                                        <td>1200</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Tab-RECALC -->
+                <div class="tab-pane  fade" id="recalc" role="tabpanel" aria-labelledby="recalc-tab">
+
+                    <div class="wrapper__form-recalc">
+                        <h4 class="mb-4">Внести перерасчет</h4>
+                        <form class="mb-5">
+                            <div class="row">
+                                <div class="col-md-3  mb-3">
+                                    <label for="formGroupExampleInput">Лицевой счет</label>
+                                    <input type="text" class="form-control" id="formGroupExampleInput"
+                                        placeholder="1234567">
+                                </div>
+                                <div class="col-md-3">
+                                    <label for="formGroupExampleInput2">Сумма</label>
+                                    <input type="text" class="form-control" id="formGroupExampleInput2"
+                                        placeholder="359">
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+
+                    <h4 class="pt-2  mb-4">История перерасчетов</h4>
+
+                    <table class="table">
+                        <thead class="thead-light">
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">Период</th>
+                                <th scope="col">Лицевой счет</th>
+                                <th scope="col">ФИО</th>
+                                <th scope="col">Адрес</th>
+                                <th scope="col">Долг/переплата</th>
+                                <th scope="col">редактировать</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <th scope="row">1</th>
+                                <td>Январь 2021</td>
+                                <td>123456</td>
+                                <td>Иванов Иван Иванович</td>
+                                <td>ул.Советская, д.10, кв.7</td>
+                                <td class="text-danger  text-700  text-center">4200 руб.</td>
+                                <td><a href="#" class="text-decoration-none">редактировать</a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th scope="row">1</th>
+                                <td>февраль 2021</td>
+                                <td>123459</td>
+                                <td>Сидоров Александр Александрович</td>
+                                <td>ул.Советская, д.10, кв.6</td>
+                                <td class="text-danger  text-700  text-center">4200 руб.</td>
+                                <td><a href="#" class="text-decoration-none">редактировать</a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th scope="row">1</th>
+                                <td>Март 2021</td>
+                                <td>123445</td>
+                                <td>Петров Евлампий Аристархович</td>
+                                <td>ул.Советская, д.10, кв.13</td>
+                                <td class="text-danger  text-700  text-center">4200 руб.</td>
+                                <td><a href="#" class="text-decoration-none">редактировать</a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Tab-PRIVILEGES -->
+                <div class="tab-pane  fade" id="privileges" role="tabpanel" aria-labelledby="privileges-tab">
+                    <div class="row">
+
+                        <div class="col-2">
+                            <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist"
+                                aria-orientation="vertical">
+                                <a class="nav-link active" id="v-pills-privilegies-tab" data-toggle="pill"
+                                    href="#v-pills-privilegies" role="tab" aria-controls="v-pills-privilegies"
+                                    aria-selected="true">Льготы</a>
+                                <a class="nav-link" id="v-pills-grant-tab" data-toggle="pill" href="#v-pills-grant"
+                                    role="tab" aria-controls="v-pills-grant" aria-selected="false">Субсидии</a>
+                            </div>
+                        </div><!-- ./col-3 -->
+
+                        <div class="col-10">
+                            <div class="tab-content" id="v-pills-tabContent">
+
+                                <!-- Link-PRIVILEGES -->
+                                <div class="tab-pane fade show active" id="v-pills-privilegies" role="tabpanel"
+                                    aria-labelledby="v-pills-privilegies-tab">
+
+                                    <h4 class="mb-4">Добваить льготу</h4>
+                                    <div class="manager-privileges__form">
+                                        <form class="">
+                                            <div class="form-group  mb-3">
+                                                <label for="exampleFormControlInput1">Лицевой счет</label>
+                                                <input type="email" class="form-control" id="exampleFormControlInput1"
+                                                    placeholder="123456">
+                                            </div>
+                                            <div class="form-group  mb-3">
+                                                <label for="exampleFormControlSelect1">Тариф</label>
+                                                <select class="form-control" id="exampleFormControlSelect1">
+                                                    <option selected>Выберите из списка</option>
+                                                    <option>Холодная вода</option>
+                                                    <option>Горячая вода</option>
+                                                    <option>Электроэнергия</option>
+                                                </select>
+                                            </div>
+                                            <div class="form-group  mb-3">
+                                                <label for="exampleFormControlInput1">Скидка, %</label>
+                                                <input type="email" class="form-control" id="exampleFormControlInput2"
+                                                    placeholder="10">
+                                            </div>
+                                        </form>
+                                    </div>
+                                    
+                                    <button type="button" class="btn btn-primary  mt-2 mb-5">Добавить</button>
+
+                                    <h4  class="pt-4  mb-4">Действующие льготы</h4>
+                                    <table class="table  mb-5">
+                                        <thead class="thead-light">
+                                            <tr>
+                                                <th scope="col">#</th>
+                                                <th scope="col">Лицевой счет</th>
+                                                <th scope="col">ФИО</th>
+                                                <th scope="col">Адрес</th>
+                                                <th scope="col">Название</th>
+                                                <th scope="col">Льгота, %</th>
+                                                <th scope="col">редактировать</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <th scope="row">1</th>
+                                                <td>123456</td>
+                                                <td>Иванов Иван Иванович</td>
+                                                <td>ул.Советская, д.10, кв.7</td>
+                                                <td class="text-center">Холодная вода</td>
+                                                <td class="text-700  text-center">20</td>
+                                                <td><a href="#" class="text-decoration-none">редактировать</a>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <th scope="row">2</th>
+                                                <td>123457</td>
+                                                <td>Сидоров Александр Александрович</td>
+                                                <td>ул.Советская, д.13, кв.8</td>
+                                                <td class="text-center">Горячая вода</td>
+                                                <td class="text-700  text-center">10</td>
+                                                <td><a href="#" class="text-decoration-none">редактировать</a>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                                <!-- Link-GRANT -->
+                                <div class="tab-pane fade" id="v-pills-grant" role="tabpanel"
+                                    aria-labelledby="v-pills-grant-tab">
+
+                                    <h4 class="mb-4">Добваить субсидию</h4>
+                                    <div class="manager-privileges__form">
+                                        <form>
+                                            <div class="form-group  mb-3">
+                                                <label for="exampleFormControlInput1">Лицевой счет</label>
+                                                <input type="email" class="form-control" id="exampleFormControlInput3"
+                                                    placeholder="123456">
+                                            </div>
+                                            <div class="form-group  mb-3">
+                                                <label for="exampleFormControlSelect1">Тариф</label>
+                                                <select class="form-control" id="exampleFormControlSelect2">
+                                                    <option selected>Выберите из списка</option>
+                                                    <option>Холодная вода</option>
+                                                    <option>Горячая вода</option>
+                                                    <option>Электроэнергия</option>
+                                                </select>
+                                            </div>
+                                            <div class="form-group  mb-3">
+                                                <label for="exampleFormControlInput1">Скидка, %</label>
+                                                <input type="email" class="form-control" id="exampleFormControlInput4"
+                                                    placeholder="10">
+                                            </div>
+                                        </form>
+                                    </div>
+                                    <button type="button" class="btn btn-primary  mt-2 mb-5">Добавить</button>
+
+
+                                    <h4  class="pt-4  mb-4">Действующие субсидии</h4>
+                                    <table class="table  mb-5">
+                                        <thead class="thead-light">
+                                            <tr>
+                                                <th scope="col">#</th>
+                                                <th scope="col">Лицевой счет</th>
+                                                <th scope="col">ФИО</th>
+                                                <th scope="col">Адрес</th>
+                                                <th scope="col">Название</th>
+                                                <th scope="col">Субсидия, %</th>
+                                                <th scope="col">Редактировать</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <th scope="row">1</th>
+                                                <td>123456</td>
+                                                <td>Иванов Иван Иванович</td>
+                                                <td>ул.Советская, д.10, кв.7</td>
+                                                <td class="text-center">Холодная вода</td>
+                                                <td class="text-700  text-center">20</td>
+                                                <td><a href="#" class="text-decoration-none">редактировать</a>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <th scope="row">2</th>
+                                                <td>123457</td>
+                                                <td>Сидоров Александр Александрович</td>
+                                                <td>ул.Советская, д.13, кв.8</td>
+                                                <td class="text-center">Горячая вода</td>
+                                                <td class="text-700  text-center">10</td>
+                                                <td><a href="#" class="text-decoration-none">редактировать</a>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div><!-- ./col-9 -->
+
+                    </div><!-- ./row -->
+                </div>
+
+                <!-- Tab-DIRECTORY -->
+                <div class="tab-pane fade" id="directory" role="tabpanel" aria-labelledby="contact-tab">
+                    <h4 class="mb-3">Справочники</h4>
+                    <div class="manager__directory-tab">
+                        <div class="row">
+                            <div class="col-3">
+                                <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist"
+                                    aria-orientation="vertical">
+                                    <a class="nav-link active" id="v-pills-city-tab" data-toggle="pill"
+                                        href="#v-pills-city" role="tab" aria-controls="v-pills-city"
+                                        aria-selected="true">Города</a>
+                                    <a class="nav-link" id="v-pills-street-tab" data-toggle="pill"
+                                        href="#v-pills-street" role="tab" aria-controls="v-pills-street"
+                                        aria-selected="false">Улицы</a>
+                                    <a class="nav-link" id="v-pills-house-tab" data-toggle="pill"
+                                        href="#v-pills-house" role="tab" aria-controls="v-pills-house"
+                                        aria-selected="false">Объекты</a>
+                                    <a class="nav-link" id="v-pills-resident-tab" data-toggle="pill"
+                                        href="#v-pills-resident" role="tab" aria-controls="v-pills-resident"
+                                        aria-selected="false">Жильцы</a>
+                                    <a class="nav-link" id="v-pills-rate-tab" data-toggle="pill"
+                                        href="#v-pills-rate" role="tab" aria-controls="v-pills-rate"
+                                        aria-selected="false">Тарифы</a>
+                                </div>
+                            </div>
+
+                            <div class="col-9">
+                                <div class="tab-content" id="v-pills-tabContent">
+
+                                    <!-- Link-CITY -->
+                                    <div class="manager-tab__city  tab-pane  fade show active" id="v-pills-city"
+                                        role="tabpanel" aria-labelledby="v-pills-home-tab">
+
+                                        <h4 class="mb-3">Новый город</h4>
+                                        <form>
+                                            <div class="form-group">
+                                                <input type="email" class="form-control" id="exampleInputEmail1"
+                                                    aria-describedby="emailHelp">
+                                                <small id="emailHelp" class="form-text text-muted">Введите название
+                                                    города для добавления</small>
+                                            </div>
+                                            <button type="submit"
+                                                class="btn  btn-primary  btn-sm  mb-5  mt-3">Добавить</button>
+                                        </form>
+
+                                        <h4>Города</h4>
+                                        <table class="table">
+                                            <thead class="thead-light">
+                                                <tr>
+                                                    <th scope="col">#</th>
+                                                    <th scope="col">Город</th>
+                                                    <th scope="col">редактировать</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <th scope="row">1</th>
+                                                    <td>Тюмень</td>
+                                                    <td><a href="#" class="text-decoration-none">редактировать</a>
+                                                    </td>
+
+                                                </tr>
+                                                <tr>
+                                                    <th scope="row">2</th>
+                                                    <td>Екатеринбург</td>
+                                                    <td><a href="#" class="text-decoration-none">редактировать</a>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div><!-- ./manager-tab__city -->
+
+                                    <!-- Link-STREET -->
+                                    <div class="manager-tab__street  tab-pane fade" id="v-pills-street"
+                                        role="tabpanel" aria-labelledby="v-pills-street-tab">
+
+                                        <h4 class="mb-3">Новая улица</h4>
+                                        <form>
+                                            <div class="d-flex  align-items-center  form-row  my-2">
+                                                <div class="form-group  col  manager-tab__street-form">
+                                                    <label for="inputState">Город</label>
+                                                    <select id="inputState" class="form-control mr-5">
+                                                        <option selected>Выберите город</option>
+                                                        <option>Тюмень</option>
+                                                        <option>Екатеринбург</option>
+                                                    </select>
+                                                </div>
+                                                <div class="form-group  col  ml-3">
+                                                    <label for="inputEmail4">Улица</label>
+                                                    <input type="text" class="form-control" id="inputEmail4"
+                                                        placeholder="ул. Советская">
+                                                </div>
+                                            </div>
+                                            <button type="submit"
+                                                class="btn  btn-primary  btn-sm  mt-2">Добавить</button>
+                                        </form>
+
+                                        <h4 class="mb-3 mt-5">Улицы</h4>
+                                        <table class="table">
+                                            <thead class="thead-light">
+                                                <tr>
+                                                    <th scope="col">#</th>
+                                                    <th scope="col">Город</th>
+                                                    <th scope="col">Улица</th>
+                                                    <th scope="col">редактировать</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <th scope="row">1</th>
+                                                    <td>Тюмень</td>
+                                                    <td>ул.Советская</td>
+                                                    <td><a href="#" class="text-decoration-none">редактировать</a>
+                                                    </td>
+
+                                                </tr>
+                                                <tr>
+                                                    <th scope="row">2</th>
+                                                    <td>Тюмень</td>
+                                                    <td>ул.Пушкинская</td>
+                                                    <td><a href="#" class="text-decoration-none">редактировать</a>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+
+                                    </div><!-- ./manager-tab__street -->
+
+                                    <!-- Link-HOUSE -->
+                                    <div class="manager-tab__house  tab-pane fade" id="v-pills-house"
+                                        role="tabpanel" aria-labelledby="v-pills-house-tab">
+
+                                        <a href="#" class="d-inline-flex  mb-5  manager-tab__link  text-decoration-none">Добавить дом</a>
+
+                                        <h4>Объекты</h4>
+                                        <table class="table">
+                                            <thead class="thead-light">
+                                                <tr>
+                                                    <th scope="col">#</th>
+                                                    <th scope="col">Город</th>
+                                                    <th scope="col">Улица</th>
+                                                    <th scope="col">Дом</th>
+                                                    <th scope="col">Квартиры</th> <!-- TODO Добавить ярлыки "Квартиры", "Редактировать" -->
+                                                    <th scope="col">Редактировать</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <th scope="row">1</th>
+                                                    <td>Тюмень</td>
+                                                    <td>ул.Советская</td>
+                                                    <td>56</td>
+                                                    <td><a href="#" class="text-decoration-none">смотреть</a></td>
+                                                    <td><a href="#" class="text-decoration-none">редактировать</a></td>
+
+                                                </tr>
+                                                <tr>
+                                                    <th scope="row">2</th>
+                                                    <td>Тюмень</td>
+                                                    <td>ул.Пушкинская</td>
+                                                    <td>56</td>
+                                                    <td><a href="#" class="text-decoration-none">смотреть</a></td>
+                                                    <td><a href="#" class="text-decoration-none">редактировать</a></td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div><!-- ./manager-tab__object -->
+
+                                    <!-- Link-RESIDENT -->
+                                    <div class="manager-tab__resident  tab-pane fade" id="v-pills-resident"
+                                        role="tabpanel" aria-labelledby="v-pills-resident-tab">
+
+                                        <a href="#" class="d-inline-flex  mb-5  manager-tab__link  text-decoration-none">Добавить жильца</a>
+
+                                        <h4>Жильцы</h4>
+                                        <table class="table">
+                                            <thead class="thead-light">
+                                                <tr>
+                                                    <th scope="col">#</th>
+                                                    <th scope="col">Лицевой счет</th>
+                                                    <th scope="col">ФИО</th>
+                                                    <th scope="col">Адрес</th>
+                                                    <th scope="col">Долг/переплата</th>
+                                                    <th scope="col">редактировать</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <th scope="row">1</th>
+                                                    <td>123456</td>
+                                                    <td>Иванов Иван Иванович</td>
+                                                    <td>ул.Советская, д.10, кв.7</td>
+                                                    <td class="text-danger  text-700  text-center">4200 руб.</td>
+                                                    <td><a href="#" class="text-decoration-none">редактировать</a>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <th scope="row">2</th>
+                                                    <td>123457</td>
+                                                    <td>Сидоров Александр Александрович</td>
+                                                    <td>ул.Советская, д.13, кв.8</td>
+                                                    <td class="text-success  text-center">-329 руб.</td>
+                                                    <td><a href="#" class="text-decoration-none">редактировать</a>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div><!-- ./manager-tab__object -->
+
+                                    <!-- Link-RATE -->
+                                    <div class="tab-pane fade" id="v-pills-rate" role="tabpanel"
+                                        aria-labelledby="v-pills-rate-tab">
+
+                                        <h4 class="mb-3">Тарифы</h4>
+                                        <table class="table">
+                                            <thead class="thead-light">
+                                                <tr>
+                                                    <th scope="col">#</th>
+                                                    <th scope="col">Наименование</th>
+                                                    <th scope="col">Ед.изм.</th>
+                                                    <th scope="col">Норматив</th>
+                                                    <th scope="col">Цена</th>
+                                                    <th scope="col">Константа</th>
+                                                    <th scope="col">Редактировать</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <th scope="row">1</th>
+                                                    <td>Взносы на капитальный ремонт</td>
+                                                    <td class="text-center">м2</td>
+                                                    <td class="text-center">1</td>
+                                                    <td class="text-center">15.323</td>
+                                                    <td class="text-center"><input type="checkbox"
+                                                            class="form-check-input" id="exampleCheck1" checked>
+                                                    </td>
+                                                    <td class="text-center"><a href="#"
+                                                            class="text-decoration-none">редактировать</a></td>
+                                                </tr>
+                                                <tr>
+                                                    <th scope="row">2</th>
+                                                    <td>Холодная вода (индивидуальное потребление)</td>
+                                                    <td class="text-center">м3</td>
+                                                    <td class="text-center">1</td>
+                                                    <td class="text-center">15.323</td>
+                                                    <td class="text-center"><input type="checkbox"
+                                                            class="form-check-input" id="exampleCheck1"></td>
+                                                    <td class="text-center"><a href="#"
+                                                            class="text-decoration-none">редактировать</a></td>
+                                                </tr>
+                                                <tr>
+                                                    <th scope="row">3</th>
+                                                    <td>Горячая вода (индивидуальное потребление)</td>
+                                                    <td class="text-center">м3</td>
+                                                    <td class="text-center">1</td>
+                                                    <td class="text-center">25.401</td>
+                                                    <td class="text-center"><input type="checkbox"
+                                                            class="form-check-input" id="exampleCheck1"></td>
+                                                    <td class="text-center"><a href="#"
+                                                            class="text-decoration-none">редактировать</a></td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div><!-- ./row -->
+                    </div><!-- ./manager__directory-tab -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}
