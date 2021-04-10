@@ -1,12 +1,10 @@
-from django.contrib import auth
-from django.shortcuts import HttpResponseRedirect, render
-from django.urls import reverse
-
 from django.conf import settings
+from django.contrib import auth
+from django.contrib.auth.decorators import login_required
 from django.core.mail import send_mail
 from django.db import transaction
-from django.contrib.auth.decorators import login_required
-
+from django.shortcuts import HttpResponseRedirect, render
+from django.urls import reverse
 
 from authnapp.forms import UserEditForm, UserLoginForm, UserProfileEditForm, UserRegisterForm
 from authnapp.models import User

@@ -5,8 +5,9 @@ from django import forms
 from django.contrib.auth.forms import AuthenticationForm, UserChangeForm, UserCreationForm
 from django.contrib.auth.models import Group
 
-from .models import User 
 from mainapp.models import UserProfile
+
+from .models import User
 
 
 class UserLoginForm(AuthenticationForm):
@@ -18,6 +19,7 @@ class UserLoginForm(AuthenticationForm):
     class Meta:
         model = User
         fields = ("personal_account", "password")
+
 
 class UserRegisterForm(UserCreationForm):
     def __init__(self, *args, **kwargs):
@@ -36,7 +38,7 @@ class UserRegisterForm(UserCreationForm):
         user = super(UserRegisterForm, self).save()
 
         user.is_active = False
-        user.groups.add(Group.objects.get(name='Client'))
+        user.groups.add(Group.objects.get(name="Client"))
         salt = hashlib.sha1(str(random.random()).encode("utf8")).hexdigest()[:6]
         user.activation_key = hashlib.sha1((user.email + salt).encode("utf8")).hexdigest()
         user.save()

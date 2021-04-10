@@ -3,7 +3,6 @@ from django.db.models.base import ModelState
 
 import mainapp.models
 
-
 admin.site.register(mainapp.models.ServicesCategory)
 admin.site.register(mainapp.models.Services)
 admin.site.register(mainapp.models.City)

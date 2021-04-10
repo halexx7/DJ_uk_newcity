@@ -12,11 +12,9 @@
         <ul class="navbar-nav">
             {% if user.is_authenticated %}
                 {% if request.user|has_group:"Client" %}
-                <!-- TODO Показываем при авторизации -->
                 <li class="nav-item"> <a class="nav-link text-dark" aria-current="page"
                     href="manager_account.html">Кабинет</a></li>                
                 {% elif request.user|has_group:"Manager" %}
-                <!-- TODO Показываем при авторизации -->
                 <li class="nav-item"> <a class="nav-link text-dark" aria-current="page"
                     href="user_account.html">Менеджер</a></li>
                 {% elif user.is_superuser %}
