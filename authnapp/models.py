@@ -50,6 +50,9 @@ class User(AbstractBaseUser, PermissionsMixin):
         verbose_name = _("Пользователь")
         verbose_name_plural = _("Пользователи")
 
+    def __str__(self):
+        return f'({self.personal_account}) - {self.name}'
+
     def get_full_name(self):
         """
         Returns the name plus the last_name plus patronymic, with a space in between.

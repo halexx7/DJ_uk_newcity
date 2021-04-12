@@ -5,6 +5,7 @@ import mainapp.models
 
 admin.site.register(mainapp.models.ServicesCategory)
 admin.site.register(mainapp.models.Services)
+admin.site.register(mainapp.models.Metrics)
 admin.site.register(mainapp.models.City)
 admin.site.register(mainapp.models.Street)
 admin.site.register(mainapp.models.UK)
@@ -23,3 +24,4 @@ admin.site.register(mainapp.models.Privileges)
 admin.site.register(mainapp.models.Profit)
 admin.site.register(mainapp.models.Payment)
 admin.site.register(mainapp.models.Recalculations)
+admin.site.register(mainapp.models.Standart)
