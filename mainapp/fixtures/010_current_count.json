@@ -1,6 +1,6 @@
 [
     {
-        "model": "invoice.currentcounter",
+        "model": "mainapp.currentcounter",
         "pk": 1,
         "fields": {
             "user": 1,

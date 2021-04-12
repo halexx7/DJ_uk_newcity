@@ -1,13 +1,13 @@
 [
     {
-      "model": "invoice.servicescategory",
+      "model": "mainapp.servicescategory",
       "pk": 1,
       "fields": {
         "name": "Тариф 1"
       }
     },
     {
-      "model": "invoice.servicescategory",
+      "model": "mainapp.servicescategory",
       "pk": 2,
       "fields": {
         "name": "Тариф 2"

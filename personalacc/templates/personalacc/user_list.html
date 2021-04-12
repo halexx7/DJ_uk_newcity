@@ -23,7 +23,9 @@
 
 <div class="tenants">
     <div class="container">
-        <div class="row  tenants__item">
+        <div class="d-flex  flex-row  tenants__item  flex-column">
+
+            <!-- Nav-TABS -->
             <ul class="nav nav-tabs  mb-5" id="myTab" role="tablist">
                 <li class="nav-item" role="presentation">
                     <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab"
@@ -42,23 +44,29 @@
                         aria-controls="contact" aria-selected="false">История платежей</a>
                 </li>
             </ul>
-            <div class="tab-content" id="myTabContent">
+
+            <!-- Tabs-CONTENT -->
+            <div class="tab-content  pb-5  mb-5" id="myTabContent">
+
+                <!-- Tab-HOME -->
                 <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
                     
                     <p class="user-area__subtitle  text-700  mb-4">Ваши персональные данные</p>
                     <table class="table table-striped">
+                        {% for item in user %}
+                        {% if item.is_active %}
                         <tbody>
                             <tr>
                                 <th scope="row">ФИО</th>
-                                <td>Долгоруков Юрий</td>
+                                <td>{{ item.user.name }}</td>
                             </tr>
                             <tr>
                                 <th scope="row">Лицевой счет</th>
-                                <td>123456</td>
+                                <td>{{ item.personal_account }}</td>
                             </tr>
                             <tr>
                                 <th scope="row">E-mail</th>
-                                <td>yurka777@mail.com</td>
+                                <td>{{ item.email }}</td>
                             </tr>
                             <tr>
                                 <th scope="row">Телефон</th>
@@ -66,15 +74,21 @@
                             </tr>
                             <tr>
                                 <th scope="row">Город</th>
-                                <td>Тюмень</td>
+                                <td>{{ item.appartament.house.city.city }}</td>
                             </tr>
                             <tr>
                                 <th scope="row">Адрес</th>
-                                <td>ул.Советская, д.7, кв.19</td>
+                                <td>
+                                    {{ item.appartament.house.street.street }}, д.{{ item.appartament.house.number }}, кв.{{ item.appartament.number }}
+                                </td>
                             </tr>
                         </tbody>
+                        {% endif %}
+                        {% endfor %}
                     </table>
                 </div>
+
+                <!-- Tab-COUNTER -->
                 <div class="tab-pane  fade" id="testimony" role="tabpanel" aria-labelledby="profile-tab">
                     <h4 class="mb-3">Введите показания счетчиков в поля</h4>
                     <ul class="mb-5">
@@ -122,6 +136,8 @@
                     
                     <button type="button" class="btn  btn-primary  mt-4">Сохранить</button>
                 </div>
+
+                <!-- Tab-CHANGEPASS -->
                 <div class="tab-pane fade" id="changePass" role="tabpanel" aria-labelledby="contact-tab">
                     <h3 class="mb-3">Изменить пароль</h3>
                     <p>Придумайте сложный пароль, который нельзя подобрать:<br>
@@ -152,6 +168,8 @@
                     
                       <button type="submit" class="btn btn-primary  mt-3">Сохранить</button>
                 </div>
+
+                <!-- Tab-HISTORY -->
                 <div class="tab-pane fade" id="history" role="tabpanel" aria-labelledby="contact-tab">
                     <h4 class="mb-3">История платежей</h4>
                     <div class="user-area__history-tab">

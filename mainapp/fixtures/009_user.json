@@ -1,13 +1,28 @@
 [  
     {
-        "model": "invoice.user",
-        "pk": 1,
+        "model": "mainapp.userprofile",
+        "pk": 2,
         "fields": {
-            "personal_account": "4334459393",
-            "name": "ИВАНОВ ИВАН ИВАНОВИЧ",
+            "user": 1,
             "appartament": 1,
-            "type_electric_meter": 2,
-            "invoice": 1
+            "type_electric_meter": 2
+        }
+    },
+    {
+        "model": "mainapp.userprofile",
+        "pk": 3,
+        "fields": {
+            "user": 2,
+            "appartament": 2,
+            "type_electric_meter": 2
+        }
+    },{
+        "model": "mainapp.userprofile",
+        "pk": 4,
+        "fields": {
+            "user": 3,
+            "appartament": 3,
+            "type_electric_meter": 2
         }
     }
 ]

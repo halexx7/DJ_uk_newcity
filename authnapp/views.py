@@ -11,7 +11,7 @@ from authnapp.models import User
 
 
 def login(request):
-    title = "вход"
+    title = "Вход | УК \"Новый город\""
 
     login_form = UserLoginForm(data=request.POST or None)
     if request.method == "POST" and login_form.is_valid():
@@ -33,7 +33,7 @@ def logout(request):
 
 
 def register(request):
-    title = "регистрация"
+    title = "Регистрация | УК \"Новый город\""
 
     if request.method == "POST":
         register_form = UserRegisterForm(request.POST, request.FILES)
@@ -55,7 +55,7 @@ def register(request):
 @login_required
 @transaction.atomic
 def edit(request):
-    title = "редактирование"
+    title = "Редактирование | УК \"Новый город\""
 
     if request.method == "POST":
         edit_form = UserEditForm(request.POST, request.FILES, instance=request.user)

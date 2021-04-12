@@ -1,16 +1,16 @@
 [
   {
-    "model": "invoice.street",
+    "model": "mainapp.street",
     "pk": 1,
     "fields": {
-      "street": "ул.Советская"
+      "street": "Советская"
     }
   },
   {
-    "model": "invoice.street",
+    "model": "mainapp.street",
     "pk": 2,
     "fields": {
-      "street": "ул.Пушкинская"
+      "street": "Пушкинская"
     }
   }
 ]

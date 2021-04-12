@@ -1,6 +1,6 @@
 [
     {
-        "model": "invoice.services",
+        "model": "mainapp.services",
         "pk": 1,
         "fields": {
             "category": 1,
@@ -11,7 +11,7 @@
         }
     },
     {
-        "model": "invoice.services",
+        "model": "mainapp.services",
         "pk": 2,
         "fields": {
             "category": 1,
@@ -23,7 +23,7 @@
         }
     },
     {
-        "model": "invoice.services",
+        "model": "mainapp.services",
         "pk": 3,
         "fields": {
             "category": 1,
@@ -35,8 +35,8 @@
         }
     },
     {
-        "model": "invoice.services",
-        "pk": 3,
+        "model": "mainapp.services",
+        "pk": 4,
         "fields": {
             "category": 1,
             "name": "Водоотведение (индивидуальное потребление)",
@@ -47,8 +47,8 @@
         }
     },
     {
-        "model": "invoice.services",
-        "pk": 4,
+        "model": "mainapp.services",
+        "pk": 5,
         "fields": {
             "category": 1,
             "name": "Электроэнергия день",
@@ -59,8 +59,8 @@
         }
     },
     {
-        "model": "invoice.services",
-        "pk": 5,
+        "model": "mainapp.services",
+        "pk": 6,
         "fields": {
             "category": 1,
             "name": "Электроэнергия ночь",
@@ -71,8 +71,8 @@
         }
     },
     {
-        "model": "invoice.services",
-        "pk": 6,
+        "model": "mainapp.services",
+        "pk": 7,
         "fields": {
             "category": 1,
             "name": "Обращение с ТКО",
@@ -82,8 +82,8 @@
         }
     },
     {
-        "model": "invoice.services",
-        "pk": 7,
+        "model": "mainapp.services",
+        "pk": 8,
         "fields": {
             "category": 1,
             "name": "Обслуживание систем видеонаблюдения",
@@ -93,8 +93,8 @@
         }
     },
     {
-        "model": "invoice.services",
-        "pk": 8,
+        "model": "mainapp.services",
+        "pk": 9,
         "fields": {
             "category": 1,
             "name": "Содержание общ иммущ дома",
@@ -104,8 +104,8 @@
         }
     },
     {
-        "model": "invoice.services",
-        "pk": 9,
+        "model": "mainapp.services",
+        "pk": 10,
         "fields": {
             "category": 1,
             "name": "Тех обслуж лифтового иммущества",
@@ -115,8 +115,8 @@
         }
     },
     {
-        "model": "invoice.services",
-        "pk": 10,
+        "model": "mainapp.services",
+        "pk": 11,
         "fields": {
             "category": 1,
             "name": "ТО общ коммуникац тех устройств и помещений",
@@ -126,8 +126,8 @@
         }
     },
     {
-        "model": "invoice.services",
-        "pk": 11,
+        "model": "mainapp.services",
+        "pk": 12,
         "fields": {
             "category": 1,
             "name": "Управление домом",

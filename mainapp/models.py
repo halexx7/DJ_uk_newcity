@@ -97,7 +97,7 @@ class UK(models.Model):
     name = models.CharField(verbose_name="Название", max_length=128)
     city = models.ForeignKey(City, on_delete=models.CASCADE)
     street = models.ForeignKey(Street, on_delete=models.CASCADE)
-    num_building = models.PositiveIntegerField(verbose_name="Номер здания")
+    num_building = models.CharField(verbose_name="Номер здания", max_length=3, blank=True, null=True)
     phone = models.CharField(verbose_name="Телефон", max_length=20)
     email = models.CharField(verbose_name="e-mail", max_length=128)
     inn = models.CharField(verbose_name="ИНН", max_length=10)
@@ -120,13 +120,13 @@ class UK(models.Model):
 
 
 class House(models.Model):
-    number = models.PositiveIntegerField(verbose_name="Номер")
-    add_number = models.PositiveIntegerField(verbose_name="Корпус")
+    number = models.CharField(verbose_name="Номер", max_length=3, blank=True, null=True)
+    add_number = models.CharField(verbose_name="Корпус", max_length=3, blank=True, null=True)
     city = models.ForeignKey(City, on_delete=models.CASCADE)
     street = models.ForeignKey(Street, on_delete=models.CASCADE)
-    sq_home = models.DecimalField(verbose_name="Площадь", max_digits=5, decimal_places=2)
+    sq_home = models.DecimalField(verbose_name="Площадь", max_digits=7, decimal_places=2)
     uk = models.ForeignKey(UK, on_delete=CASCADE)
-    category_rate = models.ForeignKey(ServicesCategory, on_delete=CASCADE)
+    category_rate = models.ForeignKey(ServicesCategory, on_delete=CASCADE, default=1)
 
     is_active = models.BooleanField(verbose_name="Активный", db_index=True, default=True)
     created = models.DateTimeField(verbose_name="Создан", auto_now_add=True)
@@ -186,7 +186,7 @@ class HouseHistory(models.Model):
 class Appartament(models.Model):
     house = models.ForeignKey(House, on_delete=CASCADE)
     number = models.PositiveIntegerField(verbose_name="Номер")
-    add_number = models.PositiveIntegerField(verbose_name="Комната", null=True, blank=True, default="")
+    add_number = models.PositiveIntegerField(verbose_name="Комната", null=True, blank=True)
     sq_appart = models.DecimalField(verbose_name="Площадь", max_digits=5, decimal_places=2)
     num_owner = models.PositiveIntegerField(verbose_name="Кол-во проживающих", default=0)
 
@@ -207,8 +207,6 @@ class UserProfile(models.Model):
     COUNTER_TYPE = ((SINGLE, "однотарифный"), (TWO, "двухтарифный"), (MULTI, "многотарифный"))
 
     user = models.OneToOneField(User, unique=True, null=False, db_index=True, on_delete=models.CASCADE)
-    personal_account = models.CharField(verbose_name="Лицевой счет", max_length=32, unique=True)
-    name = models.CharField(verbose_name="ФИО", max_length=128)
     appartament = models.ForeignKey(Appartament, on_delete=CASCADE, default=1)
     type_electric_meter = models.CharField(verbose_name="Тип счетчика", max_length=1, choices=COUNTER_TYPE)
 

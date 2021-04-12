@@ -1,6 +1,6 @@
 [
     {
-        "model": "invoice.historycounter",
+        "model": "mainapp.historycounter",
         "pk": 2,
         "fields": {
             "user": 1,
@@ -12,7 +12,7 @@
         }
     },
     {
-        "model": "invoice.historycounter",
+        "model": "mainapp.historycounter",
         "pk": 3,
         "fields": {
             "user": 1,
@@ -24,7 +24,7 @@
         }
     },
     {
-        "model": "invoice.historycounter",
+        "model": "mainapp.historycounter",
         "pk": 4,
         "fields": {
             "user": 1,
