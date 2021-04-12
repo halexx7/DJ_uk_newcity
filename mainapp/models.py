@@ -1,4 +1,5 @@
 from typing import Callable
+import datetime
 
 from django.contrib.postgres.fields import JSONField
 from django.db import models
@@ -206,7 +207,7 @@ class UserProfile(models.Model):
 
     COUNTER_TYPE = ((SINGLE, "однотарифный"), (TWO, "двухтарифный"), (MULTI, "многотарифный"))
 
-    user = models.OneToOneField(User, unique=True, null=False, db_index=True, on_delete=models.CASCADE)
+    user = models.OneToOneField(User, null=False, db_index=True, on_delete=models.CASCADE)
     appartament = models.ForeignKey(Appartament, on_delete=CASCADE, default=1)
     type_electric_meter = models.CharField(verbose_name="Тип счетчика", max_length=1, choices=COUNTER_TYPE)
 
