@@ -24,7 +24,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     name = models.CharField(verbose_name="ФИО", max_length=128, blank=True)
 
     email = models.EmailField(verbose_name="Email", unique=True)
-    phone = models.CharField(verbose_name="Телефон", max_length=20, blank=True, null=True, default='')
+    phone = models.CharField(verbose_name="Телефон", max_length=11, blank=True, null=True, default='', help_text='Номер телефона в формате - 79823212334')
 
     is_active = models.BooleanField(verbose_name="Активный", default=True)
     is_staff = models.BooleanField(default=True, verbose_name="Доступ к админке")

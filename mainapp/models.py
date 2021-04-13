@@ -43,7 +43,7 @@ class Metrics(models.Model):
 
 
 class Services(models.Model):
-    category = models.ForeignKey(ServicesCategory, verbose_name="Категория", on_delete=models.CASCADE)
+    category = models.ForeignKey(ServicesCategory, verbose_name="Категория", on_delete=models.CASCADE, default=1)
     name = models.CharField(verbose_name="Услуга", max_length=256)
     unit = models.ForeignKey(Metrics, verbose_name="Единицы", on_delete=models.CASCADE)
     rate = models.DecimalField(verbose_name="Тариф", max_digits=7, decimal_places=3, default=0)
@@ -259,11 +259,12 @@ class UserProfile(models.Model):
     updated = models.DateTimeField(verbose_name="Обновлен", auto_now=True)
 
     class Meta:
+        ordering = ("updated",)
         verbose_name = "Профиль"
         verbose_name_plural = "009 Профили"
 
     def __str__(self):
-        return self.user.name
+        return f'{self.user.name} ({self.appartament})'
 
     @receiver(post_save, sender=User)
     def create_user_profile(sender, instance, created, **kwargs):
