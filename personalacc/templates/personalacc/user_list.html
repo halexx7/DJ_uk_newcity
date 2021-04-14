@@ -62,15 +62,15 @@
                             </tr>
                             <tr>
                                 <th scope="row">Лицевой счет</th>
-                                <td>{{ item.personal_account }}</td>
+                                <td>{{ item.user.personal_account }}</td>
                             </tr>
                             <tr>
                                 <th scope="row">E-mail</th>
-                                <td>{{ item.email }}</td>
+                                <td>{{ item.user.email }}</td>
                             </tr>
                             <tr>
                                 <th scope="row">Телефон</th>
-                                <td>+7-999-777-77-77</td>
+                                <td>{{ item.user.phone }}</td>
                             </tr>
                             <tr>
                                 <th scope="row">Город</th>
@@ -79,7 +79,7 @@
                             <tr>
                                 <th scope="row">Адрес</th>
                                 <td>
-                                    {{ item.appartament.house.street.street }}, д.{{ item.appartament.house.number }}, кв.{{ item.appartament.number }}
+                                    ул.{{ item.appartament.house.street.street }}, д.{{ item.appartament.house.number }}, кв.{{ item.appartament.number }}
                                 </td>
                             </tr>
                         </tbody>
