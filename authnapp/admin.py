@@ -5,6 +5,7 @@ from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
 
 from authnapp.models import User
+from mainapp.models import UserProfile, Subsidies, Privileges
 
 
 class UserCreationForm(forms.ModelForm):
@@ -34,11 +35,24 @@ class UserCreationForm(forms.ModelForm):
         return user
 
 
+class UserProfileInline(admin.TabularInline):
+    model = UserProfile
+
+
+class SubsidiesInline(admin.TabularInline):
+    model = Subsidies
+
+
+class PrivilegesInline(admin.TabularInline):
+    model = Privileges
+
+
 class UserChangeForm(forms.ModelForm):
     """Форма для обновления пользователей. Включает все поля пользователя,
     но заменяет поле пароля полем отображения хэша пароля администратора.
     """
     password = ReadOnlyPasswordHashField()
+
 
     class Meta:
         model = User
@@ -75,8 +89,11 @@ class UserAdmin(BaseUserAdmin):
         ),
     )
     search_fields = ('personal_account', 'name')
+    inlines = [UserProfileInline, SubsidiesInline, PrivilegesInline]
+
     ordering = ('email',)
     filter_horizontal = ()
+
 
 admin.site.unregister(User)
 # Now register the new UserAdmin...
@@ -84,3 +101,20 @@ admin.site.register(User, UserAdmin)
 # ... and, since we're not using Django's built-in permissions,
 # unregister the Group model from admin.
 # admin.site.unregister(Group)
+
+
+
+
+# class SubsidiesInline(admin.TabularInline):
+#     model = Subsidies
+
+
+# class PrivilegesInline(admin.TabularInline):
+#     model = Privileges
+
+
+# class UserAdmin(admin.ModelAdmin):
+#     list_display = ('personal_account','name', 'is_client', 'is_staff', 'updated')
+#     search_fields = ['personal_account', 'name',]
+#     list_filter = ('created','updated',)
+#     inlines = [UserProfileInline,]

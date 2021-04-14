@@ -1,4 +1,5 @@
 from django.contrib import admin
+from django.db import models
 from django.db.models.base import ModelState
 from authnapp.models import User
 
@@ -7,7 +8,7 @@ from mainapp.models import ServicesCategory, Services, Metrics, City, Street, UK
 from mainapp.models import HouseCurrent, HouseHistory, Appartament, UserProfile, CurrentCounter, HistoryCounter
 from mainapp.models import ConstantPayments, VariablePayments, Subsidies, Privileges, Profit, Payment, Recalculations, Standart
 
-class CommentInline(admin.TabularInline):
+class ServicesInline(admin.TabularInline):
     model = Services
 
 
@@ -15,7 +16,7 @@ class ServiceCategoryAdmin(admin.ModelAdmin):
     list_display = ('name', 'updated')
     search_fields = ['name',]
     list_filter = ('created','updated',)
-    inlines = [CommentInline,]
+    inlines = [ServicesInline,]
 
 
 class ServiceAdmin(admin.ModelAdmin):
@@ -30,6 +31,31 @@ class CityAdmin(admin.ModelAdmin):
     search_fields = ['city',]
     list_filter = ('created','updated',)
 
+
+class UserProfileInline(admin.TabularInline):
+    model = UserProfile
+
+
+class SubsidiesInline(admin.TabularInline):
+    model = Subsidies
+
+
+class PrivilegesInline(admin.TabularInline):
+    model = Privileges
+
+
+class UserAdmin(admin.ModelAdmin):
+    list_display = ('personal_account','name', 'is_client', 'is_staff', 'updated')
+    search_fields = ['personal_account', 'name',]
+    list_filter = ('created','updated',)
+    inlines = [UserProfileInline,]
+
+
+class UserProfileAdmin(admin.ModelAdmin):
+    list_display = ('name','updated')
+    search_fields = ['name',]
+    list_filter = ('created','updated',)
+    inlines = [SubsidiesInline,]
 
 
 admin.site.register(ServicesCategory, ServiceCategoryAdmin)

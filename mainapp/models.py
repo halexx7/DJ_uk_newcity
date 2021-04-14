@@ -25,6 +25,10 @@ class ServicesCategory(models.Model):
 
     def __str__(self):
         return self.name
+    
+    def delete(self):
+        self.is_active = False
+        self.save()
 
 
 class Metrics(models.Model):
@@ -40,6 +44,10 @@ class Metrics(models.Model):
 
     def __str__(self):
         return self.name
+    
+    def delete(self):
+        self.is_active = False
+        self.save()
 
 
 class Services(models.Model):
@@ -74,6 +82,10 @@ class Services(models.Model):
     @staticmethod
     def get_items():
         return Services.objects.filter(is_active=True)
+    
+    def delete(self):
+        self.is_active = False
+        self.save()
 
 
 class City(models.Model):
@@ -89,9 +101,14 @@ class City(models.Model):
 
     def __str__(self):
         return self.city
+    
+    def delete(self):
+        self.is_active = False
+        self.save()
 
 
 class Street(models.Model):
+    city = models.ForeignKey(City, verbose_name="Город", on_delete=CASCADE)
     street = models.CharField(verbose_name="Улица", max_length=128)
 
     is_active = models.BooleanField(verbose_name="Активный", db_index=True, default=True)
@@ -104,6 +121,10 @@ class Street(models.Model):
 
     def __str__(self):
         return f'ул.{self.street}'
+    
+    def delete(self):
+        self.is_active = False
+        self.save()
 
 
 class UK(models.Model):
@@ -131,6 +152,10 @@ class UK(models.Model):
     def __str__(self):
         return self.name
 
+    def delete(self):
+        self.is_active = False
+        self.save()
+
 
 class House(models.Model):
     number = models.CharField(verbose_name="Номер", max_length=3)
@@ -151,6 +176,10 @@ class House(models.Model):
 
     def __str__(self):
         return f'Дом №{self.number}, к.{self.add_number}, ул.{self.street.street}'
+    
+    def delete(self):
+        self.is_active = False
+        self.save()
 
 
 # Общедомовой счетчик (ТЕКУЩИЕ показания)
@@ -177,6 +206,10 @@ class HouseCurrent(models.Model):
     def get_item(user):
         return HouseCurrent.objects.filter(user=user)
 
+    def delete(self):
+        self.is_active = False
+        self.save()
+
 
 # Общедомовой счетчик (ИСТОРИЯ показания)
 class HouseHistory(models.Model):
@@ -202,6 +235,10 @@ class HouseHistory(models.Model):
     def get_item(user):
         return HouseHistory.objects.filter(user=user)
 
+    def delete(self):
+        self.is_active = False
+        self.save()
+
     
 class Standart(models.Model):
     period = models.DateField(verbose_name="Период", auto_now_add=True)
@@ -223,10 +260,14 @@ class Standart(models.Model):
     def get_last_val(user):
         return Standart.objects.filter(user=user)[0:1]
 
+    def delete(self):
+        self.is_active = False
+        self.save()
+
 
 class Appartament(models.Model):
     house = models.ForeignKey(House, verbose_name="Дом", on_delete=CASCADE)
-    number = models.PositiveIntegerField(verbose_name="Номер")
+    number = models.PositiveIntegerField(verbose_name="Квартира")
     add_number = models.CharField(verbose_name="Комната", max_length=2, null=True, blank=True, default='-')
     sq_appart = models.DecimalField(verbose_name="Площадь", max_digits=5, decimal_places=2)
     num_owner = models.PositiveIntegerField(verbose_name="Кол-во проживающих", default=0)
@@ -241,6 +282,10 @@ class Appartament(models.Model):
 
     def __str__(self):
         return f'ул.{self.house.street.street}, д.{self.house.number}, кв.{self.number}, комн.{self.add_number}'
+
+    def delete(self):
+        self.is_active = False
+        self.save()
 
 
 class UserProfile(models.Model):
@@ -373,8 +418,8 @@ class VariablePayments(models.Model):
 
 # Cубсидии
 class Subsidies(models.Model):
-    user = models.ForeignKey(UserProfile, verbose_name="Пользователь", on_delete=PROTECT)
-    service = models.ForeignKey(Services, verbose_name="Услуга", on_delete=PROTECT)
+    user = models.ForeignKey(User, verbose_name="Пользователь", on_delete=CASCADE)
+    service = models.ForeignKey(Services, verbose_name="Услуга", on_delete=CASCADE)
     sale = models.PositiveIntegerField(verbose_name="Субсидии", default=0)
     desc = models.TextField(verbose_name="Субсидии")
 
@@ -400,8 +445,8 @@ class Subsidies(models.Model):
 
 # Льготы
 class Privileges(models.Model):
-    user = models.ForeignKey(UserProfile, verbose_name="Пользователь", on_delete=PROTECT)
-    service = models.ForeignKey(Services, verbose_name="Услуга", on_delete=PROTECT)
+    user = models.ForeignKey(User, verbose_name="Пользователь", on_delete=CASCADE)
+    service = models.ForeignKey(Services, verbose_name="Услуга", on_delete=CASCADE)
     sale = models.PositiveIntegerField(verbose_name="Льготы", default=0)
 
     is_active = models.BooleanField(verbose_name="Активный", db_index=True, default=True)
@@ -426,7 +471,7 @@ class Privileges(models.Model):
 
 # Начисления (Текущие)
 class Profit(models.Model):
-    user = models.ForeignKey(UserProfile, verbose_name="Пользователь", on_delete=PROTECT)
+    user = models.ForeignKey(UserProfile, verbose_name="Пользователь", on_delete=CASCADE)
     period = models.DateField(verbose_name="Период")
     amount_profit = models.DecimalField(verbose_name="Сумма", max_digits=7, decimal_places=2)
     variable = JSONField(verbose_name="variable")
@@ -446,7 +491,7 @@ class Profit(models.Model):
 
 # Инфорамация по оплатам
 class Payment(models.Model):
-    user = models.ForeignKey(UserProfile, verbose_name="Пользователь", on_delete=PROTECT)
+    user = models.ForeignKey(UserProfile, verbose_name="Пользователь", on_delete=CASCADE)
     period = models.DateField(verbose_name="Период")
     amount_profit = models.DecimalField(verbose_name="Сумма", max_digits=7, decimal_places=2)
 
