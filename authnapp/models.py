@@ -11,11 +11,16 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.utils.timezone import now
 from django.utils.translation import ugettext_lazy as _
+from django.contrib.auth.models import Group
+
 
 from .managers import UserManager
 
 
 class User(AbstractBaseUser, PermissionsMixin):
+    is_client = models.BooleanField(default=True, verbose_name="Пользователь")
+    is_staff = models.BooleanField(default=False, verbose_name="Менеджер")
+
     personal_account = models.CharField(
         max_length=128, help_text="Введите номер лицевого счета", verbose_name="Лицевой счет", unique=True
     )
@@ -23,11 +28,10 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     name = models.CharField(verbose_name="ФИО", max_length=128, blank=True)
 
-    email = models.EmailField(verbose_name="Email", unique=True)
+    email = models.EmailField(verbose_name="Email", unique=True, blank=True, null=True)
     phone = models.CharField(verbose_name="Телефон", max_length=11, blank=True, null=True, default='', help_text='Номер телефона в формате - 79823212334')
 
     is_active = models.BooleanField(verbose_name="Активный", default=True)
-    is_staff = models.BooleanField(default=True, verbose_name="Доступ к админке")
     is_superuser = models.BooleanField(
         default=False,
         verbose_name="Суперпользователь",
@@ -80,3 +84,13 @@ class User(AbstractBaseUser, PermissionsMixin):
             return False
         else:
             return True
+
+
+@receiver(post_save, sender=User)
+def add_admin_permission(sender, instance, created, **kwargs):
+    if created:
+        if sender.is_client == True:
+            grupo = Group.objects.get(name='Client')
+            grupo.user_set.add(instance)
+        # if sender['is_manager'] == True:
+        #     grupo = Group.objects.get(name='Manager')

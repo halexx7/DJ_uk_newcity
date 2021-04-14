@@ -28,11 +28,6 @@ class UserRegisterForm(UserCreationForm):
             field.widget.attrs["class"] = "form-control"
             field.help_text = ""
 
-    def clean_age(self):
-        data = self.cleaned_data["age"]
-        if data < 18:
-            raise forms.ValidationError("Вы слишком молоды!")
-        return data
 
     def save(self):
         user = super(UserRegisterForm, self).save()
