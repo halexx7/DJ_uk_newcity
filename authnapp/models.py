@@ -19,31 +19,45 @@ from .managers import UserManager
 
 class User(AbstractBaseUser, PermissionsMixin):
     is_client = models.BooleanField(default=True, verbose_name="Пользователь")
-    is_staff = models.BooleanField(default=False, verbose_name="Менеджер")
+    is_staff = models.BooleanField(default=False, verbose_name="Менеджер", help_text="Обозначает, что этот пользователь - Администратор")
 
     personal_account = models.CharField(
-        max_length=128, help_text="Введите номер лицевого счета", verbose_name="Лицевой счет", unique=True
-    )
+        max_length=128, 
+        help_text="Введите номер лицевого счета: 7777777", 
+        verbose_name="Лицевой счет", 
+        unique=True)
+
     password = models.CharField(verbose_name="Пароль", max_length=128)
 
-    name = models.CharField(verbose_name="ФИО", max_length=128, blank=True)
+    name = models.CharField(
+        verbose_name="ФИО", 
+        max_length=128, 
+        null=True, blank=True,
+        help_text='Иванов Иван Иванович')
 
-    email = models.EmailField(verbose_name="Email", unique=True, blank=True, null=True)
-    phone = models.CharField(verbose_name="Телефон", max_length=11, blank=True, null=True, default='', help_text='Номер телефона в формате - 79823212334')
+    email = models.EmailField(
+        verbose_name="Email", 
+        unique=True, 
+        null=True, blank=True, 
+        help_text='E-mail в формате - user@example.com')
+
+    phone = models.CharField(
+        verbose_name="Телефон", 
+        max_length=11, 
+        null=True, blank=True, 
+        help_text='Номер телефона в формате - 79823212334')
 
     is_active = models.BooleanField(verbose_name="Активный", default=True)
     is_superuser = models.BooleanField(
         default=False,
         verbose_name="Суперпользователь",
-        help_text="Обозначает, что у этого пользователя есть все разрешения, без их явного назначения.",
-    )
+        help_text="Обозначает, что у этого пользователя есть все разрешения, без их явного назначения.",)
 
     last_login = models.DateTimeField(blank=True, null=True, verbose_name="Последний вход")
 
     activation_key = models.CharField(verbose_name="Ключ подтверждения", max_length=128, blank=True)
     activation_key_expires = models.DateTimeField(
-        verbose_name="Актуальность ключа", default=(now() + timedelta(hours=48))
-    )
+        verbose_name="Актуальность ключа", default=(now() + timedelta(hours=48)))
 
     objects = UserManager()
 
@@ -86,11 +100,16 @@ class User(AbstractBaseUser, PermissionsMixin):
             return True
 
 
+# Подсели на сигнал после сохранения модели
 @receiver(post_save, sender=User)
 def add_admin_permission(sender, instance, created, **kwargs):
     if created:
-        if sender.is_client == True:
+        if instance.is_client == True:
+            # Если клиент добавляем в группу "Client"
             grupo = Group.objects.get(name='Client')
             grupo.user_set.add(instance)
-        # if sender['is_manager'] == True:
-        #     grupo = Group.objects.get(name='Manager')
+        if instance.is_staff == True:
+            # Если Менеджер очищаем от всех групп и добавляем в группу "Manager"
+            instance.groups.clear()
+            grupo = Group.objects.get(name='Manager')
+            grupo.user_set.add(instance)
