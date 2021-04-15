@@ -79,6 +79,59 @@ class HouseAdmin(admin.ModelAdmin):
     inlines = [HouseCurrentInline, AppartamentInline, HouseHistoryInline]
 
 
+# USERPROFILES
+class SubsidiesInline(admin.TabularInline):
+    model = Subsidies
+
+    def get_extra(self, request, obj=None, **kwargs):
+        """Hook for customizing the number of extra inline forms."""
+        self.extra = 0
+        return self.extra
+
+
+class PrivilegesInline(admin.TabularInline):
+    model = Privileges
+
+    def get_extra(self, request, obj=None, **kwargs):
+        """Hook for customizing the number of extra inline forms."""
+        self.extra = 0
+        return self.extra
+
+class CurrentCounterInline(admin.TabularInline):
+    model = CurrentCounter
+
+    def get_extra(self, request, obj=None, **kwargs):
+        """Hook for customizing the number of extra inline forms."""
+        self.extra = 0
+        return self.extra
+
+
+class HistoryCounterInline(admin.TabularInline):
+    model = HistoryCounter
+
+    def get_extra(self, request, obj=None, **kwargs):
+        """Hook for customizing the number of extra inline forms."""
+        self.extra = 0
+        return self.extra
+
+
+class RecalculationsInline(admin.TabularInline):
+    model = Recalculations
+
+    def get_extra(self, request, obj=None, **kwargs):
+        """Hook for customizing the number of extra inline forms."""
+        self.extra = 0
+        return self.extra
+
+
+class UserProfilesAdmin(admin.ModelAdmin):
+    # list_display = ('city', 'street', 'number', 'updated')
+    # search_fields = ['city', 'street', 'number']
+    # list_filter = ('city', 'street', 'created','updated',)
+    inlines = [SubsidiesInline, PrivilegesInline, RecalculationsInline, CurrentCounterInline, HistoryCounterInline]
+
+
+
 admin.site.register(ServicesCategory, ServiceCategoryAdmin)
 admin.site.register(Services, ServiceAdmin)
 admin.site.register(City, CityAdmin)
@@ -90,7 +143,7 @@ admin.site.register(HouseCurrent)
 admin.site.register(HouseHistory)
 admin.site.register(User)
 admin.site.register(Appartament)
-admin.site.register(UserProfile)
+admin.site.register(UserProfile, UserProfilesAdmin)
 admin.site.register(CurrentCounter)
 admin.site.register(HistoryCounter)
 admin.site.register(ConstantPayments)

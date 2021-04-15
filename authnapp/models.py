@@ -103,7 +103,7 @@ class User(AbstractBaseUser, PermissionsMixin):
 # Подсели на сигнал после сохранения модели
 @receiver(post_save, sender=User)
 def add_admin_permission(sender, instance, created, **kwargs):
-    if created:
+    if created and not instance.is_superuser:
         if instance.is_client == True:
             # Если клиент добавляем в группу "Client"
             grupo = Group.objects.get(name='Client')

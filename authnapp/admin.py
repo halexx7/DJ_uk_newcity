@@ -113,8 +113,8 @@ class UserAdmin(BaseUserAdmin):
     # list_filter = ('is_admin',)
     fieldsets = (
         (None, {'fields': ('personal_account', 'password')}),
-        ('Personal info', {'fields': ('name','email', 'phone')}),
-        ('Permissions', {'fields': ('is_active', 'is_staff', 'is_superuser', 'groups')}),
+        ('Персональные данные', {'fields': ('name','email', 'phone')}),
+        ('Разрешения', {'fields': ('is_active', 'is_staff', 'is_superuser', 'groups')}),
     )
     # add_fieldsets is not a standard ModelAdmin attribute. UserAdmin
     # overrides get_fieldsets to use this attribute when creating a user.
@@ -125,7 +125,7 @@ class UserAdmin(BaseUserAdmin):
         ),
     )
     search_fields = ('personal_account', 'name')
-    inlines = [UserProfileInline, SubsidiesInline, PrivilegesInline, RecalculationsInline, CurrentCounterInline, HistoryCounterInline]
+    # inlines = [UserProfileInline, SubsidiesInline, PrivilegesInline, RecalculationsInline, CurrentCounterInline, HistoryCounterInline]
 
     ordering = ('email',)
     filter_horizontal = ()
