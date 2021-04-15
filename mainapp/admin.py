@@ -11,6 +11,11 @@ from mainapp.models import ConstantPayments, VariablePayments, Subsidies, Privil
 class ServicesInline(admin.TabularInline):
     model = Services
 
+    def get_extra(self, request, obj=None, **kwargs):
+        """Hook for customizing the number of extra inline forms."""
+        self.extra = 0
+        return self.extra
+
 
 class ServiceCategoryAdmin(admin.ModelAdmin):
     list_display = ('name', 'updated')
@@ -23,39 +28,55 @@ class ServiceAdmin(admin.ModelAdmin):
     list_display = ('name', 'category', 'updated')
     search_fields = ['name',]
     list_filter = ('category', 'created','updated',)
-    # inlines = [CommentInline,]
+
+
+class StreetInline(admin.TabularInline):
+    model = Street
+
+    def get_extra(self, request, obj=None, **kwargs):
+        """Hook for customizing the number of extra inline forms."""
+        self.extra = 0
+        return self.extra
 
 
 class CityAdmin(admin.ModelAdmin):
     list_display = ('city','updated')
     search_fields = ['city',]
     list_filter = ('created','updated',)
+    inlines = [StreetInline,]
 
 
-class UserProfileInline(admin.TabularInline):
-    model = UserProfile
+class AppartamentInline(admin.TabularInline):
+    model = Appartament
+
+    def get_extra(self, request, obj=None, **kwargs):
+        """Hook for customizing the number of extra inline forms."""
+        self.extra = 0
+        return self.extra
 
 
-class SubsidiesInline(admin.TabularInline):
-    model = Subsidies
+class HouseCurrentInline(admin.TabularInline):
+    model = HouseCurrent
+
+    def get_extra(self, request, obj=None, **kwargs):
+        """Hook for customizing the number of extra inline forms."""
+        self.extra = 0
+        return self.extra
+  
+class HouseHistoryInline(admin.TabularInline):
+    model = HouseHistory
+
+    def get_extra(self, request, obj=None, **kwargs):
+        """Hook for customizing the number of extra inline forms."""
+        self.extra = 0
+        return self.extra
 
 
-class PrivilegesInline(admin.TabularInline):
-    model = Privileges
-
-
-class UserAdmin(admin.ModelAdmin):
-    list_display = ('personal_account','name', 'is_client', 'is_staff', 'updated')
-    search_fields = ['personal_account', 'name',]
-    list_filter = ('created','updated',)
-    inlines = [UserProfileInline,]
-
-
-class UserProfileAdmin(admin.ModelAdmin):
-    list_display = ('name','updated')
-    search_fields = ['name',]
-    list_filter = ('created','updated',)
-    inlines = [SubsidiesInline,]
+class HouseAdmin(admin.ModelAdmin):
+    list_display = ('city', 'street', 'number', 'updated')
+    search_fields = ['city', 'street', 'number']
+    list_filter = ('city', 'street', 'created','updated',)
+    inlines = [HouseCurrentInline, AppartamentInline, HouseHistoryInline]
 
 
 admin.site.register(ServicesCategory, ServiceCategoryAdmin)
@@ -64,7 +85,7 @@ admin.site.register(City, CityAdmin)
 admin.site.register(Metrics)
 admin.site.register(Street)
 admin.site.register(UK)
-admin.site.register(House)
+admin.site.register(House, HouseAdmin)
 admin.site.register(HouseCurrent)
 admin.site.register(HouseHistory)
 admin.site.register(User)

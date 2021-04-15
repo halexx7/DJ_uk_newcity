@@ -5,7 +5,7 @@ from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
 
 from authnapp.models import User
-from mainapp.models import UserProfile, Subsidies, Privileges
+from mainapp.models import UserProfile, Subsidies, Privileges, CurrentCounter, HistoryCounter, Recalculations
 
 
 class UserCreationForm(forms.ModelForm):
@@ -42,9 +42,45 @@ class UserProfileInline(admin.TabularInline):
 class SubsidiesInline(admin.TabularInline):
     model = Subsidies
 
+    def get_extra(self, request, obj=None, **kwargs):
+        """Hook for customizing the number of extra inline forms."""
+        self.extra = 0
+        return self.extra
+
 
 class PrivilegesInline(admin.TabularInline):
     model = Privileges
+
+    def get_extra(self, request, obj=None, **kwargs):
+        """Hook for customizing the number of extra inline forms."""
+        self.extra = 0
+        return self.extra
+
+class CurrentCounterInline(admin.TabularInline):
+    model = CurrentCounter
+
+    def get_extra(self, request, obj=None, **kwargs):
+        """Hook for customizing the number of extra inline forms."""
+        self.extra = 0
+        return self.extra
+
+
+class HistoryCounterInline(admin.TabularInline):
+    model = HistoryCounter
+
+    def get_extra(self, request, obj=None, **kwargs):
+        """Hook for customizing the number of extra inline forms."""
+        self.extra = 0
+        return self.extra
+
+
+class RecalculationsInline(admin.TabularInline):
+    model = Recalculations
+
+    def get_extra(self, request, obj=None, **kwargs):
+        """Hook for customizing the number of extra inline forms."""
+        self.extra = 0
+        return self.extra
 
 
 class UserChangeForm(forms.ModelForm):
@@ -89,10 +125,18 @@ class UserAdmin(BaseUserAdmin):
         ),
     )
     search_fields = ('personal_account', 'name')
-    inlines = [UserProfileInline, SubsidiesInline, PrivilegesInline]
+    inlines = [UserProfileInline, SubsidiesInline, PrivilegesInline, RecalculationsInline, CurrentCounterInline, HistoryCounterInline]
 
     ordering = ('email',)
     filter_horizontal = ()
+
+
+    #Тестово, доработать
+    #https://coderoad.ru/10356491/%D0%A1%D0%BA%D1%80%D1%8B%D1%82%D1%8C-%D0%BE%D0%BF%D1%80%D0%B5%D0%B4%D0%B5%D0%BB%D0%B5%D0%BD%D0%BD%D1%8B%D0%B5-%D0%BF%D0%BE%D0%BB%D1%8F-%D0%B2-Django-admin-%D1%81%D0%B0%D0%B9%D1%82%D0%B5-%D0%B4%D0%BB%D1%8F-%D1%80%D0%B0%D0%B7%D0%BD%D1%8B%D1%85-%D0%BF%D0%BE%D0%BB%D1%8C%D0%B7%D0%BE%D0%B2%D0%B0%D1%82%D0%B5%D0%BB%D0%B5%D0%B9
+    def get_type_counter(self, obj):
+        if self.username == "admin":
+            return "CC"
+        return "XXX"
 
 
 admin.site.unregister(User)
@@ -101,20 +145,3 @@ admin.site.register(User, UserAdmin)
 # ... and, since we're not using Django's built-in permissions,
 # unregister the Group model from admin.
 # admin.site.unregister(Group)
-
-
-
-
-# class SubsidiesInline(admin.TabularInline):
-#     model = Subsidies
-
-
-# class PrivilegesInline(admin.TabularInline):
-#     model = Privileges
-
-
-# class UserAdmin(admin.ModelAdmin):
-#     list_display = ('personal_account','name', 'is_client', 'is_staff', 'updated')
-#     search_fields = ['personal_account', 'name',]
-#     list_filter = ('created','updated',)
-#     inlines = [UserProfileInline,]
