@@ -301,7 +301,7 @@ class UserProfile(models.Model):
 
     COUNTER_TYPE = ((SINGLE, "однотарифный"), (TWO, "двухтарифный"), (MULTI, "многотарифный"))
 
-    user = models.OneToOneField(User, verbose_name="Пользоваель", null=False, db_index=True, on_delete=models.CASCADE)
+    user = models.OneToOneField(User, verbose_name="Пользоваель", null=False, db_index=True, on_delete=models.CASCADE, related_name='profiles')
     appartament = models.ForeignKey(Appartament, verbose_name="Квартира", on_delete=CASCADE, null=True, blank=True)
     type_electric_meter = models.CharField(verbose_name="Тип счетчика", max_length=1, choices=COUNTER_TYPE, blank=True)
 
@@ -324,7 +324,7 @@ class UserProfile(models.Model):
 
     @receiver(post_save, sender=User)
     def save_user_profile(sender, instance, **kwargs):
-        instance.userprofile.save()
+        instance.profiles.save()
 
     def delete(self):
         self.is_active = False
@@ -334,11 +334,11 @@ class UserProfile(models.Model):
 # Текущие показания счетчиков (индивидуальные)
 class CurrentCounter(models.Model):
     user = models.OneToOneField(UserProfile, on_delete=CASCADE)
-    col_water = models.PositiveIntegerField(verbose_name="Хол.вода", null=True)
-    hot_water = models.PositiveIntegerField(verbose_name="Гор.вода", null=True)
-    electric_day = models.PositiveIntegerField(verbose_name="Электр.день", null=True, blank=True, default="")
-    electric_night = models.PositiveIntegerField(verbose_name="Электр.ночь", null=True, blank=True, default="")
-    electric_single = models.PositiveIntegerField(verbose_name="Электр.однотариф", null=True, blank=True, default="")
+    col_water = models.PositiveIntegerField(verbose_name="Холодная вода", null=True)
+    hot_water = models.PositiveIntegerField(verbose_name="Горячая вода", null=True)
+    electric_day = models.PositiveIntegerField(verbose_name="Электроэнергия день", null=True, blank=True, default="")
+    electric_night = models.PositiveIntegerField(verbose_name="Электроэнергия ночь", null=True, blank=True, default="")
+    electric_single = models.PositiveIntegerField(verbose_name="Электроэнергия однотариф", null=True, blank=True, default="")
 
     created = models.DateTimeField(verbose_name="Создан", auto_now_add=True)
     updated = models.DateTimeField(verbose_name="Обновлен", auto_now=True)

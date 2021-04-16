@@ -1,6 +1,8 @@
 {% extends 'mainapp/base.html' %}
 {% load staticfiles %}
 
+{% load crispy_forms_tags %}
+
 
 {% block menu %}
     {% include 'mainapp/includes/inc_menu.html' %}
@@ -53,38 +55,36 @@
                     
                     <p class="user-area__subtitle  text-700  mb-4">Ваши персональные данные</p>
                     <table class="table table-striped">
-                        {% for item in user %}
-                        {% if item.is_active %}
+                        {% if user.is_active %}
                         <tbody>
                             <tr>
                                 <th scope="row">ФИО</th>
-                                <td>{{ item.user.name }}</td>
+                                <td>{{ user.name }}</td>
                             </tr>
                             <tr>
                                 <th scope="row">Лицевой счет</th>
-                                <td>{{ item.user.personal_account }}</td>
+                                <td>{{ user.personal_account }}</td>
                             </tr>
                             <tr>
                                 <th scope="row">E-mail</th>
-                                <td>{{ item.user.email }}</td>
+                                <td>{{ user.email }}</td>
                             </tr>
                             <tr>
                                 <th scope="row">Телефон</th>
-                                <td>{{ item.user.phone }}</td>
+                                <td>{{ user.phone }}</td>
                             </tr>
                             <tr>
                                 <th scope="row">Город</th>
-                                <td>{{ item.appartament.house.city.city }}</td>
+                                <td>{{ user.profiles.appartament.house.city.city }}</td>
                             </tr>
                             <tr>
                                 <th scope="row">Адрес</th>
                                 <td>
-                                    ул.{{ item.appartament.house.street.street }}, д.{{ item.appartament.house.number }}, кв.{{ item.appartament.number }}
+                                    {{ user.profiles.appartament }}
                                 </td>
                             </tr>
                         </tbody>
                         {% endif %}
-                        {% endfor %}
                     </table>
                 </div>
 
@@ -101,6 +101,9 @@
                     <h5 class="text-danger text-700">ВНИМАНИЕ! Показания принимаются с 20 по 26 число каждого месяца!</h5>
                     <h4 class="mt-5">Таблица для заполнения</h4>
                     <div class="user-area__table">
+                        {% csrf_token %}
+                    <form class="form-horizontal" method="post" enctype="multipart/form-data">
+
                         <table class="user-area__table  table">
                             <thead>
                                 <tr>
@@ -113,28 +116,28 @@
                                 <tr>
                                     <th scope="row">Горячая вода:</th>
                                     <td>000000</td>
-                                    <td class="text-center"><input type="text"></td>
+                                    <td class="text-center">{{ form.hot_water|as_crispy_field }}</td>
                                 </tr>
                                 <tr>
                                     <th scope="row">Холодная вода:</th>
                                     <td>000000</td>
-                                    <td class="text-center"><input type="text"></td>
+                                    <td class="text-center">{{ form.col_water|as_crispy_field }}</td>
                                 </tr>
                                 <tr>
                                     <th scope="row">Электроэнергия день:</th>
                                     <td>000000</td>
-                                    <td class="text-center"><input type="text"></td>
+                                    <td class="text-center">{{ form.electric_day|as_crispy_field }}</td>
                                 </tr>
                                 <tr>
                                     <th scope="row">Электроэнергия ночь:</th>
                                     <td>000000</td>
-                                    <td class="text-center"><input type="text"></td>
+                                    <td class="text-center">{{ form.electric_night|as_crispy_field }}</td>
                                 </tr>
                             </tbody>
                         </table>
+                        <input class="btn  btn-primary  mt-4" type="submit" value="сохранить">
+                    </form>
                     </div>
-                    
-                    <button type="button" class="btn  btn-primary  mt-4">Сохранить</button>
                 </div>
 
                 <!-- Tab-CHANGEPASS -->
@@ -165,7 +168,6 @@
                             </div>
                           </form>
                     </div>
-                    
                       <button type="submit" class="btn btn-primary  mt-3">Сохранить</button>
                 </div>
 

@@ -40,10 +40,15 @@ INSTALLED_APPS = [
     "mainapp",
     "authnapp",
     "personalacc",
+    'crispy_forms',
 ]
 
 # Auth model
 AUTH_USER_MODEL = "authnapp.User"
+
+
+CRISPY_TEMPLATE_PACK = 'bootstrap4'
+
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
