@@ -12,20 +12,18 @@
                 aria-current="page" href="#">Контакты</a> </li><!-- TODO Замениь 'main' на правильную ссылку -->
     </ul>
     <ul class="navbar-nav">
-        <ul class="navbar-nav">
-            {% if user.is_authenticated %}
-                {% if request.user|has_group:"Client" %}
-                <li class="nav-item"> <a class="nav-link text-dark" aria-current="page"
-                    href="{% url 'person:user' %}">Кабинет</a></li>                
-                {% elif request.user|has_group:"Manager" %}
-                <li class="nav-item"> <a class="nav-link text-dark" aria-current="page"
-                    href="{% url 'person:manager' %}">Менеджер</a></li>
-                {% elif user.is_superuser %}
-                <li class="nav-item"> <a class="nav-link text-dark" aria-current="page"
-                    href="admin/">Админка</a></li>
-                {% endif %}
+        {% if user.is_authenticated %}
+            {% if request.user|has_group:"Client" %}
+            <li class="nav-item"> <a class="nav-link text-dark" aria-current="page"
+                href="{% url 'person:user' %}">Кабинет</a></li>                
+            {% elif request.user|has_group:"Manager" %}
+            <li class="nav-item"> <a class="nav-link text-dark" aria-current="page"
+                href="{% url 'person:manager' %}">Менеджер</a></li>
+            {% elif user.is_superuser %}
+            <li class="nav-item"> <a class="nav-link text-dark" aria-current="page"
+                href="admin/">Админка</a></li>
             {% endif %}
-        </ul>
+        {% endif %}
         <li class="nav-item">
             {% if user.is_authenticated %}
             <a class="nav-link text-dark" aria-current="page" href="{% url 'auth:logout' %}">Выйти</a>
