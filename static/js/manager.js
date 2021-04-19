@@ -31,15 +31,30 @@ jQuery(document).ready(function(){
         }
     });
 
-    $('#houseCounter').on('click', function (e) {
+    $('#houseCounterBtn').on('click', function (e) {
         e.preventDefault();
         var mForm = $('#houseCounterForm').serialize();
         console.log(mForm);
         $.ajax({
             type : 'POST',
-            dataType: 'json',
-    	    // contentType: "application/json; charset=utf-8",
-            data: JSON.stringify(mForm),
+            data: mForm,
+            success: function (e) {
+        	    console.log(e);
+            },
+            error: function (e) {
+                console.log(e);
+            }
+        });
+    });
+
+    
+    $('#recalcBtn').on('click', function (e) {
+        e.preventDefault();
+        var mForm = $('#recalc').serialize();
+        console.log(mForm);
+        $.ajax({
+            type : 'POST',
+            data: mForm,
             success: function (e) {
         	    console.log(e);
             },
