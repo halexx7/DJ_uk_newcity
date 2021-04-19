@@ -124,6 +124,7 @@
                     <h4 class="mt-2">Таблица для заполнения</h4>
                     <form id="houseCounterForm" method="POST" name="houseCounterForm">
                         {% csrf_token %}
+                        <input type="hidden" name="form_type" value="houseCounterForm">
                         <div class="form-row">{{ form.house|as_crispy_field }}</div>
 
                         <div class="user-area__table">
@@ -200,6 +201,8 @@
                     <div class="wrapper__form-recalc">
                         <h4 class="mb-4">Внести перерасчет</h4>
                         <form class="mb-5" id="recalcForm" name="recalcForm">
+                            {% csrf_token %}
+                            <input type="hidden" name="form_type" value="recalcForm">
                             <div class="row">
                                 <div class="col-md-3  mb-3">
                                     <label for="formGroupExampleInput">Лицевой счет</label>

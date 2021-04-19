@@ -545,7 +545,7 @@ class Payment(models.Model):
 # Перерасчеты
 class Recalculations(models.Model):
     user = models.ForeignKey(UserProfile, verbose_name="Пользователь", on_delete=CASCADE)
-    period = models.DateField(verbose_name="Период")
+    period = models.DateField(verbose_name="Период", auto_now_add=True)
     recalc = models.DecimalField(verbose_name="Сумма", max_digits=7, decimal_places=2, default=0)
     desc = models.TextField(verbose_name="Описание", blank=True, null=True)
 

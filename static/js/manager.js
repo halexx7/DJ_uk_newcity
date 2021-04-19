@@ -31,6 +31,7 @@ jQuery(document).ready(function(){
         }
     });
 
+    //Ловим событие формы 1
     $('#houseCounterBtn').on('click', function (e) {
         e.preventDefault();
         var mForm = $('#houseCounterForm').serialize();
@@ -47,10 +48,10 @@ jQuery(document).ready(function(){
         });
     });
 
-    
+    //Ловим событие формы 2
     $('#recalcBtn').on('click', function (e) {
         e.preventDefault();
-        var mForm = $('#recalc').serialize();
+        var mForm = $('#recalcForm').serialize();
         console.log(mForm);
         $.ajax({
             type : 'POST',
@@ -64,49 +65,3 @@ jQuery(document).ready(function(){
         });
     });
 });
-
-// jQuery(document).ready(function () {
-
-    /*
-    // можем получить DOM-объект меню через JS
-    var menu = document.getElementsByClassName('menu')[0];
-    menu.addEventListener('click', function () {
-        console.log(event);
-        event.preventDefault();
-    });
-    
-    // можем получить DOM-объект меню через jQuery
-    $('.menu').on('click', 'a', function () {
-        console.log('event', event);
-        console.log('this', this);
-        console.log('event.target', event.target);
-        event.preventDefault();
-    });
-   
-    // получаем атрибут href
-    $('.menu').on('click', 'a', function () {
-        var target_href = event.target.href;
-        if (target_href) {
-            console.log('нужно перейти: ', target_href);
-        }
-        event.preventDefault();
-    });
-    */
-
-    // // добавляем ajax-обработчик для обновления количества товара
-    // $('#houseCounter').on('click', function (e) {
-    //     let target_href = e.target;
-    //     console.log(target_href.form);
-    //     // if (target_href) {
-    //     //     $.ajax({
-    //     //         url: "" + target_href.name + "/" + target_href.value + "/",
-    //     //         success: function (data) {
-    //     //             console.log(data.tq);
-    //     //             console.log(data.tc);
-                    
-    //     //         },
-    //     //     });
-    //     // }
-    //     // event.preventDefault();
-//     });
-// });

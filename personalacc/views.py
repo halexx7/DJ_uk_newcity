@@ -18,7 +18,7 @@ from django.urls import reverse
 from authnapp.forms import UserEditForm, UserLoginForm, UserProfileEditForm, UserRegisterForm
 from authnapp.models import User
 from mainapp.models import Appartament, UserProfile, HistoryCounter, UK, HouseHistory, HouseCurrent
-from personalacc.forms import CurrentCounterForm, HomeCurrentCounterForm, RecalculationsForm
+from personalacc.forms import CurrentCounterForm, HomeCurrentCounterForm, RecalculationsForm, HomeHistoryCounterForm
 
 # @login_required
 def user(request):
@@ -31,6 +31,7 @@ def manager(request):
 
 
 class AjaxableResponseMixin(object):
+
     def form_valid(self, form):
         response = super().form_valid(form)
         if self.request.method == "POST" and self.request.is_ajax():
@@ -49,11 +50,6 @@ class AjaxableResponseMixin(object):
             return response
 
 
-def _get_form(request, formcls, prefix):
-    data = request.POST if prefix in request.POST else None
-    return formcls(data, prefix=prefix)
-    
-
 class UserPageCreate(LoginRequiredMixin, CreateView):
     model = User
     form_class = CurrentCounterForm
@@ -63,15 +59,16 @@ class UserPageCreate(LoginRequiredMixin, CreateView):
 
 
     def get_context_data(self, **kwargs):
-        context = super(UserPageCreate, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
         context['profiles'] = UserProfile.objects.filter(user=self.request.user)
         context['history'] = HistoryCounter.get_last_val(self.request.user.profiles)
         context['title'] = 'Пользователь | ООО Новый город'
         return context
 
 
-class ManagerPageCreate(AjaxableResponseMixin, LoginRequiredMixin, CreateView):
+class ManagerPageCreate(LoginRequiredMixin, CreateView):
     form_class = HomeCurrentCounterForm
+    first_form_class = HomeHistoryCounterForm
     second_form_class = RecalculationsForm
     template_name = 'personalacc/manager_list.html'
     success_url = reverse_lazy('person:manager')
@@ -80,27 +77,28 @@ class ManagerPageCreate(AjaxableResponseMixin, LoginRequiredMixin, CreateView):
     def get_context_data(self, **kwargs):
         context = super(ManagerPageCreate, self).get_context_data(**kwargs)
         if 'form' not in context:
-            context['form'] = self.form_class(prefix='home_current')
+            context['form'] = self.form_class()
         if 'form2' not in context:
-            context['form2'] = self.second_form_class(prefix='recalc')
+            context['form2'] = self.second_form_class()
         context['uk'] = UK.objects.all()
         context['history'] = HouseHistory.objects.all()
         context['title'] = 'Менеджер | ООО Новый город'
         return context
 
-    # def get(self, *args, **kwargs):
-	#     form = self.form_class()
-	#     return render(self.request, self.template_name, {"contactForm": form})
 
-    # def post(self, *args, **kwargs):
-    #     if self.request.is_ajax and self.request.method == "POST":
-    #         form = self.form_class(self.request.POST)
-    #         if form.is_valid():
-    #             instance = form.save()
-    #             ser_instance = serializers.serialize('json', [ instance, ])
-    #             # send to client side.
-    #             return JsonResponse({"instance": ser_instance}, status=200)
-    #         else:
-    #             return JsonResponse({"error": form.errors}, status=400)
+    def post(self, *args, **kwargs):
+        if self.request.is_ajax and self.request.method == "POST":
+            
+            if self.request.POST.get("form_type") == 'houseCounterForm':
+                form = self.form_class(self.request.POST)
+            elif self.request.POST.get("form_type") == 'recalcForm':
+                form = self.second_form_class(self.request.POST)
+            
+            if form.is_valid():
+                instance = form.save()
+                ser_instance = serializers.serialize('json', [ instance, ])
+                return JsonResponse({"instance": ser_instance}, status=200)
+            else:
+                return JsonResponse({"error": form.errors}, status=400)
 
-    #     return JsonResponse({"error": ""}, status=400)
+        return JsonResponse({"error": ""}, status=400)
