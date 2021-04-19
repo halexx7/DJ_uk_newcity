@@ -1,5 +1,7 @@
-{% extends 'mainapp/base.html' %}
+{% extends 'personalacc/base.html' %}
 {% load staticfiles %}
+
+{% load crispy_forms_tags %}
 
 
 {% block menu %}
@@ -24,7 +26,7 @@
 <!-- Content -->
 <div class="tenants">
     <div class="container">
-        <div class="row  tenants__item">
+        <div class="row  tenants__item  d-flex  flex-column ">
 
             <!-- Nav-TABS -->
             <ul class="nav nav-tabs  mb-5" id="myTab" role="tablist">
@@ -55,48 +57,49 @@
 
                 <!-- Tab-HOME -->
                 <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
-
                     <p class="user-area__subtitle  text-700  mb-4">Информация о компании</p>
                     <table class="table table-striped">
+                        {% for item in uk %}
                         <tbody>
                             <tr>
                                 <th scope="row">Наименование</th>
-                                <td>ООО "УК Жилищный стандарт"</td>
+                                <td>{{ item.name }}</td>
                             </tr>
                             <tr>
                                 <th scope="row">Адрес</th>
-                                <td>г. Тюмень, ул.Комсомольская, д.57</td>
+                                <td>г.{{ item.city }}, {{ item.street }}, д.{{ item.num_building }}</td>
                             </tr>
                             <tr>
                                 <th scope="row">Телефон</th>
-                                <td>+7-999-777-77-77</td>
+                                <td>{{ item.phone }}</td>
                             </tr>
                             <tr>
                                 <th scope="row">E-mail</th>
-                                <td>newcity@mail.com</td>
+                                <td>{{ item.email }}</td>
                             </tr>
 
                             <tr>
                                 <th scope="row">Инн</th>
-                                <td>7202225426</td>
+                                <td>{{ item.inn }}</td>
                             </tr>
                             <tr>
                                 <th scope="row">р/с</th>
-                                <td>40702810538320000181</td>
+                                <td>{{ item.ps }}</td>
                             </tr>
                             <tr>
                                 <th scope="row">БИК</th>
-                                <td>046577964</td>
+                                <td>{{ item.bik }}</td>
                             </tr>
                             <tr>
                                 <th scope="row">к/с</th>
-                                <td>301018101000000000964</td>
+                                <td>{{ item.ks }}</td>
                             </tr>
                             <tr>
                                 <th scope="row">Банк</th>
-                                <td>Филиал "Екатеринбургский" ОАО "Альфа-Банк"</td>
+                                <td>{{ item.bank }}</td>
                             </tr>
                         </tbody>
+                        {% endfor %}
                     </table>
                 </div>
 
@@ -119,67 +122,42 @@
                         месяца!</p>
 
                     <h4 class="mt-2">Таблица для заполнения</h4>
-                    <form>
-                        <div class="form-row">
+                    <form id="houseCounterForm" method="POST" action="">
+                        {% csrf_token %}
+                        <div class="form-row">{{ form.house|as_crispy_field }}</div>
 
-                            <div class="form-group col-md-3  my-3">
-                                <label for="inputStreet">Улица</label>
-                                <select id="inputStreet" class="form-control">
-                                    <option selected>Выбрать из списка</option>
-                                    <option>ул.Советская</option>
-                                    <option>ул.Пушкинская</option>
-                                    <option>ул.Центральная</option>
-                                </select>
-                            </div>
-
-                            <div class="form-group col-md-3  mb-3">
-                                <label for="inputHouse">Дом</label>
-                                <select id="inputHouse" class="form-control">
-                                    <option selected>Выбрать из списка</option>
-                                    <option>1</option>
-                                    <option>2</option>
-                                    <option>3</option>
-                                </select>
-                            </div>
-
+                        <div class="user-area__table">
+                            <table class="user-area__table  table">
+                                <thead>
+                                    <tr>
+                                        <th scope="col"></th>
+                                        <th class="text-center" scope="col">Показания</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <th scope="row">Горячая вода:</th>
+                                        <td class="text-center" id='houseHotWater'>{{ form.hot_water|as_crispy_field }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">Холодная вода:</th>
+                                        <td class="text-center">{{ form.col_water|as_crispy_field }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">Электроэнергия день:</th>
+                                        <td class="text-center">{{ form.electric_day|as_crispy_field }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">Электроэнергия ночь:</th>
+                                        <td class="text-center">{{ form.electric_night|as_crispy_field }}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
                         </div>
+                        <button action="{% url 'person:user' %}" type="button" class="btn  btn-primary  my-2" id="houseCounter">Сохранить</button>
                     </form>
 
-                    <div class="user-area__table">
-                        <table class="user-area__table  table">
-                            <thead>
-                                <tr>
-                                    <th scope="col"></th>
-                                    <th scope="col">старые</th>
-                                    <th class="text-center" scope="col">новые</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <th scope="row">Горячая вода:</th>
-                                    <td>000000</td>
-                                    <td class="text-center"><input type="text"></td>
-                                </tr>
-                                <tr>
-                                    <th scope="row">Холодная вода:</th>
-                                    <td>000000</td>
-                                    <td class="text-center"><input type="text"></td>
-                                </tr>
-                                <tr>
-                                    <th scope="row">Электроэнергия день:</th>
-                                    <td>000000</td>
-                                    <td class="text-center"><input type="text"></td>
-                                </tr>
-                                <tr>
-                                    <th scope="row">Электроэнергия ночь:</th>
-                                    <td>000000</td>
-                                    <td class="text-center"><input type="text"></td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
 
-                    <button type="button" class="btn  btn-primary  my-2">Сохранить</button>
 
                     <div class="my-5">
                         <h4 class="mt-5">История показаний</h4>
@@ -189,50 +167,31 @@
                                     <tr>
                                         <th scope="col">#</th>
                                         <th scope="col">Дата</th>
-                                        <th scope="col">Улица</th>
-                                        <th scope="col">Дом</th>
+                                        <th scope="col">Адрес</th>
                                         <th scope="col">ХВС</th>
                                         <th scope="col">ХГС</th>
                                         <th scope="col">Эл.день</th>
                                         <th scope="col">Эл.ночь</th>
                                     </tr>
                                 </thead>
+
+                                {% for el in history %}
                                 <tbody>
                                     <tr>
-                                        <td>1</td>
-                                        <td>25.01.2021</td>
-                                        <td>ул.Советская</td>
-                                        <td>59</td>
-                                        <td>1300</td>
-                                        <td>950</td>
-                                        <td>13390</td>
-                                        <td>1200</td>
-                                    </tr>
-                                    <tr>
-                                        <td>2</td>
-                                        <td>26.02.2021</td>
-                                        <td>ул.Советская</td>
-                                        <td>59</td>
-                                        <td>1300</td>
-                                        <td>950</td>
-                                        <td>13390</td>
-                                        <td>1200</td>
-                                    </tr>
-                                    <tr>
-                                        <td>3</td>
-                                        <td>24.03.2021</td>
-                                        <td>ул.Советская</td>
-                                        <td>59</td>
-                                        <td>1300</td>
-                                        <td>950</td>
-                                        <td>13390</td>
-                                        <td>1200</td>
+                                        <td>{{ el.id }}</td>
+                                        <td>{{ el.period|date:"m - Y" }}</td>
+                                        <td class="text-left">{{ el.house }}</td>
+                                        <td>{{ el.col_water }}</td>
+                                        <td>{{ el.hot_water }}</td>
+                                        <td>{{ el.electric_day }}</td>
+                                        <td>{{ el.electric_night }}</td>
                                     </tr>
                                 </tbody>
-                            </table>
+                                {% endfor %}
+
+                            </table> 
                         </div>
                     </div>
-
                 </div>
 
                 <!-- Tab-RECALC -->
@@ -244,15 +203,14 @@
                             <div class="row">
                                 <div class="col-md-3  mb-3">
                                     <label for="formGroupExampleInput">Лицевой счет</label>
-                                    <input type="text" class="form-control" id="formGroupExampleInput"
-                                        placeholder="1234567">
+                                    {{ form2.user|as_crispy_field }}
                                 </div>
                                 <div class="col-md-3">
                                     <label for="formGroupExampleInput2">Сумма</label>
-                                    <input type="text" class="form-control" id="formGroupExampleInput2"
-                                        placeholder="359">
+                                    {{ form2.recalc|as_crispy_field }}
                                 </div>
                             </div>
+                            <button type="button" class="btn  btn-primary  my-2">Внести</button>
                         </form>
                     </div>
 

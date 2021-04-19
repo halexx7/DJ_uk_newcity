@@ -1,4 +1,4 @@
-{% extends 'mainapp/base.html' %}
+{% extends 'personallacc/base.html' %}
 {% load staticfiles %}
 
 {% load crispy_forms_tags %}
@@ -101,7 +101,9 @@
                     <h5 class="text-danger text-700">ВНИМАНИЕ! Показания принимаются с 20 по 26 число каждого месяца!</h5>
                     <h4 class="mt-5">Таблица для заполнения</h4>
                     <div class="user-area__table">
-                        {% csrf_token %}
+                    
+                    {% csrf_token %}
+                    {% for item in history %}
                     <form class="form-horizontal" method="post" enctype="multipart/form-data">
 
                         <table class="user-area__table  table">
@@ -115,28 +117,29 @@
                             <tbody>
                                 <tr>
                                     <th scope="row">Горячая вода:</th>
-                                    <td>000000</td>
+                                    <td>{{ item.hist_hot_water }}</td>
                                     <td class="text-center">{{ form.hot_water|as_crispy_field }}</td>
                                 </tr>
                                 <tr>
                                     <th scope="row">Холодная вода:</th>
-                                    <td>000000</td>
+                                    <td>{{ item.hist_col_water }}</td>
                                     <td class="text-center">{{ form.col_water|as_crispy_field }}</td>
                                 </tr>
                                 <tr>
                                     <th scope="row">Электроэнергия день:</th>
-                                    <td>000000</td>
+                                    <td>{{ item.hist_electric_day }}</td>
                                     <td class="text-center">{{ form.electric_day|as_crispy_field }}</td>
                                 </tr>
                                 <tr>
                                     <th scope="row">Электроэнергия ночь:</th>
-                                    <td>000000</td>
+                                    <td>{{ item.hist_electric_night }}</td>
                                     <td class="text-center">{{ form.electric_night|as_crispy_field }}</td>
                                 </tr>
                             </tbody>
                         </table>
                         <input class="btn  btn-primary  mt-4" type="submit" value="сохранить">
                     </form>
+                    {% endfor %}
                     </div>
                 </div>
 

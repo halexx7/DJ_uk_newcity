@@ -231,6 +231,7 @@ class HouseHistory(models.Model):
     updated = models.DateTimeField(verbose_name="Обновлен", auto_now=True)
 
     class Meta:
+        ordering = ("-updated",)
         verbose_name = "Домовой счетчик (история)"
         verbose_name_plural = "Домовые счетчики (история)"
     
@@ -241,6 +242,10 @@ class HouseHistory(models.Model):
     # Вместо User - Appartaments?
     def get_item(user):
         return HouseHistory.objects.filter(user=user)
+
+    @staticmethod
+    def get_last_val(user):
+        return HistoryCounter.objects.filter(user=user)[0:1]
 
     def delete(self):
         self.is_active = False
@@ -373,8 +378,9 @@ class HistoryCounter(models.Model):
         verbose_name = "Индивид. счетчик (история)"
         verbose_name_plural = "Индивид. счетчики (история)"
 
-    def get_last_val(self):
-        return HistoryCounter.objects.filter(user=self.user)[0:1]
+    @staticmethod
+    def get_last_val(user):
+        return HistoryCounter.objects.filter(user=user)[0:1]
 
     def delete(self):
         self.is_active = False
@@ -554,7 +560,7 @@ class Recalculations(models.Model):
     # Перерасчет, когда вносится?
     @staticmethod
     def get_last_val(user):
-        return HistoryCounter.objects.filter(user=user)[0:1]
+        return Recalculations.objects.filter(user=user)[0:1]
 
     def delete(self):
         self.is_active = False

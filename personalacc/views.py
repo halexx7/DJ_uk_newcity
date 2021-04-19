@@ -4,6 +4,7 @@ from django.db.models import F
 from django.db.models.signals import pre_delete, pre_save
 from django.dispatch import receiver
 from django.forms import inlineformset_factory
+from django.core import serializers
 from django.http import JsonResponse
 from django.shortcuts import HttpResponseRedirect, get_object_or_404
 from django.urls import reverse, reverse_lazy
@@ -15,33 +16,37 @@ from django.urls import reverse
 
 from authnapp.forms import UserEditForm, UserLoginForm, UserProfileEditForm, UserRegisterForm
 from authnapp.models import User
-from mainapp.models import UserProfile
-from personalacc.forms import CurrentCounterForm
+from mainapp.models import Appartament, UserProfile, HistoryCounter, UK, HouseHistory, HouseCurrent
+from personalacc.forms import CurrentCounterForm, HomeCurrentCounterForm, RecalculationsForm
 
 # @login_required
 def user(request):
     return render(request, "personalacc/user_acc.html")
 
-# class UserView(ListView, LoginRequiredMixin):
-#     model = User
-#     context_object_name = 'user'
-#     template_name = 'personalacc/user_list.html'
-
-#     def get_queryset(self):
-#         return User.objects.filter(id=self.request.user.id)
-
-#     def get_context_data(self, **kwargs):
-#         context = super().get_context_data(**kwargs)
-#         profiles = UserProfile.objects.filter(user=self.request.user)
-#         context['profiles'] = profiles
-#         return context
-
-    
-
 
 # @login_required
 def manager(request):
     return render(request, "personalacc/manager_acc.html")
+
+
+class AjaxableResponseMixin(object):
+    print(f'Googds GOODS')
+    def form_valid(self, form):
+        response = super().form_valid(form)
+        if self.request.method == "POST" and self.request.is_ajax():
+            data = {
+            'pk': self.object.pk,
+            }
+            return JsonResponse(data)
+        else:
+	        return response
+
+    def form_invalid(self, form):
+        response = super().form_invalid(form)
+        if self.request.is_ajax():
+            return JsonResponse(form.errors, status=400)
+        else:
+            return response
     
 
 class UserPageCreate(LoginRequiredMixin, CreateView):
@@ -51,12 +56,53 @@ class UserPageCreate(LoginRequiredMixin, CreateView):
     template_name = 'personalacc/user_list.html'
     success_url = reverse_lazy('person:user')
 
-    def get_queryset(self):
-        return User.objects.filter(id=self.request.user.id)
 
     def get_context_data(self, **kwargs):
         context = super(UserPageCreate, self).get_context_data(**kwargs)
-        profiles = UserProfile.objects.filter(user=self.request.user)
-        context['profiles'] = profiles
-        context['title'] = 'Test'
+        context['profiles'] = UserProfile.objects.filter(user=self.request.user)
+        context['history'] = HistoryCounter.get_last_val(self.request.user.profiles)
+        context['title'] = 'Пользователь | ООО Новый город'
         return context
+
+
+class ManagerPageCreate(AjaxableResponseMixin, LoginRequiredMixin, CreateView):
+    form_class = HomeCurrentCounterForm
+    second_form_class = RecalculationsForm
+    template_name = 'personalacc/manager_list.html'
+    success_url = reverse_lazy('person:manager')
+
+
+    def get_context_data(self, **kwargs):
+        context = super(ManagerPageCreate, self).get_context_data(**kwargs)
+        if 'form' not in context:
+            context['form'] = self.form_class()
+        if 'form2' not in context:
+            context['form2'] = self.second_form_class()
+        context['uk'] = UK.objects.all()
+        context['history'] = HouseHistory.objects.all()
+        context['title'] = 'Менеджер | ООО Новый город'
+        return context
+
+    # def get(self, *args, **kwargs):
+	#     form = self.form_class()
+	#     return render(self.request, self.template_name, {"contactForm": form})
+
+    def post(self, *args, **kwargs):
+        if self.request.is_ajax and self.request.method == "POST":
+            post = self.request.POST
+            form = self.form_class(
+                col_water=post.get('col_water'),
+                hot_water = post.get('hot_water'),
+                electric_day = post.get('electric_day'),
+                electric_night = post.get('electric_night'),
+                house = post.get('house')
+                )
+            if form.is_valid():
+                instance = form.save()
+                ser_instance = serializers.serialize('json', [ instance, ])
+                # send to client side.
+                return JsonResponse({"instance": ser_instance}, status=200)
+            else:
+                return JsonResponse({"error": form.errors}, status=400)
+
+        return JsonResponse({"error": ""}, status=400)
