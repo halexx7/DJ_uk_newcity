@@ -5,12 +5,13 @@ from django.db.models.signals import pre_delete, pre_save
 from django.dispatch import receiver
 from django.forms import inlineformset_factory
 from django.core import serializers
-from django.http import JsonResponse
+from django.http import JsonResponse, request
 from django.shortcuts import HttpResponseRedirect, get_object_or_404
 from django.urls import reverse, reverse_lazy
 from django.views.generic import CreateView, DeleteView, ListView, UpdateView
 from django.views.generic.detail import DetailView
 import json
+import datetime
 
 from django.shortcuts import HttpResponseRedirect, render
 from django.urls import reverse
@@ -95,10 +96,33 @@ class ManagerPageCreate(LoginRequiredMixin, CreateView):
                 form = self.second_form_class(self.request.POST)
             
             if form.is_valid():
-                instance = form.save()
-                ser_instance = serializers.serialize('json', [ instance, ])
+                post = self.request.POST
+                house = str(post.get('house'))
+                period = str(datetime.datetime.now().replace(day=1)).split(' '),
+                update_values = {
+                    'col_water': post.get('col_water'),
+                    'hot_water': post.get('hot_water'),
+                    'electric_day': post.get('electric_day'),
+                    'electric_night': post.get('electric_night'),
+                }
+                obj, created = HouseCurrent.objects.update_or_create(house_id=house, period=str(period[0][0]), defaults=update_values)
+                ser_instance = serializers.serialize('json', [ obj, ])
                 return JsonResponse({"instance": ser_instance}, status=200)
             else:
                 return JsonResponse({"error": form.errors}, status=400)
 
         return JsonResponse({"error": ""}, status=400)
+
+
+@receiver(pre_save, sender=HouseCurrent)
+def copy_arhive_current_to_history_house(sender, instance, **kwargs):
+    house = instance.house_id
+    period = str(instance.period).split(' '),
+    upd_val = {
+            # 'house': instance.house,
+            'col_water': instance.col_water,
+            'hot_water': instance.hot_water,
+            'electric_day': instance.electric_day,
+            'electric_night': instance.electric_night
+        }
+    obj, created = HouseHistory.objects.update_or_create(house_id=house, period=datetime.date(period[0][0]), defaults=upd_val)
