@@ -108,10 +108,10 @@ class ManagerPageCreate(LoginRequiredMixin, CreateView):
 @receiver(pre_save, sender=HouseCurrent)
 def product_quantity_update_save(instance, sender, **kwargs):
     HouseHistory.objects.create(
-        house=instance.house_id, 
+        house=instance.house, 
         period=instance.period,
-        hist_col_water=instance.col_water,
-        hist_hot_water = instance.hot_water,
-        hist_electric_day = instance.electric_day,
-        hist_electric_night = instance.electric_night,
+        col_water=instance.col_water,
+        hot_water = instance.hot_water,
+        electric_day = instance.electric_day,
+        electric_night = instance.electric_night,
         )

@@ -220,7 +220,8 @@ class HouseCurrent(models.Model):
 
 # Общедомовой счетчик (ИСТОРИЯ показания)
 class HouseHistory(models.Model):
-    period = models.DateField(verbose_name="Создан")
+    #TODO Настроить перенос значения - period и убрать auto_now
+    period = models.DateField(verbose_name="Создан", auto_now_add=True)
     house = models.ForeignKey(House, verbose_name="Дом", on_delete=models.CASCADE)
     col_water = models.PositiveIntegerField(verbose_name="Хол.вода", null=True)
     hot_water = models.PositiveIntegerField(verbose_name="Гор.вода", null=True)
