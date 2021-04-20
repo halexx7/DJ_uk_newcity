@@ -102,3 +102,16 @@ class ManagerPageCreate(LoginRequiredMixin, CreateView):
                 return JsonResponse({"error": form.errors}, status=400)
 
         return JsonResponse({"error": ""}, status=400)
+
+
+#Переносим в архив значение
+@receiver(pre_save, sender=HouseCurrent)
+def product_quantity_update_save(instance, sender, **kwargs):
+    HouseHistory.objects.create(
+        house=instance.house_id, 
+        period=instance.period,
+        hist_col_water=instance.col_water,
+        hist_hot_water = instance.hot_water,
+        hist_electric_day = instance.electric_day,
+        hist_electric_night = instance.electric_night,
+        )

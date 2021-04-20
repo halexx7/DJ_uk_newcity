@@ -56,11 +56,11 @@ jQuery(document).ready(function(){
         $.ajax({
             type : 'POST',
             data: mForm,
-            success: function (e) {
-        	    console.log(e);
+            success: function (data) {
+        	    console.log(data);
             },
-            error: function (e) {
-                console.log(e);
+            error: function (data) {
+                console.log(data.responseText);
             }
         });
     });
