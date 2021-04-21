@@ -159,9 +159,11 @@
                     </form>
 
 
-
                     <div class="my-5">
-                        <h4 class="mt-5">История показаний</h4>
+                        <div class="row  mt-5  mb-3  d-flex justify-content-between">
+                            <h4 class="col">Текущие домовые показания</h4>
+                            <a href="{% url 'personalacc:house_history' %}" class="col  text-right  text-decoration-none">История показаний</a>
+                        </div>
                         <div class="manager-area__counters-history  mb-5">
                             <table class="table">
                                 <thead>
@@ -176,7 +178,7 @@
                                     </tr>
                                 </thead>
 
-                                {% for el in history %}
+                                {% for el in house_current %}
                                 <tbody>
                                     <tr>
                                         <td>{{ el.id }}</td>

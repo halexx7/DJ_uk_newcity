@@ -1,0 +1,50 @@
+{% extends 'personalacc/base.html' %}
+{% load staticfiles %}
+
+
+{% block menu %}
+    {% include 'mainapp/includes/inc_menu.html' %}
+{% endblock menu %}
+
+{% block content %}
+
+<div class="container">
+    <div class="my-5">
+        <div class="row  mt-5  mb-3  d-flex justify-content-between">
+            <h4 class="col">История домовых показаний</h4>
+            <a href="{% url 'personalacc:manager' %}" class="col  text-right  text-decoration-none">На главную</a>
+        </div>
+        <div class="manager-area__counters-history  mb-5">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Дата</th>
+                        <th scope="col">Адрес</th>
+                        <th scope="col">ХВС</th>
+                        <th scope="col">ХГС</th>
+                        <th scope="col">Эл.день</th>
+                        <th scope="col">Эл.ночь</th>
+                    </tr>
+                </thead>
+    
+                {% for el in history %}
+                <tbody>
+                    <tr>
+                        <td>{{ el.id }}</td>
+                        <td>{{ el.period|date:"m - Y" }}</td>
+                        <td class="text-left">{{ el.house }}</td>
+                        <td>{{ el.col_water }}</td>
+                        <td>{{ el.hot_water }}</td>
+                        <td>{{ el.electric_day }}</td>
+                        <td>{{ el.electric_night }}</td>
+                    </tr>
+                </tbody>
+                {% endfor %}
+    
+            </table> 
+        </div>
+    </div>
+</div>
+
+{% endblock content %}

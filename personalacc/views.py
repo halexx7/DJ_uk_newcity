@@ -82,7 +82,8 @@ class ManagerPageCreate(LoginRequiredMixin, CreateView):
         if 'form2' not in context:
             context['form2'] = self.second_form_class()
         context['uk'] = UK.objects.all()
-        context['history'] = HouseHistory.objects.all()
+        context['house_history'] = HouseHistory.objects.all()
+        context['house_current'] = HouseCurrent.objects.all()
         context['title'] = 'Менеджер | ООО Новый город'
         return context
 
@@ -97,15 +98,21 @@ class ManagerPageCreate(LoginRequiredMixin, CreateView):
             
             if form.is_valid():
                 post = self.request.POST
-                house = str(post.get('house'))
-                period = str(datetime.datetime.now().replace(day=1)).split(' '),
+                house = post.get('house')
+                # period = datetime.datetime.now().date().replace(day=1)
+                period = datetime.datetime.now().date().replace(day=1, month=7)
                 update_values = {
                     'col_water': post.get('col_water'),
                     'hot_water': post.get('hot_water'),
                     'electric_day': post.get('electric_day'),
                     'electric_night': post.get('electric_night'),
                 }
-                obj, created = HouseCurrent.objects.update_or_create(house_id=house, period=str(period[0][0]), defaults=update_values)
+                obj, created = HouseCurrent.objects.update_or_create(house_id=house, period=period, defaults=update_values)
+                #При создании новой записи удаляем старую
+                if created:
+                    previous_month = (period - datetime.timedelta(days=1)).replace(day=1)
+                    previous_value = HouseCurrent.objects.filter(house_id=house, period=previous_month)
+                    previous_value.delete()
                 ser_instance = serializers.serialize('json', [ obj, ])
                 return JsonResponse({"instance": ser_instance}, status=200)
             else:
@@ -114,15 +121,21 @@ class ManagerPageCreate(LoginRequiredMixin, CreateView):
         return JsonResponse({"error": ""}, status=400)
 
 
-@receiver(pre_save, sender=HouseCurrent)
+# При удалении ловим и сохраняем объект
+@receiver(pre_delete, sender=HouseCurrent)
 def copy_arhive_current_to_history_house(sender, instance, **kwargs):
     house = instance.house_id
-    period = str(instance.period).split(' '),
+    period = instance.period
     upd_val = {
-            # 'house': instance.house,
-            'col_water': instance.col_water,
-            'hot_water': instance.hot_water,
-            'electric_day': instance.electric_day,
-            'electric_night': instance.electric_night
-        }
-    obj, created = HouseHistory.objects.update_or_create(house_id=house, period=datetime.date(period[0][0]), defaults=upd_val)
+        'col_water': instance.col_water,
+        'hot_water': instance.hot_water,
+        'electric_day': instance.electric_day,
+        'electric_night': instance.electric_night
+    }
+    obj, created = HouseHistory.objects.update_or_create(house_id=house, period=period, defaults=upd_val)
+
+
+class HouseHistoryListView(LoginRequiredMixin, ListView):
+    model = HouseHistory
+    context_object_name = 'history'
+    template_name = 'personalacc/house_history_list.html'

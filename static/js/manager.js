@@ -57,7 +57,7 @@ jQuery(document).ready(function(){
             type : 'POST',
             data: mForm,
             success: function (data) {
-        	    console.log(data);
+        	    console.log(data.responseText);
             },
             error: function (data) {
                 console.log(data.responseText);

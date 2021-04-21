@@ -229,8 +229,8 @@ class HouseHistory(models.Model):
     electric_day = models.PositiveIntegerField(verbose_name="Электр.день", null=True)
     electric_night = models.PositiveIntegerField(verbose_name="Электр.ночь", null=True)
 
-    created = models.DateTimeField(verbose_name="Создан", auto_now=True)
-    updated = models.DateTimeField(verbose_name="Обновлен", auto_now_add=True)
+    created = models.DateTimeField(verbose_name="Создан", auto_now_add=True)
+    updated = models.DateTimeField(verbose_name="Обновлен", auto_now=True)
 
     class Meta:
         ordering = ("-updated",)
@@ -262,6 +262,9 @@ class Standart(models.Model):
     hot_water = models.PositiveIntegerField(verbose_name="Гор.вода", null=True)
     electric_day = models.PositiveIntegerField(verbose_name="Электр.день", null=True)
     electric_night = models.PositiveIntegerField(verbose_name="Электр.ночь", null=True)
+
+    created = models.DateTimeField(verbose_name="Создан", auto_now_add=True)
+    updated = models.DateTimeField(verbose_name="Обновлен", auto_now=True)
 
     class Meta:
         ordering = ("-period",)

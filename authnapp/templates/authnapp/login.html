@@ -17,11 +17,9 @@
                 {% endif %}
                 {{ login_form.as_p }}
                 <br>
+                <a href="#" class="text-decoration-none  text-right">Забыли пароль?</a>
                 <input class="btn btn-outline-primary btn-block" type="submit" value="войти">
             </form>
-            <a class="btn btn-outline-secondary btn-block mt-3" href="{% url 'auth:register' %}"  role="button">
-                зарегистрироваться
-            </a>
         </div>
     </div>
 </section>
