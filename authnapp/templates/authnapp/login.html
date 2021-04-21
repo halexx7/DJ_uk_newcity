@@ -17,7 +17,7 @@
                 {% endif %}
                 {{ login_form.as_p }}
                 <br>
-                <a href="#" class="text-decoration-none  text-right">Забыли пароль?</a>
+                <a href='{% url "password_reset" %}' class="text-decoration-none  text-right">Забыли пароль?</a>
                 <input class="btn btn-outline-primary btn-block" type="submit" value="войти">
             </form>
         </div>
