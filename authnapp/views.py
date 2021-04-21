@@ -4,7 +4,10 @@ from django.contrib.auth.decorators import login_required
 from django.core.mail import send_mail
 from django.db import transaction
 from django.shortcuts import HttpResponseRedirect, render
-from django.urls import reverse
+from django.urls import reverse, reverse_lazy
+
+from django.contrib.auth.views import PasswordChangeView, PasswordChangeDoneView
+
 
 from authnapp.forms import UserEditForm, UserLoginForm, UserProfileEditForm, UserRegisterForm
 from authnapp.models import User
@@ -107,3 +110,13 @@ def verify(request, email, activation_key):
         print(f"error activation user : {e.args}")
 
     return HttpResponseRedirect(reverse("main"))
+
+
+class passwordChange(PasswordChangeView):
+    template_name = "authnapp/password_change_form.html"
+    success_url = reverse_lazy('auth:password_change_done')
+
+
+
+class passwordChangeDone(PasswordChangeDoneView):
+    template_name = "authnapp/password_change_done.html"

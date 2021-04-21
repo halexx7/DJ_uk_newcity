@@ -57,6 +57,10 @@
 
                 <!-- Tab-HOME -->
                 <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+                    <div class="row  mt-5  mb-3  d-flex justify-content-between">
+                        <h4 class="col">Текущие домовые показания</h4>
+                        <a href="{% url 'authnapp:password_change' %}" class="col  text-right  text-decoration-none">Изменить пароль</a>
+                    </div>
                     <p class="user-area__subtitle  text-700  mb-4">Информация о компании</p>
                     <table class="table table-striped">
                         {% for item in uk %}
