@@ -3,6 +3,7 @@ import random
 
 from django import forms
 from django.contrib.auth.forms import AuthenticationForm, PasswordChangeForm, UserChangeForm, UserCreationForm
+from django.contrib.auth.forms import PasswordResetForm, SetPasswordForm
 from django.contrib.auth.models import Group
 from django.forms import fields
 
@@ -12,16 +13,17 @@ from .models import User
 
 
 class BootstrapStylesMixins:
-    form_fields = None
+    field_name = None
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        if self.form_fields:
-            for fieldname in self.form_fields:
+        if self.field_name:
+            for fieldname in self.field_name:
                 self.fields[fieldname].widget.attrs = {'class': 'form-control'}
         else:
-            raise ValueError('The form_fields should be set')
+            raise ValueError('The field_name should be set')
+
 
 class UserLoginForm(AuthenticationForm):
     def __init__(self, *args, **kwargs):
@@ -36,7 +38,15 @@ class UserLoginForm(AuthenticationForm):
 
 
 class MyPasswordChangeForm(BootstrapStylesMixins, PasswordChangeForm):
-    form_fields = ["old_password", "new_password1", "new_password2"]
+    field_name = ["old_password", "new_password1", "new_password2"]
+
+
+class MyPassResetForm(BootstrapStylesMixins, PasswordResetForm):
+    field_name = ["email"]
+
+
+class MyPassSetForm(BootstrapStylesMixins, SetPasswordForm):
+    field_name = ["new_password1", "new_password2"]
 
 
 class UserRegisterForm(UserCreationForm):
@@ -94,5 +104,4 @@ class UserProfileEditForm(forms.ModelForm):
             field.widget.attrs["class"] = "form-control"
 
 
-class MyPasswordChangeForm(BootstrapStylesMixins, PasswordChangeForm):
-    form_fields = ["old_password", "new_password1", "new_password2"]
+
