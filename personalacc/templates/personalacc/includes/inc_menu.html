@@ -1,4 +1,4 @@
-<!-- {% load auth_extras %} -->
+{% load auth_extras %}
 
 <div class="collapse navbar-collapse  d-flex  justify-content-between" id="navbarSupportedContent">
     <ul class="navbar-nav me-auto mb-2 mb-lg-0">
@@ -10,6 +10,26 @@
     
     <div class="menu__right  d-flex">
         <ul class="navbar-nav">
+            {% if user.is_authenticated %}
+                {% if request.user|has_group:"Client" %}
+                <li class="nav-item  dropdown">
+                    <a class="nav-link text-dark" aria-current="page" href="{% url 'person:user' %}">Кабинет</a>
+                </li>                
+                {% elif request.user|has_group:"Manager" %}
+                <li class="nav-item  dropdown">
+                    <a class="nav-link  text-dark  dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Менеджер</a>
+                    <div class="dropdown-menu">
+                        <a class="dropdown-item" href="{% url 'person:manager' %}">Профиль</a>
+                        <a class="dropdown-item" href="{% url 'person:manager' %}">Кабинет</a>
+                    </div>
+                    <!-- <a class="nav-link text-dark" aria-current="page" href="{% url 'person:manager' %}">Менеджер</a> -->
+                </li>
+                {% elif user.is_superuser %}
+                <li class="nav-item">
+                    <a class="nav-link text-dark" aria-current="page" href="admin/">Админка</a>
+                </li>
+                {% endif %}
+            {% endif %}
             <li class="nav-item">
                 {% if user.is_authenticated %}
                     <a class="nav-link text-dark" aria-current="page" href="{% url 'auth:logout' %}">Выйти</a>

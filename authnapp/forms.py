@@ -25,16 +25,9 @@ class BootstrapStylesMixins:
             raise ValueError('The field_name should be set')
 
 
-class UserLoginForm(AuthenticationForm):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
-        for field_name, field in self.fields.items():
-            field.widget.attrs["class"] = "form-control"
-
-    class Meta:
-        model = User
-        fields = ("personal_account", "password")
+class UserLoginForm(BootstrapStylesMixins, AuthenticationForm):
+    # В данном конкретном случае username = personal_account
+    field_name = ["username", "password"]
 
 
 class MyPasswordChangeForm(BootstrapStylesMixins, PasswordChangeForm):
