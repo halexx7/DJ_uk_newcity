@@ -2,17 +2,31 @@ import hashlib
 import random
 
 from django import forms
-from django.contrib.auth.forms import AuthenticationForm, UserChangeForm, UserCreationForm
+from django.contrib.auth.forms import AuthenticationForm, PasswordChangeForm, UserChangeForm, UserCreationForm
 from django.contrib.auth.models import Group
+from django.forms import fields
 
 from mainapp.models import UserProfile
 
 from .models import User
 
 
+class BootstrapStylesMixins:
+    form_fields = None
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        if self.form_fields:
+            for fieldname in self.form_fields:
+                self.fields[fieldname].widget.attrs = {'class': 'form-control'}
+        else:
+            raise ValueError('The form_fields should be set')
+
 class UserLoginForm(AuthenticationForm):
     def __init__(self, *args, **kwargs):
-        super(UserLoginForm, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
+
         for field_name, field in self.fields.items():
             field.widget.attrs["class"] = "form-control"
 
@@ -21,9 +35,13 @@ class UserLoginForm(AuthenticationForm):
         fields = ("personal_account", "password")
 
 
+class MyPasswordChangeForm(BootstrapStylesMixins, PasswordChangeForm):
+    form_fields = ["old_password", "new_password1", "new_password2"]
+
+
 class UserRegisterForm(UserCreationForm):
     def __init__(self, *args, **kwargs):
-        super(UserRegisterForm, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         for field_name, field in self.fields.items():
             field.widget.attrs["class"] = "form-control"
             field.help_text = ""
@@ -47,7 +65,8 @@ class UserRegisterForm(UserCreationForm):
 
 class UserEditForm(UserChangeForm):
     def __init__(self, *args, **kwargs):
-        super(UserEditForm, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
+
         for field_name, field in self.fields.items():
             field.widget.attrs["class"] = "form-control"
             field.help_text = ""
@@ -70,6 +89,10 @@ class UserProfileEditForm(forms.ModelForm):
         fields = ("appartament", "type_electric_meter")
 
     def __init__(self, *args, **kwargs):
-        super(UserProfileEditForm, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         for field_name, field in self.fields.items():
             field.widget.attrs["class"] = "form-control"
+
+
+class MyPasswordChangeForm(BootstrapStylesMixins, PasswordChangeForm):
+    form_fields = ["old_password", "new_password1", "new_password2"]

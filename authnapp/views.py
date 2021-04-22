@@ -112,11 +112,11 @@ def verify(request, email, activation_key):
     return HttpResponseRedirect(reverse("main"))
 
 
-class passwordChange(PasswordChangeView):
-    template_name = "authnapp/password_change_form.html"
-    success_url = reverse_lazy('auth:password_change_done')
+# class passwordChange(PasswordChangeView):
+#     template_name = "authnapp/password_change_form.html"
+#     success_url = reverse_lazy('auth:password_change_done')
 
 
 
-class passwordChangeDone(PasswordChangeDoneView):
-    template_name = "authnapp/password_change_done.html"
+# class passwordChangeDone(PasswordChangeDoneView):
+#     template_name = "authnapp/password_change_done.html"

@@ -1,10 +1,11 @@
 from django.urls import re_path
-from django.conf.urls import url
-
+from django.urls.base import reverse, reverse_lazy
 
 import authnapp.views as authnapp
-from authnapp.views import passwordChange
 from authnapp.apps import AuthnappConfig
+
+from django.contrib.auth.views import PasswordChangeView, PasswordChangeDoneView
+from .forms import MyPasswordChangeForm
 
 app_name = AuthnappConfig.name
 
@@ -16,8 +17,15 @@ urlpatterns = [
     re_path(r"^verify/(?P<email>.+)/(?P<activation_key>\w+)/$", authnapp.verify, name="verify"),
 
     # change password urls
-    re_path(r"^password-change/$", authnapp.passwordChange.as_view(), name='password_change'),
-    re_path(r"^password-change/done/$", authnapp.passwordChangeDone.as_view(), name='password_change_done'),
+    re_path(r"^password-change/$", PasswordChangeView.as_view(
+        template_name='authnapp/password_change.html',
+        success_url=reverse_lazy('auth:password_change_done'),
+        form_class = MyPasswordChangeForm
+    ), name='password_change'),
+
+    re_path(r"^password-change/done/$", PasswordChangeDoneView.as_view(
+        template_name='authnapp/password_change_done.html',
+    ), name='password_change_done'),
 
 #     re_path(r'^password-reset/$', 'django.contrib.auth.views.password_reset', name='password_reset'),
 #     re_path(r'^password-reset/done/$', 'django.contrib.auth.views.password_reset_done', name='password_reset_done'),
