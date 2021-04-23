@@ -3,7 +3,7 @@ from django.contrib.auth import get_user_model
 
 from django.contrib.postgres.fields import JSONField
 from django.db import models
-from django.db.models.deletion import CASCADE, PROTECT
+from django.db.models.deletion import CASCADE, PROTECT, SET_NULL
 from django.db.models.lookups import In
 from django.db.models.signals import post_save
 from django.dispatch import receiver
@@ -282,38 +282,19 @@ class Standart(models.Model):
         self.save()
 
 
-class Appartament(models.Model):
-    house = models.ForeignKey(House, verbose_name="Дом", on_delete=CASCADE)
-    number = models.PositiveIntegerField(verbose_name="Квартира")
-    add_number = models.CharField(verbose_name="Комната", max_length=2, null=True, blank=True, default='-')
-    sq_appart = models.DecimalField(verbose_name="Площадь", max_digits=5, decimal_places=2)
-    num_owner = models.PositiveIntegerField(verbose_name="Кол-во проживающих", default=0)
-
-    is_active = models.BooleanField(verbose_name="Активный", db_index=True, default=True)
-    created = models.DateTimeField(verbose_name="Создан", auto_now_add=True)
-    updated = models.DateTimeField(verbose_name="Обновлен", auto_now=True)
-
-    class Meta:
-        verbose_name = "Квартира"
-        verbose_name_plural = "008 Квартиры"
-
-    def __str__(self):
-        return f'ул.{self.house.street.street}, д.{self.house.number}, кв.{self.number}, комн.{self.add_number}'
-
-    def delete(self):
-        self.is_active = False
-        self.save()
-
-
 class UserProfile(models.Model):
     SINGLE = "1"
     TWO = "2"
     MULTI = "3"
 
+    MALE = "M"
+    FEMALE = "W"
+
     COUNTER_TYPE = ((SINGLE, "однотарифный"), (TWO, "двухтарифный"), (MULTI, "многотарифный"))
+    GENDER_CHOICES = ((MALE, "М"), (FEMALE, "Ж"))
 
     user = models.OneToOneField(User, verbose_name="Пользоваель", null=False, db_index=True, on_delete=models.CASCADE, related_name='profiles')
-    appartament = models.ForeignKey(Appartament, verbose_name="Квартира", on_delete=CASCADE, null=True, blank=True)
+    gender = models.CharField(verbose_name="Пол", max_length=1, choices=GENDER_CHOICES, blank=True)
     type_electric_meter = models.CharField(verbose_name="Тип счетчика", max_length=1, choices=COUNTER_TYPE, blank=True)
 
     is_active = models.BooleanField(verbose_name="Активный", db_index=True, default=True)
@@ -342,9 +323,33 @@ class UserProfile(models.Model):
         self.save()
 
 
+class Appartament(models.Model):
+    user = models.ForeignKey(User, verbose_name="Жилец", null=True, on_delete=SET_NULL)
+    house = models.ForeignKey(House, verbose_name="Дом", on_delete=CASCADE)
+    number = models.PositiveIntegerField(verbose_name="Квартира")
+    add_number = models.CharField(verbose_name="Комната", max_length=2, null=True, blank=True, default='-')
+    sq_appart = models.DecimalField(verbose_name="Площадь", max_digits=5, decimal_places=2)
+    num_owner = models.PositiveIntegerField(verbose_name="Кол-во проживающих", default=0)
+
+    is_active = models.BooleanField(verbose_name="Активный", db_index=True, default=True)
+    created = models.DateTimeField(verbose_name="Создан", auto_now_add=True)
+    updated = models.DateTimeField(verbose_name="Обновлен", auto_now=True)
+
+    class Meta:
+        verbose_name = "Квартира"
+        verbose_name_plural = "008 Квартиры"
+
+    def __str__(self):
+        return f'ул.{self.house.street.street}, д.{self.house.number}, кв.{self.number}, комн.{self.add_number}'
+
+    def delete(self):
+        self.is_active = False
+        self.save()
+
+
 # Текущие показания счетчиков (индивидуальные)
 class CurrentCounter(models.Model):
-    user = models.OneToOneField(UserProfile, on_delete=CASCADE)
+    user = models.OneToOneField(User, on_delete=CASCADE)
     col_water = models.PositiveIntegerField(verbose_name="Холодная вода", null=True)
     hot_water = models.PositiveIntegerField(verbose_name="Горячая вода", null=True)
     electric_day = models.PositiveIntegerField(verbose_name="Электроэнергия день", null=True, blank=True, default="")
@@ -368,7 +373,7 @@ class CurrentCounter(models.Model):
 
 # История показания счетчиков (индивидуальные)
 class HistoryCounter(models.Model):
-    user = models.ForeignKey(UserProfile, verbose_name="Пользователь", on_delete=CASCADE)
+    user = models.ForeignKey(User, verbose_name="Пользователь", on_delete=CASCADE)
     period = models.DateField(verbose_name="Период")
     hist_col_water = models.PositiveIntegerField(verbose_name="Гор.вода")
     hist_hot_water = models.PositiveIntegerField(verbose_name="Хол.вода")
@@ -447,7 +452,7 @@ class VariablePayments(models.Model):
 
 # Cубсидии
 class Subsidies(models.Model):
-    user = models.ForeignKey(UserProfile, verbose_name="Пользователь", on_delete=CASCADE)
+    user = models.ForeignKey(User, verbose_name="Пользователь", on_delete=CASCADE)
     service = models.ForeignKey(Services, verbose_name="Услуга", on_delete=CASCADE)
     sale = models.PositiveIntegerField(verbose_name="Субсидии", default=0)
     desc = models.TextField(verbose_name="Субсидии")
@@ -477,7 +482,7 @@ class Subsidies(models.Model):
 
 # Льготы
 class Privileges(models.Model):
-    user = models.ForeignKey(UserProfile, verbose_name="Пользователь", on_delete=CASCADE)
+    user = models.ForeignKey(User, verbose_name="Пользователь", on_delete=CASCADE)
     service = models.ForeignKey(Services, verbose_name="Услуга", on_delete=CASCADE)
     sale = models.PositiveIntegerField(verbose_name="Льготы", default=0)
 
@@ -505,7 +510,7 @@ class Privileges(models.Model):
 
 # Начисления (Текущие)
 class Profit(models.Model):
-    user = models.ForeignKey(UserProfile, verbose_name="Пользователь", on_delete=CASCADE)
+    user = models.ForeignKey(User, verbose_name="Пользователь", on_delete=CASCADE)
     period = models.DateField(verbose_name="Период")
     amount_profit = models.DecimalField(verbose_name="Сумма", max_digits=7, decimal_places=2)
     variable = JSONField(verbose_name="variable")
@@ -528,7 +533,7 @@ class Profit(models.Model):
 
 # Инфорамация по оплатам
 class Payment(models.Model):
-    user = models.ForeignKey(UserProfile, verbose_name="Пользователь", on_delete=CASCADE)
+    user = models.ForeignKey(User, verbose_name="Пользователь", on_delete=CASCADE)
     period = models.DateField(verbose_name="Период")
     amount_profit = models.DecimalField(verbose_name="Сумма", max_digits=7, decimal_places=2)
 
@@ -550,7 +555,7 @@ class Payment(models.Model):
 
 # Перерасчеты
 class Recalculations(models.Model):
-    user = models.ForeignKey(UserProfile, verbose_name="Пользователь", on_delete=CASCADE)
+    user = models.ForeignKey(User, verbose_name="Пользователь", on_delete=CASCADE)
     period = models.DateField(verbose_name="Период", auto_now_add=True)
     recalc = models.DecimalField(verbose_name="Сумма", max_digits=7, decimal_places=2, default=0)
     desc = models.TextField(verbose_name="Описание", blank=True, null=True)

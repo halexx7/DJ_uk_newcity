@@ -1,4 +1,4 @@
-from mainapp.models import UserProfile
+from mainapp.models import Appartament, UserProfile
 from django.conf import settings
 from django.contrib import auth
 from django.contrib.auth.decorators import login_required
@@ -12,7 +12,7 @@ from django.views.generic.detail import DetailView
 from django.forms.models import BaseInlineFormSet, inlineformset_factory
 from django.contrib.auth.mixins import LoginRequiredMixin
 
-from authnapp.forms import UserEditForm, UserLoginForm, UserProfileEditForm, UserRegisterForm
+from authnapp.forms import UserEditForm, UserLoginForm, UserRegisterForm, BaseChildrenFormset, AppartamentEditForm, UserProfileEditForm
 from authnapp.models import User
 
 
@@ -58,24 +58,24 @@ def register(request):
     return render(request, "authnapp/register.html", content)
 
 
-@login_required
-@transaction.atomic
-def edit(request):
-    title = "Редактирование | УК \"Новый город\""
+# @login_required
+# @transaction.atomic
+# def edit(request):
+#     title = "Редактирование | УК \"Новый город\""
 
-    if request.method == "POST":
-        edit_form = UserEditForm(request.POST, request.FILES, instance=request.user)
-        profile_form = UserProfileEditForm(request.POST, instance=request.user.userprofile)
-        if edit_form.is_valid() and profile_form.is_valid():
-            edit_form.save()
-            return HttpResponseRedirect(reverse("auth:edit"))
-    else:
-        edit_form = UserEditForm(instance=request.user)
-        profile_form = UserProfileEditForm(instance=request.user.userprofile)
+#     if request.method == "POST":
+#         edit_form = UserEditForm(request.POST, request.FILES, instance=request.user)
+#         profile_form = UserProfileEditForm(request.POST, instance=request.user.userprofile)
+#         if edit_form.is_valid() and profile_form.is_valid():
+#             edit_form.save()
+#             return HttpResponseRedirect(reverse("auth:edit"))
+#     else:
+#         edit_form = UserEditForm(instance=request.user)
+#         profile_form = UserProfileEditForm(instance=request.user.userprofile)
 
-    content = {"title": title, "edit_form": edit_form, "profile_form": profile_form, "media_url": settings.MEDIA_URL}
+#     content = {"title": title, "edit_form": edit_form, "profile_form": profile_form, "media_url": settings.MEDIA_URL}
 
-    return render(request, "authnapp/edit.html", content)
+#     return render(request, "authnapp/edit.html", content)
 
 
 def send_verify_mail(user):
@@ -115,26 +115,6 @@ def verify(request, email, activation_key):
     return HttpResponseRedirect(reverse("main"))
 
 
-@login_required
-@transaction.atomic
-def edit(request):
-    title = "редактирование"
-
-    if request.method == "POST":
-        edit_form = UserEditForm(request.POST, request.FILES, instance=request.user)
-        profile_form = UserProfileEditForm(request.POST, instance=request.user.profiles)
-        if edit_form.is_valid() and profile_form.is_valid():
-            edit_form.save()
-            return HttpResponseRedirect(reverse("auth:edit"))
-    else:
-        edit_form = UserEditForm(instance=request.user)
-        profile_form = UserProfileEditForm(instance=request.user.profiles)
-
-    content = {"title": title, "edit_form": edit_form, "profile_form": profile_form}
-
-    return render(request, "authnapp/edit.html", content)
-
-
 class UsersUpdateView(LoginRequiredMixin, UpdateView):
     model = User
     template_name = "authnapp/edit.html"
@@ -144,32 +124,41 @@ class UsersUpdateView(LoginRequiredMixin, UpdateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["title"] = "пользователи/редактирование"
+        # context["appartament"] = AppartamentEditForm(instance=self.request.user.profiles)
+        # context['profile_form'] = UserProfileEditForm(instance=self.request.user.profiles)
+
+        UserProfileFormSet = inlineformset_factory(User, UserProfile, form=BaseChildrenFormset, extra=1)
+
+        if self.request.POST:
+            context["appartament"] = UserProfileFormSet(self.request.POST, instance=self.object)
+        else:
+            # queryset = self.object.profiles
+            queryset = get_object_or_404(User, id=self.object.id)
+            formset = UserProfileFormSet(instance=queryset)
+            context["appartament"] = formset
         return context
 
-#TODO Переделать под себя
-class UserUpdate(UpdateView):
-    model = User
-    fields = []
-    template_name = 'authnapp/edit.html'
-    success_url = reverse_lazy("main")
+# #TODO Переделать под себя
+# class UserUpdate(UpdateView):
+#     model = User
+#     fields = []
+#     template_name = 'authnapp/edit.html'
+#     success_url = reverse_lazy("main")
 
-    def get_context_data(self, **kwargs):
-        data = super().get_context_data(**kwargs)
-        data['user'] = self.request.user
-        # data['title'] = "редактирование"
-        data['profile_form'] = UserProfileEditForm(instance=self.request.user.profiles)
-        UserFormSet = inlineformset_factory(User, UserProfile, form=UserProfileEditForm, extra=1)
-
-        # if self.request.POST:
-        #     data["orderitems"] = OrderFormSet(self.request.POST, instance=self.object)
-        # else:
-        #     queryset = self.object.orderitems.select_related()
-        #     formset = OrderFormSet(instance=self.object, queryset=queryset)
-        #     for form in formset.forms:
-        #         if form.instance.pk:
-        #             form.initial["price"] = form.instance.service.price
-        #     data["orderitems"] = formset
-        return data
+#     def get_context_data(self, **kwargs):
+#         data = super().get_context_data(**kwargs)
+#         data['user'] = self.request.user
+#         # data['title'] = "редактирование"
+#         data['profile_form'] = UserProfileEditForm(instance=self.request.user.profiles)
+#         UserProfileFormSet = inlineformset_factory(User, UserProfile, form=BaseChildrenFormset, extra=1)
+       
+#         if self.request.POST:
+#             data["appartament"] = UserProfileFormSet(self.request.POST, instance=self.object)
+#         else:
+#             queryset = self.object.profiles.select_related()
+#             formset = UserProfileFormSet(instance=self.object, queryset=queryset)
+#             data["appartament"] = formset
+#         return data
 
     # def form_valid(self, form):
     #     context = self.get_context_data()

@@ -132,18 +132,18 @@ class UserProfilesAdmin(admin.ModelAdmin):
 
 
 
-admin.site.register(ServicesCategory, ServiceCategoryAdmin)
-admin.site.register(Services, ServiceAdmin)
-admin.site.register(City, CityAdmin)
+admin.site.register(ServicesCategory)
+admin.site.register(Services)
+admin.site.register(City)
 admin.site.register(Metrics)
 admin.site.register(Street)
 admin.site.register(UK)
-admin.site.register(House, HouseAdmin)
+admin.site.register(House)
 admin.site.register(HouseCurrent)
 admin.site.register(HouseHistory)
 admin.site.register(User)
 admin.site.register(Appartament)
-admin.site.register(UserProfile, UserProfilesAdmin)
+admin.site.register(UserProfile)
 admin.site.register(CurrentCounter)
 admin.site.register(HistoryCounter)
 admin.site.register(ConstantPayments)

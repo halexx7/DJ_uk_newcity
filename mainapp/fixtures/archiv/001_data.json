@@ -1,0 +1,85 @@
+[
+    {
+        "model": "mainapp.servicescategory",
+        "pk": 1,
+        "fields": {
+            "name": "\u0422\u0430\u0440\u0438\u0444 1",
+            "is_active": true,
+            "created": "2021-04-12T13:41:11.798Z",
+            "updated": "2021-04-12T13:41:11.798Z"
+        }
+    },
+    {
+        "model": "mainapp.city",
+        "pk": 1,
+        "fields": {
+            "city": "\u0422\u044e\u043c\u0435\u043d\u044c",
+            "is_active": true,
+            "created": "2021-04-12T13:40:59.366Z",
+            "updated": "2021-04-12T13:40:59.366Z"
+        }
+    },
+    {
+        "model": "mainapp.street",
+        "pk": 1,
+        "fields": {
+            "street": "\u0421\u043e\u044e\u0437\u043d\u0430\u044f",
+            "is_active": true,
+            "created": "2021-04-12T13:41:31.046Z",
+            "updated": "2021-04-12T13:41:31.046Z"
+        }
+    },
+    {
+        "model": "mainapp.street",
+        "pk": 2,
+        "fields": {
+            "street": "\u0422\u044e\u043c\u0435\u043d\u0441\u043a\u0430\u044f",
+            "is_active": true,
+            "created": "2021-04-12T13:41:43.199Z",
+            "updated": "2021-04-12T13:41:43.199Z"
+        }
+    },
+    {
+        "model": "mainapp.street",
+        "pk": 3,
+        "fields": {
+            "street": "\u041f\u0443\u0448\u043a\u0438\u043d\u0441\u043a\u0430\u044f",
+            "is_active": true,
+            "created": "2021-04-12T13:42:00.791Z",
+            "updated": "2021-04-12T13:42:00.791Z"
+        }
+    },
+    {
+        "model": "mainapp.uk",
+        "pk": 1,
+        "fields": {
+            "name": "\u041e\u041e\u041e \"\u0423\u041a \u041d\u043e\u0432\u044b\u0439 \u0433\u043e\u0440\u043e\u0434\"",
+            "city": 1,
+            "street": 1,
+            "num_building": "12",
+            "phone": "79865465453",
+            "email": "uk@new-city.ru",
+            "inn": "7202225426",
+            "ps": "40702810538320000181",
+            "bik": "046577964",
+            "ks": "30101810100000000096",
+            "bank": "\u041e\u0410\u041e \"\u0410\u043b\u044c\u0444\u0430-\u0411\u0430\u043d\u043a\"",
+            "web_addr": "new-city.ru",
+            "is_active": true,
+            "created": "2021-04-12T13:44:12.634Z",
+            "updated": "2021-04-12T13:44:12.634Z"
+        }
+    },
+    {
+        "model": "mainapp.userprofile",
+        "pk": 1,
+        "fields": {
+            "user": 1,
+            "appartament": null,
+            "type_electric_meter": "",
+            "is_active": true,
+            "created": "2021-04-12T13:39:40.891Z",
+            "updated": "2021-04-12T13:40:07.910Z"
+        }
+    }
+]

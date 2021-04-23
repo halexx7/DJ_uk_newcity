@@ -30,8 +30,22 @@
                         </div>
                     {% endif %}
                 {% endfor %}
+
                 {% if request.user|has_group:"Client" %}
                     {% for field in profile_form %}
+                        <div class="form-group">
+                            {{ field.label }}
+                            {{ field }}
+                        </div>
+
+                        {% if field.errors %}
+                            <div class="alert  alert-danger">
+                                {{ field.errors }}
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                    
+                    {% for field in appartament %}
                         <div class="form-group">
                             {{ field.label }}
                             {{ field }}

@@ -6,33 +6,34 @@ from django.contrib.auth.forms import AuthenticationForm, PasswordChangeForm, Us
 from django.contrib.auth.forms import PasswordResetForm, SetPasswordForm
 from django.contrib.auth.models import Group
 from django.forms import fields
+from django.forms import models
 
 from mainapp.models import Appartament, UserProfile
 from .models import User
 
 from django.forms.models import BaseInlineFormSet, inlineformset_factory
  
-# AppartamentFormset = inlineformset_factory(UserProfile, Appartament, extra=1)
+class BaseChildrenFormset(BaseInlineFormSet, forms.ModelForm):
+    field_name = ["house", "number", "add_number",]
 
-# class BaseChildrenFormset(BaseInlineFormSet):
-
-#     def add_fields(self, form, index):
-#         super(BaseChildrenFormset, self).add_fields(form, index)
+    def add_fields(self, form, index):
+        super().add_fields(form, index)
+        AppartamentFormset = inlineformset_factory(UserProfile, Appartament, fields=["gender",], extra=1)
  
-#         # save the formset in the 'nested' property
-#         form.nested = AppartamentFormset(
-#                         instance=form.instance,
-#                         data=form.data if form.is_bound else None,
-#                         files=form.files if form.is_bound else None,
-#                         prefix='appartament-%s-%s' % (
-#                             form.prefix,
-#                             AppartamentFormset.get_default_prefix()),
-#                         extra=1)
+        # save the formset in the 'nested' property
+        form.nested = AppartamentFormset(
+                        instance=form.instance,
+                        data=form.data if form.is_bound else None,
+                        files=form.files if form.is_bound else None,
+                        prefix='appartament-%s-%s' % (
+                            form.prefix,
+                            AppartamentFormset.get_default_prefix()),
+                        extra=1)
+    
+    class Meta:
+        model = Appartament
+        exclude = ()
  
-# ChildrenFormset = inlineformset_factory(User,
-#                                         UserProfile,
-#                                         formset=BaseChildrenFormset,
-#                                         extra=1)
 
 
 class BootstrapStylesMixins:
@@ -71,15 +72,22 @@ class UserEditForm(BootstrapStylesMixins, UserChangeForm):
     class Meta:
         model = User
         fields = ("name", "personal_account", "email", "phone")
-        exclude = ("password",)
+
+
+class AppartamentEditForm(BootstrapStylesMixins, forms.ModelForm):
+    field_name = ["house", "number"]
+
+    class Meta:
+        model = Appartament
+        fields = ("house", "number")
 
 
 class UserProfileEditForm(BootstrapStylesMixins, forms.ModelForm):
-    field_name = ["appartament", "type_electric_meter"]
+    field_name = ["gender", "type_electric_meter"]
 
     class Meta:
         model = UserProfile
-        fields = ("appartament", "type_electric_meter")
+        fields = ("gender", "type_electric_meter")
 
 
 class UserRegisterForm(UserCreationForm):
@@ -104,38 +112,3 @@ class UserRegisterForm(UserCreationForm):
     class Meta:
         model = User
         fields = ("personal_account", "name", "password1", "password2", "email")
-
-
-# class UserEditForm(UserChangeForm):
-#     def __init__(self, *args, **kwargs):
-#         super().__init__(*args, **kwargs)
-
-#         for field_name, field in self.fields.items():
-#             field.widget.attrs["class"] = "form-control"
-#             field.help_text = ""
-
-#     def clean_age(self):
-#         data = self.cleaned_data["age"]
-#         if data < 18:
-#             raise forms.ValidationError("Вы слишком молоды!")
-
-#         return data
-
-#     class Meta:
-#         model = User
-#         fields = ("personal_account", "name", "email")
-
-
-# class UserProfileEditForm(forms.ModelForm):
-    class Meta:
-        model = UserProfile
-        fields = ("appartament", "type_electric_meter")
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        for field_name, field in self.fields.items():
-            field.widget.attrs["class"] = "form-control"
-
-
-
-

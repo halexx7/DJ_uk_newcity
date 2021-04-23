@@ -1,0 +1,23 @@
+[
+    {
+        "model": "mainapp.uk",
+        "pk": 1,
+        "fields": {
+            "name": "\u041e\u041e\u041e \"\u0423\u041a \u041d\u043e\u0432\u044b\u0439 \u0433\u043e\u0440\u043e\u0434\"",
+            "city": 1,
+            "street": 1,
+            "num_building": "12",
+            "phone": "79865465453",
+            "email": "uk@new-city.ru",
+            "inn": "7202225426",
+            "ps": "40702810538320000181",
+            "bik": "046577964",
+            "ks": "30101810100000000096",
+            "bank": "\u041e\u0410\u041e \"\u0410\u043b\u044c\u0444\u0430-\u0411\u0430\u043d\u043a\"",
+            "web_addr": "new-city.ru",
+            "is_active": true,
+            "created": "2021-04-12T13:44:12.634Z",
+            "updated": "2021-04-12T13:44:12.634Z"
+        }
+    }
+]

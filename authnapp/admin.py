@@ -56,6 +56,7 @@ class PrivilegesInline(admin.TabularInline):
         self.extra = 0
         return self.extra
 
+
 class CurrentCounterInline(admin.TabularInline):
     model = CurrentCounter
 
