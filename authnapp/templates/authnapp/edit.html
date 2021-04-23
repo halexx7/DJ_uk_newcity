@@ -3,6 +3,10 @@
 
 {% load auth_extras %}
 
+{% block menu %}
+    {% include 'authnapp/includes/inc_menu.html' %}
+{% endblock menu %}
+
 {% block content %}
 
 <section class="edit  mt-5">
@@ -41,6 +45,9 @@
                     {% endfor %}
                 {% endif %}
                 <br>
+                <div class="change_pass  pb-5">
+                    <a href="{% url 'authnapp:password_change' %}" class="col  text-right  text-decoration-none">Изменить пароль</a>
+                </div>
                 <input class="btn btn-outline-primary btn-block  mb-3" type="submit" value="сохранить">
             </form>
             <a href="{% url 'main' %}" class="btn btn-outline-secondary btn-block" role="button">
