@@ -1,3 +1,4 @@
+from mainapp.models import UserProfile
 from django.conf import settings
 from django.contrib import auth
 from django.contrib.auth.decorators import login_required
@@ -5,6 +6,11 @@ from django.core.mail import send_mail
 from django.db import transaction
 from django.shortcuts import HttpResponseRedirect, render
 from django.urls import reverse, reverse_lazy
+from django.shortcuts import HttpResponseRedirect, get_object_or_404
+from django.views.generic import CreateView, DeleteView, ListView, UpdateView
+from django.views.generic.detail import DetailView
+from django.forms.models import BaseInlineFormSet, inlineformset_factory
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 from authnapp.forms import UserEditForm, UserLoginForm, UserProfileEditForm, UserRegisterForm
 from authnapp.models import User
@@ -129,39 +135,54 @@ def edit(request):
     return render(request, "authnapp/edit.html", content)
 
 
-# TODO Переделать под себя
-# class OrderItemsUpdate(UpdateView):
-#     model = Order
-#     fields = []
-#     success_url = reverse_lazy("ordersapp:orders_list")
+class UsersUpdateView(LoginRequiredMixin, UpdateView):
+    model = User
+    template_name = "authnapp/edit.html"
+    success_url = reverse_lazy("admin:edit")
+    form_class = UserEditForm
 
-#     def get_context_data(self, **kwargs):
-#         data = super(OrderItemsUpdate, self).get_context_data(**kwargs)
-#         OrderFormSet = inlineformset_factory(Order, OrderItem, form=OrderItemForm, extra=1)
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["title"] = "пользователи/редактирование"
+        return context
 
-#         if self.request.POST:
-#             data["orderitems"] = OrderFormSet(self.request.POST, instance=self.object)
-#         else:
-#             queryset = self.object.orderitems.select_related()
-#             formset = OrderFormSet(instance=self.object, queryset=queryset)
-#             for form in formset.forms:
-#                 if form.instance.pk:
-#                     form.initial["price"] = form.instance.service.price
-#             data["orderitems"] = formset
-#         return data
+#TODO Переделать под себя
+class UserUpdate(UpdateView):
+    model = User
+    fields = []
+    template_name = 'authnapp/edit.html'
+    success_url = reverse_lazy("main")
 
-#     def form_valid(self, form):
-#         context = self.get_context_data()
-#         orderitems = context["orderitems"]
+    def get_context_data(self, **kwargs):
+        data = super().get_context_data(**kwargs)
+        data['user'] = self.request.user
+        # data['title'] = "редактирование"
+        data['profile_form'] = UserProfileEditForm(instance=self.request.user.profiles)
+        UserFormSet = inlineformset_factory(User, UserProfile, form=UserProfileEditForm, extra=1)
 
-#         with transaction.atomic():
-#             self.object = form.save()
-#             if orderitems.is_valid():
-#                 orderitems.instance = self.object
-#                 orderitems.save()
+        # if self.request.POST:
+        #     data["orderitems"] = OrderFormSet(self.request.POST, instance=self.object)
+        # else:
+        #     queryset = self.object.orderitems.select_related()
+        #     formset = OrderFormSet(instance=self.object, queryset=queryset)
+        #     for form in formset.forms:
+        #         if form.instance.pk:
+        #             form.initial["price"] = form.instance.service.price
+        #     data["orderitems"] = formset
+        return data
 
-#         # Delete empty order
-#         if self.object.get_total_cost() == 0:
-#             self.object.delete()
+    # def form_valid(self, form):
+    #     context = self.get_context_data()
+    #     # orderitems = context["orderitems"]
 
-#         return super(OrderItemsUpdate, self).form_valid(form)
+    #     with transaction.atomic():
+    #         self.object = form.save()
+    #         if orderitems.is_valid():
+    #             orderitems.instance = self.object
+    #             orderitems.save()
+
+    #     # Delete empty order
+    #     if self.object.get_total_cost() == 0:
+    #         self.object.delete()
+
+    #     return super(OrderItemsUpdate, self).form_valid(form)

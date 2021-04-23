@@ -7,9 +7,32 @@ from django.contrib.auth.forms import PasswordResetForm, SetPasswordForm
 from django.contrib.auth.models import Group
 from django.forms import fields
 
-from mainapp.models import UserProfile
-
+from mainapp.models import Appartament, UserProfile
 from .models import User
+
+from django.forms.models import BaseInlineFormSet, inlineformset_factory
+ 
+# AppartamentFormset = inlineformset_factory(UserProfile, Appartament, extra=1)
+
+# class BaseChildrenFormset(BaseInlineFormSet):
+
+#     def add_fields(self, form, index):
+#         super(BaseChildrenFormset, self).add_fields(form, index)
+ 
+#         # save the formset in the 'nested' property
+#         form.nested = AppartamentFormset(
+#                         instance=form.instance,
+#                         data=form.data if form.is_bound else None,
+#                         files=form.files if form.is_bound else None,
+#                         prefix='appartament-%s-%s' % (
+#                             form.prefix,
+#                             AppartamentFormset.get_default_prefix()),
+#                         extra=1)
+ 
+# ChildrenFormset = inlineformset_factory(User,
+#                                         UserProfile,
+#                                         formset=BaseChildrenFormset,
+#                                         extra=1)
 
 
 class BootstrapStylesMixins:
