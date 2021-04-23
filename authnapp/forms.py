@@ -42,6 +42,23 @@ class MyPassSetForm(BootstrapStylesMixins, SetPasswordForm):
     field_name = ["new_password1", "new_password2"]
 
 
+class UserEditForm(BootstrapStylesMixins, UserChangeForm):
+    field_name = ["name", "personal_account", "email", "phone"]
+
+    class Meta:
+        model = User
+        fields = ("name", "personal_account", "email", "phone")
+        exclude = ("password",)
+
+
+class UserProfileEditForm(BootstrapStylesMixins, forms.ModelForm):
+    field_name = ["appartament", "type_electric_meter"]
+
+    class Meta:
+        model = UserProfile
+        fields = ("appartament", "type_electric_meter")
+
+
 class UserRegisterForm(UserCreationForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -66,27 +83,27 @@ class UserRegisterForm(UserCreationForm):
         fields = ("personal_account", "name", "password1", "password2", "email")
 
 
-class UserEditForm(UserChangeForm):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+# class UserEditForm(UserChangeForm):
+#     def __init__(self, *args, **kwargs):
+#         super().__init__(*args, **kwargs)
 
-        for field_name, field in self.fields.items():
-            field.widget.attrs["class"] = "form-control"
-            field.help_text = ""
+#         for field_name, field in self.fields.items():
+#             field.widget.attrs["class"] = "form-control"
+#             field.help_text = ""
 
-    def clean_age(self):
-        data = self.cleaned_data["age"]
-        if data < 18:
-            raise forms.ValidationError("Вы слишком молоды!")
+#     def clean_age(self):
+#         data = self.cleaned_data["age"]
+#         if data < 18:
+#             raise forms.ValidationError("Вы слишком молоды!")
 
-        return data
+#         return data
 
-    class Meta:
-        model = User
-        fields = ("personal_account", "name", "email")
+#     class Meta:
+#         model = User
+#         fields = ("personal_account", "name", "email")
 
 
-class UserProfileEditForm(forms.ModelForm):
+# class UserProfileEditForm(forms.ModelForm):
     class Meta:
         model = UserProfile
         fields = ("appartament", "type_electric_meter")
@@ -95,6 +112,7 @@ class UserProfileEditForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         for field_name, field in self.fields.items():
             field.widget.attrs["class"] = "form-control"
+
 
 
 

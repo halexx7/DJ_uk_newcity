@@ -6,9 +6,6 @@ from django.db import transaction
 from django.shortcuts import HttpResponseRedirect, render
 from django.urls import reverse, reverse_lazy
 
-from django.contrib.auth.views import PasswordChangeView, PasswordChangeDoneView
-
-
 from authnapp.forms import UserEditForm, UserLoginForm, UserProfileEditForm, UserRegisterForm
 from authnapp.models import User
 
@@ -112,11 +109,22 @@ def verify(request, email, activation_key):
     return HttpResponseRedirect(reverse("main"))
 
 
-# class passwordChange(PasswordChangeView):
-#     template_name = "authnapp/password_change_form.html"
-#     success_url = reverse_lazy('auth:password_change_done')
+@login_required
+@transaction.atomic
+def edit(request):
+    title = "редактирование"
 
+    if request.method == "POST":
+        edit_form = UserEditForm(request.POST, request.FILES, instance=request.user)
+        profile_form = UserProfileEditForm(request.POST, instance=request.user.profiles)
+        if edit_form.is_valid() and profile_form.is_valid():
+            edit_form.save()
+            return HttpResponseRedirect(reverse("auth:edit"))
+    else:
+        edit_form = UserEditForm(instance=request.user)
+        profile_form = UserProfileEditForm(instance=request.user.profiles)
 
+    content = {"title": title, "edit_form": edit_form, "profile_form": profile_form}
 
-# class passwordChangeDone(PasswordChangeDoneView):
-#     template_name = "authnapp/password_change_done.html"
+    return render(request, "authnapp/edit.html", content)
+

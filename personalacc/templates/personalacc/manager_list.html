@@ -3,7 +3,6 @@
 
 {% load crispy_forms_tags %}
 
-
 {% block menu %}
     {% include 'mainapp/includes/inc_menu.html' %}
 {% endblock menu %}
@@ -11,7 +10,7 @@
 {% block content %}
 <div class="intro-user  mt-5">
     <div class="container">
-        <h2 class="intro-user__title  text-center">Здравствуйте, Ирина Петровна!</h2>
+        <h2 class="intro-user__title  text-center">Здравствуйте, {{ user.name }}!</h2>
     </div>
 </div>
 

@@ -131,6 +131,10 @@ ul, ol {
     max-width: 50rem;
 }
 
+.user__item {
+    width: 400px;
+}
+
 
 /* =================
 === Manager Area ===
@@ -155,6 +159,10 @@ ul, ol {
 
 .manager-privileges__form {
     max-width: 300px;
+}
+
+.edit__item {
+    width: 400px;
 }
 
 
