@@ -12,7 +12,7 @@
 
 <section class="edit  mt-5">
     <div class="container  d-flex  justify-content-center">
-        <div class="edit__item">
+        <div class="directory__item">
 
             <h4 class="mb-3">Справочники</h4>
                     <div class="manager__directory-tab">
@@ -225,55 +225,33 @@
                                     <div class="tab-pane fade" id="v-pills-rate" role="tabpanel"
                                         aria-labelledby="v-pills-rate-tab">
 
-                                        <h4 class="mb-3">Тарифы</h4>
+                                        <a class="btn  btn-outline-primary  new__category  btn-sm " href="{% url 'directory:category_create' %}" role="button">новая категория</a>
+
+                                        <h4 class="mb-3  mt-5">Категории тарифов</h4>
+
                                         <table class="table">
                                             <thead class="thead-light">
                                                 <tr>
                                                     <th scope="col">#</th>
                                                     <th scope="col">Наименование</th>
-                                                    <th scope="col">Ед.изм.</th>
-                                                    <th scope="col">Норматив</th>
-                                                    <th scope="col">Цена</th>
-                                                    <th scope="col">Константа</th>
+                                                    <th scope="col">Список</th>
                                                     <th scope="col">Редактировать</th>
+                                                    <th scope="col">Удалить</th>
                                                 </tr>
                                             </thead>
-                                            <tbody>
-                                                <tr>
-                                                    <th scope="row">1</th>
-                                                    <td>Взносы на капитальный ремонт</td>
-                                                    <td class="text-center">м2</td>
-                                                    <td class="text-center">1</td>
-                                                    <td class="text-center">15.323</td>
-                                                    <td class="text-center"><input type="checkbox"
-                                                            class="form-check-input" id="exampleCheck1" checked>
-                                                    </td>
-                                                    <td class="text-center"><a href="#"
-                                                            class="text-decoration-none">редактировать</a></td>
-                                                </tr>
-                                                <tr>
-                                                    <th scope="row">2</th>
-                                                    <td>Холодная вода (индивидуальное потребление)</td>
-                                                    <td class="text-center">м3</td>
-                                                    <td class="text-center">1</td>
-                                                    <td class="text-center">15.323</td>
-                                                    <td class="text-center"><input type="checkbox"
-                                                            class="form-check-input" id="exampleCheck1"></td>
-                                                    <td class="text-center"><a href="#"
-                                                            class="text-decoration-none">редактировать</a></td>
-                                                </tr>
-                                                <tr>
-                                                    <th scope="row">3</th>
-                                                    <td>Горячая вода (индивидуальное потребление)</td>
-                                                    <td class="text-center">м3</td>
-                                                    <td class="text-center">1</td>
-                                                    <td class="text-center">25.401</td>
-                                                    <td class="text-center"><input type="checkbox"
-                                                            class="form-check-input" id="exampleCheck1"></td>
-                                                    <td class="text-center"><a href="#"
-                                                            class="text-decoration-none">редактировать</a></td>
-                                                </tr>
-                                            </tbody>
+
+                                            {% for category in categories %}
+                                                <tbody>
+                                                    <tr class="{% if not category.is_active %}not_active{% endif %}">
+                                                        <th scope="row">{{ category.id }}</th>
+                                                        <td>{{ category.name }}</td>
+                                                        <td class="text-center"><a type="button" class="btn btn-outline-primary btn-sm" role="button" href="{% url 'directory:services' category.pk %}">Тарифы категории</a></td>
+                                                        <td class="text-center"><a type="button" class="btn btn-outline-warning btn-sm" role="button" href="{% url 'directory:category_update' category.pk %}">Редактировать</a></td>
+                                                        <td class="text-center"><a class="text-danger text-decoration-none" href="{% url 'directory:category_delete' category.pk %}">удалить</a></td>
+                                                    </tr>
+                                                </tbody>
+                                            {% endfor %}
+
                                         </table>
 
                                     </div>

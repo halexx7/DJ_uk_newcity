@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     "personalacc",
     'crispy_forms',
     "directory",
+    # "widget_tweaks",
 ]
 
 # Auth model

@@ -172,3 +172,25 @@ ul, ol {
 .main-form {
     max-width: 400px;
 }
+
+
+
+/* ===================
+=== Directory Page ===
+====================*/
+.directory__item {
+    width: 100%;
+}
+
+.not_active {
+    opacity: 0.5;
+}
+
+.services__item {
+    width: 25em;
+}
+
+.services__form {
+    width: 100%;
+}
+

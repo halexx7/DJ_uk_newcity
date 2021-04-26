@@ -1,0 +1,27 @@
+{% extends 'directory/base.html' %}
+{% load staticfiles %}
+
+
+{% block content %}
+<section class="edit  mt-5">
+    <div class="container  d-flex  justify-content-center">
+        <div class="services__item">
+
+            <div class="category_delete">
+                <p class="category_delete--text">Уверены, что хотите удалить категорию <strong>{{ object.name }}</strong>?</p> 
+                <div class="category__form">
+                    <form action="{% url 'directory:category_delete' object.pk %}" method="post">
+                        {% csrf_token %}
+
+                        <div class="form-group  d-flex  justify-content-around  mt-5">
+                            <input class="btn  btn-danger" type="submit" value="удалить">
+                            <a class="btn  btn-success" role="button" href="{% url 'directory:list' %}">отмена</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+{% endblock %}
