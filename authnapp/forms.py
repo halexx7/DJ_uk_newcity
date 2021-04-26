@@ -13,29 +13,6 @@ from .models import User
 
 from django.forms.models import BaseInlineFormSet, inlineformset_factory
  
-class BaseChildrenFormset(BaseInlineFormSet, forms.ModelForm):
-    field_name = ["house", "number", "add_number",]
-
-    def add_fields(self, form, index):
-        super().add_fields(form, index)
-        AppartamentFormset = inlineformset_factory(UserProfile, Appartament, fields=["gender",], extra=1)
- 
-        # save the formset in the 'nested' property
-        form.nested = AppartamentFormset(
-                        instance=form.instance,
-                        data=form.data if form.is_bound else None,
-                        files=form.files if form.is_bound else None,
-                        prefix='appartament-%s-%s' % (
-                            form.prefix,
-                            AppartamentFormset.get_default_prefix()),
-                        extra=1)
-    
-    class Meta:
-        model = Appartament
-        exclude = ()
- 
-
-
 class BootstrapStylesMixins:
     field_name = None
 
@@ -72,6 +49,7 @@ class UserEditForm(BootstrapStylesMixins, UserChangeForm):
     class Meta:
         model = User
         fields = ("name", "personal_account", "email", "phone")
+        exclude = ("password",)
 
 
 class AppartamentEditForm(BootstrapStylesMixins, forms.ModelForm):
@@ -112,3 +90,19 @@ class UserRegisterForm(UserCreationForm):
     class Meta:
         model = User
         fields = ("personal_account", "name", "password1", "password2", "email")
+
+
+class AppartamentForm(BootstrapStylesMixins, forms.ModelForm):
+    field_name = ["house", "number", "add_number",]
+
+    class Meta:
+        model = Appartament
+        fields = ("house", "number", "add_number",)
+
+AppartamentFormset = inlineformset_factory(
+    User,
+    Appartament,
+    form=AppartamentForm,
+    extra=1,
+    can_delete=False,
+)

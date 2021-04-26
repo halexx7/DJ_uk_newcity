@@ -6,7 +6,7 @@ from authnapp.apps import AuthnappConfig
 
 from django.contrib.auth.views import PasswordChangeView, PasswordChangeDoneView, PasswordResetView, PasswordResetDoneView, PasswordResetConfirmView, PasswordResetCompleteView
 from .forms import MyPasswordChangeForm, MyPassResetForm, MyPassSetForm
-from authnapp.views import UsersUpdateView
+from authnapp.views import ProfileUpdateView
 
 app_name = AuthnappConfig.name
 
@@ -14,7 +14,7 @@ urlpatterns = [
     re_path(r"^login/$", authnapp.login, name="login"),
     re_path(r"^logout/$", authnapp.logout, name="logout"),
     re_path(r"^register/$", authnapp.register, name="register"),
-    re_path(r"^edit/(?P<pk>\d+)/$", UsersUpdateView.as_view(), name="edit"),
+    re_path(r"^edit/(?P<pk>\d+)/$", ProfileUpdateView.as_view(), name="edit"),
     # re_path(r"^edit/$", authnapp.edit, name="edit"),
     
     re_path(r"^verify/(?P<email>.+)/(?P<activation_key>\w+)/$", authnapp.verify, name="verify"),

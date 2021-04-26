@@ -54,9 +54,9 @@ class Metrics(models.Model):
 
 
 class Services(models.Model):
-    category = models.ForeignKey(ServicesCategory, verbose_name="Категория", on_delete=models.CASCADE, default=1)
+    category = models.ForeignKey(ServicesCategory, verbose_name="Категория", related_name="category", on_delete=models.CASCADE, default=1)
     name = models.CharField(verbose_name="Услуга", max_length=256)
-    unit = models.ForeignKey(Metrics, verbose_name="Единицы", on_delete=models.CASCADE)
+    unit = models.ForeignKey(Metrics, verbose_name="Единицы", related_name="unit", on_delete=models.CASCADE)
     rate = models.DecimalField(verbose_name="Тариф", max_digits=7, decimal_places=3, default=0)
     factor = models.DecimalField(verbose_name="Коэфициент", max_digits=3, decimal_places=2, default=1)
     const = models.BooleanField(verbose_name="Константа", db_index=True, default=True)
@@ -132,8 +132,8 @@ class Street(models.Model):
 
 class UK(models.Model):
     name = models.CharField(verbose_name="Название", max_length=128)
-    city = models.ForeignKey(City, verbose_name="Город", on_delete=models.CASCADE)
-    street = models.ForeignKey(Street, verbose_name="Улица", on_delete=models.CASCADE)
+    city = models.ForeignKey(City, verbose_name="Город", null=True, on_delete=SET_NULL)
+    street = models.ForeignKey(Street, verbose_name="Улица", null=True, on_delete=SET_NULL)
     num_building = models.CharField(verbose_name="Номер здания", max_length=3)
     phone = models.CharField(
         verbose_name="Телефон", 
@@ -165,13 +165,13 @@ class UK(models.Model):
 
 
 class House(models.Model):
-    city = models.ForeignKey(City, verbose_name="Город", on_delete=models.CASCADE)
-    street = models.ForeignKey(Street, verbose_name="Улица", on_delete=models.CASCADE)
+    city = models.ForeignKey(City, verbose_name="Город", null=True, on_delete=SET_NULL)
+    street = models.ForeignKey(Street, verbose_name="Улица", null=True, on_delete=SET_NULL)
     number = models.CharField(verbose_name="Номер", max_length=3)
     add_number = models.CharField(verbose_name="Корпус", max_length=3, blank=True, default='-')
     sq_home = models.DecimalField(verbose_name="Площадь", max_digits=7, decimal_places=2)
-    uk = models.ForeignKey(UK, verbose_name="Управляющая компания", on_delete=CASCADE)
-    category_rate = models.ForeignKey(ServicesCategory, verbose_name="Категория", on_delete=CASCADE, default=1)
+    uk = models.ForeignKey(UK, verbose_name="Управляющая компания", null=True, on_delete=SET_NULL)
+    category_rate = models.ForeignKey(ServicesCategory, verbose_name="Категория", null=True, on_delete=SET_NULL, default=1)
 
     is_active = models.BooleanField(verbose_name="Активный", db_index=True, default=True)
     created = models.DateTimeField(verbose_name="Создан", auto_now_add=True)
@@ -182,7 +182,7 @@ class House(models.Model):
         verbose_name_plural = "007 Дома"
 
     def __str__(self):
-        return f'Дом №{self.number}, к.{self.add_number}, ул.{self.street.street}'
+        return f'ул.{self.street.street}, д.{self.number}, к.{self.add_number}'
 
     
     def delete(self):
@@ -193,7 +193,7 @@ class House(models.Model):
 # Общедомовой счетчик (ТЕКУЩИЕ показания)
 class HouseCurrent(models.Model):
     period = models.DateField(verbose_name="Создан", default=datetime.datetime.now().replace(day=1))
-    house = models.ForeignKey(House, verbose_name="Дом", on_delete=models.CASCADE)
+    house = models.ForeignKey(House, verbose_name="Дом", null=True, on_delete=SET_NULL)
     col_water = models.PositiveIntegerField(verbose_name="Хол.вода", null=True)
     hot_water = models.PositiveIntegerField(verbose_name="Гор.вода", null=True)
     electric_day = models.PositiveIntegerField(verbose_name="Электр.день", null=True)
@@ -223,7 +223,7 @@ class HouseCurrent(models.Model):
 # Общедомовой счетчик (ИСТОРИЯ показания)
 class HouseHistory(models.Model):
     period = models.DateField(verbose_name="Создан", default=datetime.datetime.now().replace(day=1))
-    house = models.ForeignKey(House, verbose_name="Дом", on_delete=models.CASCADE)
+    house = models.ForeignKey(House, verbose_name="Дом",null=True, on_delete=SET_NULL)
     col_water = models.PositiveIntegerField(verbose_name="Хол.вода", null=True)
     hot_water = models.PositiveIntegerField(verbose_name="Гор.вода", null=True)
     electric_day = models.PositiveIntegerField(verbose_name="Электр.день", null=True)
@@ -257,7 +257,7 @@ class HouseHistory(models.Model):
     
 class Standart(models.Model):
     period = models.DateField(verbose_name="Период", auto_now_add=True)
-    house = models.ForeignKey(House, verbose_name="Дом", on_delete=models.CASCADE)
+    house = models.ForeignKey(House, verbose_name="Дом", null=True, on_delete=SET_NULL)
     col_water = models.PositiveIntegerField(verbose_name="Хол.вода", null=True)
     hot_water = models.PositiveIntegerField(verbose_name="Гор.вода", null=True)
     electric_day = models.PositiveIntegerField(verbose_name="Электр.день", null=True)
@@ -324,12 +324,12 @@ class UserProfile(models.Model):
 
 
 class Appartament(models.Model):
-    user = models.ForeignKey(User, verbose_name="Жилец", null=True, on_delete=SET_NULL)
-    house = models.ForeignKey(House, verbose_name="Дом", on_delete=CASCADE)
-    number = models.PositiveIntegerField(verbose_name="Квартира")
+    user = models.ForeignKey(User, verbose_name="Жилец", related_name="person", null=True, on_delete=SET_NULL)
+    house = models.ForeignKey(House, verbose_name="Дом", null=True, on_delete=SET_NULL)
+    number = models.PositiveIntegerField(verbose_name="Номер квартиры")
     add_number = models.CharField(verbose_name="Комната", max_length=2, null=True, blank=True, default='-')
-    sq_appart = models.DecimalField(verbose_name="Площадь", max_digits=5, decimal_places=2)
-    num_owner = models.PositiveIntegerField(verbose_name="Кол-во проживающих", default=0)
+    sq_appart = models.DecimalField(verbose_name="Площадь", max_digits=5, decimal_places=2, null=True, blank=True, default='0')
+    num_owner = models.PositiveIntegerField(verbose_name="Кол-во проживающих", null=True, blank=True, default=0)
 
     is_active = models.BooleanField(verbose_name="Активный", db_index=True, default=True)
     created = models.DateTimeField(verbose_name="Создан", auto_now_add=True)
@@ -338,6 +338,7 @@ class Appartament(models.Model):
     class Meta:
         verbose_name = "Квартира"
         verbose_name_plural = "008 Квартиры"
+        unique_together = ('house', 'number', 'add_number', 'user')
 
     def __str__(self):
         return f'ул.{self.house.street.street}, д.{self.house.number}, кв.{self.number}, комн.{self.add_number}'
@@ -373,7 +374,7 @@ class CurrentCounter(models.Model):
 
 # История показания счетчиков (индивидуальные)
 class HistoryCounter(models.Model):
-    user = models.ForeignKey(User, verbose_name="Пользователь", on_delete=CASCADE)
+    user = models.ForeignKey(User, verbose_name="Пользователь", null=True, on_delete=SET_NULL)
     period = models.DateField(verbose_name="Период")
     hist_col_water = models.PositiveIntegerField(verbose_name="Гор.вода")
     hist_hot_water = models.PositiveIntegerField(verbose_name="Хол.вода")
@@ -483,7 +484,7 @@ class Subsidies(models.Model):
 # Льготы
 class Privileges(models.Model):
     user = models.ForeignKey(User, verbose_name="Пользователь", on_delete=CASCADE)
-    service = models.ForeignKey(Services, verbose_name="Услуга", on_delete=CASCADE)
+    service = models.ForeignKey(Services, verbose_name="Услуга", related_name="service", on_delete=CASCADE)
     sale = models.PositiveIntegerField(verbose_name="Льготы", default=0)
 
     is_active = models.BooleanField(verbose_name="Активный", db_index=True, default=True)
@@ -510,7 +511,7 @@ class Privileges(models.Model):
 
 # Начисления (Текущие)
 class Profit(models.Model):
-    user = models.ForeignKey(User, verbose_name="Пользователь", on_delete=CASCADE)
+    user = models.ForeignKey(User, verbose_name="Пользователь", null=True, on_delete=SET_NULL)
     period = models.DateField(verbose_name="Период")
     amount_profit = models.DecimalField(verbose_name="Сумма", max_digits=7, decimal_places=2)
     variable = JSONField(verbose_name="variable")
@@ -533,7 +534,7 @@ class Profit(models.Model):
 
 # Инфорамация по оплатам
 class Payment(models.Model):
-    user = models.ForeignKey(User, verbose_name="Пользователь", on_delete=CASCADE)
+    user = models.ForeignKey(User, verbose_name="Пользователь", null=True, on_delete=SET_NULL)
     period = models.DateField(verbose_name="Период")
     amount_profit = models.DecimalField(verbose_name="Сумма", max_digits=7, decimal_places=2)
 
@@ -555,7 +556,7 @@ class Payment(models.Model):
 
 # Перерасчеты
 class Recalculations(models.Model):
-    user = models.ForeignKey(User, verbose_name="Пользователь", on_delete=CASCADE)
+    user = models.ForeignKey(User, verbose_name="Пользователь", null=True, on_delete=SET_NULL)
     period = models.DateField(verbose_name="Период", auto_now_add=True)
     recalc = models.DecimalField(verbose_name="Сумма", max_digits=7, decimal_places=2, default=0)
     desc = models.TextField(verbose_name="Описание", blank=True, null=True)
@@ -572,6 +573,28 @@ class Recalculations(models.Model):
     @staticmethod
     def get_last_val(user):
         return Recalculations.objects.filter(user=user)[0:1]
+
+    def delete(self):
+        self.is_active = False
+        self.save()
+
+
+class PersonalAccountStatus(models.Model):
+    user = models.OneToOneField(User, verbose_name="Пользователь", on_delete=CASCADE)
+    amount = models.DecimalField(verbose_name="Сумма", max_digits=7, decimal_places=2)
+
+    created = models.DateTimeField(verbose_name="Создан", auto_now_add=True)
+    updated = models.DateTimeField(verbose_name="Обновлен", auto_now=True)
+
+    class Meta:
+        ordering = ("-updated",)
+        verbose_name = "Состояние счета"
+        verbose_name_plural = "Состояния счетов"
+
+    # Перерасчет, когда вносится?
+    @staticmethod
+    def get_item(user):
+        return CurrentCounter.objects.filter(user=user)
 
     def delete(self):
         self.is_active = False

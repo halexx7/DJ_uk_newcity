@@ -99,8 +99,8 @@ class ManagerPageCreate(LoginRequiredMixin, CreateView):
             if form.is_valid():
                 post = self.request.POST
                 house = post.get('house')
-                # period = datetime.datetime.now().date().replace(day=1)
-                period = datetime.datetime.now().date().replace(day=1, month=7)
+                period = datetime.datetime.now().date().replace(day=1)
+                # period = datetime.datetime.now().date().replace(day=1, month=7)
                 update_values = {
                     'col_water': post.get('col_water'),
                     'hot_water': post.get('hot_water'),
