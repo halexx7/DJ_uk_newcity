@@ -112,21 +112,21 @@ class ProfileUpdateView(LoginRequiredMixin, UpdateView):
         if self.request.POST:
             context['appartament_form'] = AppartamentFormset(self.request.POST, instance=self.object)
         else:
-            context['appartament_form'] = AppartamentFormset()
+            context['appartament_form'] = AppartamentFormset(instance=self.object)
         return context
     
-    def get(self, request, *args, **kwargs):
-        self.object = self.get_object()
-        form_class = self.get_form_class()
-        form = self.get_form(form_class)
-        appartament = get_object_or_404(User, id=self.request.user.id)
-        # appartament = Appartament.objects.get(pk=self.request.user.id)
-        appartament_form = AppartamentFormset(instance=appartament)
+    # def get(self, request, *args, **kwargs):
+    #     self.object = self.get_object()
+    #     form_class = self.get_form_class()
+    #     form = self.get_form(form_class)
+    #     appartament = get_object_or_404(User, id=self.request.user.id)
+    #     # appartament = Appartament.objects.get(pk=self.request.user.id)
+    #     appartament_form = AppartamentFormset(instance=appartament)
 
-        return self.render_to_response(
-            self.get_context_data(form=form, appartament_form=appartament_form)
-            # self.get_context_data(form=form)
-        )
+    #     return self.render_to_response(
+    #         self.get_context_data(form=form, appartament_form=appartament_form)
+    #         # self.get_context_data(form=form)
+    #     )
 
     def post(self, request, *args, **kwargs):
         self.object = self.get_object()

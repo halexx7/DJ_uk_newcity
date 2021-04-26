@@ -10,8 +10,7 @@ urlpatterns = [
     path("", mainapp.main, name="main"),
     path("auth/", include("authnapp.urls", namespace="auth")),
     path("person/", include("personalacc.urls", namespace="person")),
-    # path('products/', mainapp.products),
-    # path('contact/', mainapp.contact),
+    path("directory/", include("personalacc.urls", namespace="directory")),
     path("admin/", admin.site.urls, name="admin"),
 ]
 
