@@ -1,6 +1,6 @@
 from django import forms
 
-from mainapp.models import City, Services, ServicesCategory, Street
+from mainapp.models import City, House, Services, ServicesCategory, Street
 from authnapp.forms import BootstrapStylesMixins
 
  
@@ -34,3 +34,11 @@ class StreetEditForm(BootstrapStylesMixins, forms.ModelForm):
     class Meta:
         model = Street
         fields = ("city", "street","is_active")
+
+
+class HouseEditForm(BootstrapStylesMixins, forms.ModelForm):
+    field_name = ["city", "street", "number", "add_number", "sq_home", "uk", "category_rate", "is_active"]
+
+    class Meta:
+        model = House
+        fields = ("city", "street", "number", "add_number", "sq_home", "uk", "category_rate", "is_active")

@@ -1,6 +1,6 @@
 from django import forms
 from django.forms.formsets import formset_factory
-from mainapp.models import Appartament, City, Street, UserProfile, Services, ServicesCategory
+from mainapp.models import Appartament, City, House, Street, UserProfile, Services, ServicesCategory
 from django.conf import settings
 from django.contrib import auth
 from django.contrib.auth.decorators import login_required
@@ -14,7 +14,7 @@ from django.views.generic.detail import DetailView
 from django.forms.models import BaseInlineFormSet, inlineformset_factory
 from django.contrib.auth.mixins import LoginRequiredMixin
 
-from directory.forms import ServicesCategoryEditForm, ServicesEditForm, CityEditForm, StreetEditForm
+from directory.forms import ServicesCategoryEditForm, ServicesEditForm, CityEditForm, StreetEditForm, HouseEditForm
 
 class DirectoryList(LoginRequiredMixin, ListView):
     model = UserProfile
@@ -205,6 +205,63 @@ class StreetDeleteView(LoginRequiredMixin, DeleteView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["title"] = "Улица/удаление"
+        return context
+
+    def delete(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        self.object.is_active = False
+        self.object.save()
+        return HttpResponseRedirect(self.get_success_url())
+
+
+'''
+=========
+  HOUSE
+=========
+'''
+class HouseListView(LoginRequiredMixin, ListView):
+    model = House
+    template_name = "directory/house.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['street'] = get_object_or_404(Street, pk=self.kwargs['pk'])
+        context['house'] = House.objects.filter(street__pk=self.kwargs['pk']).order_by('street')
+        return context
+
+
+class HouseCreateView(LoginRequiredMixin, CreateView):
+    model = House
+    template_name = "directory/house_update.html"
+    success_url = reverse_lazy("directory:house")
+    form_class = HouseEditForm
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["title"] = "Дом/создание"
+        return context
+
+
+class HouseUpdateView(LoginRequiredMixin, UpdateView):
+    model = House
+    template_name = "directory/house_update.html"
+    success_url = reverse_lazy("directory:house")
+    form_class = HouseEditForm
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["title"] = "Дом/редактирование"
+        return context
+
+
+class HouseDeleteView(LoginRequiredMixin, DeleteView):
+    model = House
+    template_name = "directory/house_delete.html"
+    success_url = reverse_lazy("directory:house")
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["title"] = "Дом/удаление"
         return context
 
     def delete(self, request, *args, **kwargs):

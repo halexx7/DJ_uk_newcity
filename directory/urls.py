@@ -30,4 +30,10 @@ urlpatterns = [
     re_path(r"^street/read/city/(?P<pk>\d+)/$", directory.StreetListView.as_view(), name="streets"),
     re_path(r"^street/update/(?P<pk>\d+)/$", directory.StreetUpdateView.as_view(), name="street_update"),
     re_path(r"^street/delete/(?P<pk>\d+)/$", directory.StreetDeleteView.as_view(), name="street_delete"),
+
+    #House
+    re_path(r"^house/create/street/(?P<pk>\d+)/$", directory.HouseCreateView.as_view(), name="house_create"),
+    re_path(r"^house/read/street/(?P<pk>\d+)/$", directory.HouseListView.as_view(), name="house"),
+    re_path(r"^house/update/(?P<pk>\d+)/$", directory.HouseUpdateView.as_view(), name="house_update"),
+    re_path(r"^house/delete/(?P<pk>\d+)/$", directory.HouseDeleteView.as_view(), name="house_delete"),
 ]
