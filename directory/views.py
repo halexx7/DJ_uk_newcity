@@ -95,7 +95,7 @@ class ServicesCreateView(LoginRequiredMixin, CreateView):
 class ServicesUpdateView(LoginRequiredMixin, UpdateView):
     model = Services
     template_name = "directory/services_update.html"
-    success_url = reverse_lazy("directory:services")
+    success_url = reverse_lazy("directory:services_update")
     form_class = ServicesEditForm
 
     def get_context_data(self, **kwargs):
@@ -107,7 +107,7 @@ class ServicesUpdateView(LoginRequiredMixin, UpdateView):
 class ServicesDeleteView(LoginRequiredMixin, DeleteView):
     model = Services
     template_name = "directory/services_delete.html"
-    success_url = reverse_lazy("directory:services")
+    success_url = reverse_lazy("directory:list")
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -176,11 +176,12 @@ class StreetListView(LoginRequiredMixin, ListView):
 class StreetCreateView(LoginRequiredMixin, CreateView):
     model = Street
     template_name = "directory/street_update.html"
-    success_url = reverse_lazy("directory:streets")
+    success_url = reverse_lazy("directory:list")
     form_class = StreetEditForm
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        context["city"] = self.kwargs["pk"]
         context["title"] = "Улица/создание"
         return context
 
@@ -188,11 +189,12 @@ class StreetCreateView(LoginRequiredMixin, CreateView):
 class StreetUpdateView(LoginRequiredMixin, UpdateView):
     model = Street
     template_name = "directory/street_update.html"
-    success_url = reverse_lazy("directory:streets")
+    success_url = reverse_lazy("directory:list")
     form_class = StreetEditForm
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        context["city"] = self.kwargs["pk"]
         context["title"] = "Улица/редактирование"
         return context
 
@@ -200,7 +202,7 @@ class StreetUpdateView(LoginRequiredMixin, UpdateView):
 class StreetDeleteView(LoginRequiredMixin, DeleteView):
     model = Street
     template_name = "directory/street_delete.html"
-    success_url = reverse_lazy("directory:streets")
+    success_url = reverse_lazy("directory:list")
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -233,8 +235,11 @@ class HouseListView(LoginRequiredMixin, ListView):
 class HouseCreateView(LoginRequiredMixin, CreateView):
     model = House
     template_name = "directory/house_update.html"
-    success_url = reverse_lazy("directory:house")
+    success_url = reverse_lazy("directory:list")
     form_class = HouseEditForm
+
+    def get_queryset(self):
+        return House.objects.all().select_related()
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -245,19 +250,23 @@ class HouseCreateView(LoginRequiredMixin, CreateView):
 class HouseUpdateView(LoginRequiredMixin, UpdateView):
     model = House
     template_name = "directory/house_update.html"
-    success_url = reverse_lazy("directory:house")
+    success_url = reverse_lazy("directory:list")
     form_class = HouseEditForm
+
+    def get_queryset(self):
+        return House.objects.all()
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["title"] = "Дом/редактирование"
         return context
+    
 
 
 class HouseDeleteView(LoginRequiredMixin, DeleteView):
     model = House
     template_name = "directory/house_delete.html"
-    success_url = reverse_lazy("directory:house")
+    success_url = reverse_lazy("directory:list")
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

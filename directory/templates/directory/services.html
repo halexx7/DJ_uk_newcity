@@ -12,7 +12,7 @@
         <div class="row  mt-5  mb-3  d-flex justify-content-between">
             <h4 class="col">Тарифы:  <span class="text-700">{{ category.name }}</span></h4>
             <div class="form-group">
-                <a href="{% url 'directory:services_update' category.pk %}" class="btn btn-outline-primary btn-sm" role="button">добавить тариф</a>
+                <a href="{% url 'directory:services_create' category.pk %}" class="btn btn-outline-primary btn-sm" role="button">добавить тариф</a>
                 <a href="{% url 'directory:list' %}" class="btn  btn-outline-secondary btn-sm" role="button">назад</a>
             </div>
             
