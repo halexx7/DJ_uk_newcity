@@ -3,60 +3,51 @@
 
 {% load crispy_forms_tags %}
 
+{% block menu %}
+    {% include 'directory/includes/inc_menu.html' %}
+{% endblock menu %}
 
 {% block content %}
-
-    <section class="edit  mt-5">
-        <div class="container  d-flex  justify-content-center">
-            <div class="services__item">
-
-                <div class="container">
-                    <div class="my-5">
-                        <div class="row  mt-5  mb-3  d-flex justify-content-between">
-                            <h4 class="col">Тарифы:  <span class="text-700">{{ category.name }}</span></h4>
-                            <div class="form-group">
-                                <a href="{% url 'directory:services_update' category.pk %}" class="btn btn-outline-primary btn-sm" role="button">добавить тариф</a>
-                                <a href="{% url 'directory:list' %}" class="btn  btn-outline-secondary btn-sm" role="button">на главную</a>
-                            </div>
-                            
-                        </div>
-                        <div class="manager-area__counters-history  mb-5">
-                            <table class="table">
-                                <thead>
-                                    <tr>
-                                        <th scope="col">ID</th>
-                                        <th scope="col">Наименование</th>
-                                        <th scope="col">Ед.изм</th>
-                                        <th scope="col">Тариф</th>
-                                        <th scope="col">Коэфициент</th>
-                                        <th scope="col">Константа</th>
-                                        <th scope="col">Редактировать</th>
-                                        <th scope="col">удалиь</th>
-                                    </tr>
-                                </thead>
-                    
-                                {% for item in services %}
-                                <tbody>
-                                    <tr>
-                                        <td>{{ item.id }}</td>
-                                        <td>{{ item.name }}</td>
-                                        <td>{{ item.unit }}</td>
-                                        <td class="text-left">{{ item.rate }}</td>
-                                        <td>{{ item.factor }}</td>
-                                        <td><input type="checkbox" class="form-check-input" id="exampleCheck1" checked="{{ item.const }}"></td>
-                                        <td><a href="{% url 'directory:services_update' item.pk %}" type="button" class="btn btn-outline-warning btn-sm" role="button">Редактировать</a></td>
-                                        <td><a href="{% url 'directory:services_delete' item.pk %}" class="text-danger text-decoration-none">удалить</a></td>
-                                    </tr>
-                                </tbody>
-                                {% endfor %}
-                    
-                            </table> 
-                        </div>
-                    </div>
-                </div>
-                
+    <div class="my-5">
+        <div class="row  mt-5  mb-3  d-flex justify-content-between">
+            <h4 class="col">Тарифы:  <span class="text-700">{{ category.name }}</span></h4>
+            <div class="form-group">
+                <a href="{% url 'directory:services_update' category.pk %}" class="btn btn-outline-primary btn-sm" role="button">добавить тариф</a>
+                <a href="{% url 'directory:list' %}" class="btn  btn-outline-secondary btn-sm" role="button">назад</a>
             </div>
+            
         </div>
-    </section>
-
+        <div class="manager-area__counters-history  mb-5">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">ID</th>
+                        <th scope="col">Наименование</th>
+                        <th scope="col">Ед.изм</th>
+                        <th scope="col">Тариф</th>
+                        <th scope="col">Коэфициент</th>
+                        <th scope="col">Константа</th>
+                        <th scope="col">Редактировать</th>
+                        <th scope="col">удалиь</th>
+                    </tr>
+                </thead>
+    
+                {% for item in services %}
+                <tbody>
+                    <tr>
+                        <td>{{ item.id }}</td>
+                        <td>{{ item.name }}</td>
+                        <td>{{ item.unit }}</td>
+                        <td class="text-left">{{ item.rate }}</td>
+                        <td>{{ item.factor }}</td>
+                        <td><input type="checkbox" class="form-check-input" id="exampleCheck1" checked="{{ item.const }}"></td>
+                        <td><a href="{% url 'directory:services_update' item.pk %}" type="button" class="btn btn-outline-warning btn-sm" role="button">Редактировать</a></td>
+                        <td><a href="{% url 'directory:services_delete' item.pk %}" class="text-danger text-decoration-none">удалить</a></td>
+                    </tr>
+                </tbody>
+                {% endfor %}
+    
+            </table> 
+        </div>
+    </div>
 {% endblock %}

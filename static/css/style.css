@@ -174,23 +174,22 @@ ul, ol {
 }
 
 
-
 /* ===================
 === Directory Page ===
 ====================*/
-.directory__item {
-    width: 100%;
+.table {
+    min-width: 400px;
 }
 
 .not_active {
     opacity: 0.5;
 }
 
-.services__item {
-    width: 25em;
-}
-
 .services__form {
     width: 100%;
+}
+
+.directory__form {
+    min-width: 400px;
 }
 

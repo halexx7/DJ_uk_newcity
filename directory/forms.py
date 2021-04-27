@@ -1,10 +1,10 @@
 from django import forms
 
-from mainapp.models import Services, ServicesCategory
+from mainapp.models import City, Services, ServicesCategory, Street
 from authnapp.forms import BootstrapStylesMixins
 
  
-class ProductCategoryEditForm(BootstrapStylesMixins, forms.ModelForm):
+class ServicesCategoryEditForm(BootstrapStylesMixins, forms.ModelForm):
     field_name = ["name", "is_active"]
 
     class Meta:
@@ -12,10 +12,25 @@ class ProductCategoryEditForm(BootstrapStylesMixins, forms.ModelForm):
         fields = ("name", "is_active")
 
 
-class ProductEditForm(BootstrapStylesMixins, forms.ModelForm):
+class ServicesEditForm(BootstrapStylesMixins, forms.ModelForm):
     field_name = ["category", "name", "unit", "rate", "factor", "const", "is_active"]
 
     class Meta:
         model = Services
         fields = ("category", "name", "unit", "rate", "factor", "const", "is_active")
         
+
+class CityEditForm(BootstrapStylesMixins, forms.ModelForm):
+    field_name = ["city", "is_active"]
+
+    class Meta:
+        model = City
+        fields = ("city", "is_active")
+
+
+class StreetEditForm(BootstrapStylesMixins, forms.ModelForm):
+    field_name = ["city", "street","is_active"]
+
+    class Meta:
+        model = Street
+        fields = ("city", "street","is_active")

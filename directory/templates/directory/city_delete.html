@@ -7,7 +7,7 @@
 
 {% block content %}
     <div class="directory__form">
-        <p class="category_delete--text">Уверены, что хотите удалить категорию <strong>{{ object.name }}</strong>?</p> 
+        <p class="category_delete--text">Уверены, что хотите удалить город <strong>{{ object.city }}</strong>?</p> 
         <div class="category__form">
             <form action="{% url 'directory:category_delete' object.pk %}" method="post">
                 {% csrf_token %}

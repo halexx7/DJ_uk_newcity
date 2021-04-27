@@ -1,27 +1,22 @@
 {% extends 'directory/base.html' %}
 {% load staticfiles %}
 
+{% block menu %}
+    {% include 'directory/includes/inc_menu.html' %}
+{% endblock menu %}
 
 {% block content %}
-<section class="edit  mt-5">
-    <div class="container  d-flex  justify-content-center">
-        <div class="services__item">
+    <div class="directory__form">
+        <p class="category_delete--text">Уверены, что хотите удалить тариф <strong>{{ object.name }} ({{ object.category.name }})</strong>?</p> 
+        <div class="category__form">
+            <form action="{% url 'directory:services_delete' object.pk %}" method="post">
+                {% csrf_token %}
 
-            <div class="category_delete">
-                <p class="category_delete--text">Уверены, что хотите удалить тариф <strong>{{ object.name }} ({{ object.category.name }})</strong>?</p> 
-                <div class="category__form">
-                    <form action="{% url 'directory:services_delete' object.pk %}" method="post">
-                        {% csrf_token %}
-
-                        <div class="form-group  d-flex  justify-content-around  mt-5">
-                            <input class="btn  btn-danger" type="submit" value="удалить">
-                            <a class="btn  btn-success" role="button" href="{% url 'directory:services' object.category.pk %}">отмена</a>
-                        </div>
-                    </form>
+                <div class="form-group  d-flex  justify-content-around  mt-5">
+                    <input class="btn  btn-danger" type="submit" value="удалить">
+                    <a class="btn  btn-success" role="button" href="{% url 'directory:services' object.category.pk %}">отмена</a>
                 </div>
-            </div>
-
+            </form>
         </div>
     </div>
-</section>
 {% endblock %}

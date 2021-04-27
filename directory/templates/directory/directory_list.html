@@ -5,7 +5,7 @@
 {% load crispy_forms_tags %}
 
 {% block menu %}
-{% include 'directory/includes/inc_menu.html' %}
+    {% include 'directory/includes/inc_menu.html' %}
 {% endblock menu %}
 
 {% block content %}
@@ -45,42 +45,30 @@
                                     <div class="manager-tab__city  tab-pane  fade show active" id="v-pills-city"
                                         role="tabpanel" aria-labelledby="v-pills-home-tab">
 
-                                        <h4 class="mb-3">Новый город</h4>
-                                        <form>
-                                            <div class="form-group">
-                                                <input type="email" class="form-control" id="exampleInputEmail1"
-                                                    aria-describedby="emailHelp">
-                                                <small id="emailHelp" class="form-text text-muted">Введите название
-                                                    города для добавления</small>
-                                            </div>
-                                            <button type="submit"
-                                                class="btn  btn-primary  btn-sm  mb-5  mt-3">Добавить</button>
-                                        </form>
+                                        <a class="btn  btn-outline-primary  new__category  btn-sm  mb-5" href="{% url 'directory:city_create' %}" role="button">новый город</a>
 
                                         <h4>Города</h4>
                                         <table class="table">
                                             <thead class="thead-light">
                                                 <tr>
-                                                    <th scope="col">#</th>
+                                                    <th scope="col">ID</th>
                                                     <th scope="col">Город</th>
+                                                    <th scope="col">Список</th>
                                                     <th scope="col">редактировать</th>
+                                                    <th scope="col">удалить</th>
                                                 </tr>
                                             </thead>
+                                            {% for city in city %}
                                             <tbody>
                                                 <tr>
-                                                    <th scope="row">1</th>
-                                                    <td>Тюмень</td>
-                                                    <td><a href="#" class="text-decoration-none">редактировать</a>
-                                                    </td>
-
-                                                </tr>
-                                                <tr>
-                                                    <th scope="row">2</th>
-                                                    <td>Екатеринбург</td>
-                                                    <td><a href="#" class="text-decoration-none">редактировать</a>
-                                                    </td>
+                                                    <th scope="row">{{ city.id }}</th>
+                                                    <td>{{ city.city }}</td>
+                                                    <td class="text-center"><a type="button" class="btn btn-outline-primary btn-sm" role="button" href="{% url 'directory:streets' city.pk %}">Улицы</a></td>
+                                                    <td class="text-center"><a type="button" class="btn btn-outline-warning btn-sm" role="button" href="{% url 'directory:city_update' city.pk %}">Редактировать</a></td>
+                                                    <td class="text-center"><a class="text-danger text-decoration-none" href="{% url 'directory:city_delete' city.pk %}">удалить</a></td>
                                                 </tr>
                                             </tbody>
+                                            {% endfor %}
                                         </table>
                                     </div><!-- ./manager-tab__city -->
 
@@ -264,12 +252,4 @@
         </div>
     </div>
 </section>
-{% endblock %}
-
-{% block js %}
-<script>
-    $('#div_id_password').hide();
-    $('#id_personal_account').hide();
-    $('#id_personal_account').before('<p style="font-weight: bold;">{{ user.personal_account }}</p>');
-</script>
 {% endblock %}
