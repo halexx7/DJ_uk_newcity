@@ -35,7 +35,6 @@
                 {% endfor %}
                 <table class="table">
 
-                    {% if request.user|has_group:"Client" %}
                         {{ appartament_form.management_form }}
                         {{ appartament_form.non_form_errors }}
                         
@@ -49,7 +48,6 @@
                                     {% endif %}
                                 {% endfor %}
                             </table>
-                    {% endif %}
                 </table>
                 <br>
 

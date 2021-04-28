@@ -1,20 +1,14 @@
-from django import forms
-from django.forms.formsets import formset_factory
 from mainapp.models import Appartament, City, House, Street, UserProfile, Services, ServicesCategory
-from django.conf import settings
-from django.contrib import auth
-from django.contrib.auth.decorators import login_required
-from django.core.mail import send_mail
-from django.db import transaction
+
 from django.shortcuts import HttpResponseRedirect, render
 from django.urls import reverse, reverse_lazy
 from django.shortcuts import HttpResponseRedirect, get_object_or_404
 from django.views.generic import CreateView, DeleteView, ListView, UpdateView
-from django.views.generic.detail import DetailView
 from django.forms.models import BaseInlineFormSet, inlineformset_factory
 from django.contrib.auth.mixins import LoginRequiredMixin
 
-from directory.forms import ServicesCategoryEditForm, ServicesEditForm, CityEditForm, StreetEditForm, HouseEditForm, AppartamentsEditForm
+from directory.forms import ServicesCategoryEditForm, ServicesEditForm, CityEditForm, StreetEditForm
+from directory.forms import HouseEditForm, AppartamentsEditForm, AppartamentFormset
 
 class DirectoryList(LoginRequiredMixin, ListView):
     model = UserProfile
@@ -227,6 +221,7 @@ class HouseListView(LoginRequiredMixin, ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+       
         context['street'] = get_object_or_404(Street, pk=self.kwargs['pk'])
         context['house'] = House.objects.filter(street__pk=self.kwargs['pk']).order_by('street')
         return context
@@ -256,6 +251,12 @@ class HouseUpdateView(LoginRequiredMixin, UpdateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["title"] = "Дом/редактирование"
+
+        if self.request.POST:
+            context['appartament_form'] = AppartamentFormset(self.request.POST, instance=self.object)
+        else:
+            context['appartament_form'] = AppartamentFormset(instance=self.object)
+
         return context
     
 

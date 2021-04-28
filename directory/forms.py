@@ -3,6 +3,8 @@ from django import forms
 from mainapp.models import Appartament, City, House, Services, ServicesCategory, Street
 from authnapp.forms import BootstrapStylesMixins
 
+from django.forms.models import inlineformset_factory
+
  
 class ServicesCategoryEditForm(BootstrapStylesMixins, forms.ModelForm):
     field_name = ["name", "is_active"]
@@ -46,6 +48,24 @@ class HouseEditForm(BootstrapStylesMixins, forms.ModelForm):
 
 class AppartamentsEditForm(BootstrapStylesMixins, forms.ModelForm):
     field_name = ["user", "house", "number", "add_number", "sq_appart", "num_owner", "is_active"]
+
     class Meta:
         model = Appartament
         fields = ("user", "house", "number", "add_number", "sq_appart", "num_owner", "is_active")
+
+
+class AppartamentsInlineForm(BootstrapStylesMixins, forms.ModelForm):
+    field_name = ["number", "add_number", "user", "sq_appart", "num_owner"]
+
+    class Meta:
+        model = Appartament
+        fields = ("number", "add_number", "user", "sq_appart", "num_owner")
+
+
+AppartamentFormset = inlineformset_factory(
+    House,
+    Appartament,
+    form = AppartamentsInlineForm,
+    extra=1,
+    can_delete=False,
+)
