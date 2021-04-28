@@ -11,20 +11,22 @@
     <div class="directory__form">
         <form class="" method="post" enctype="multipart/form-data">
             {% csrf_token %}
-            {% for field in form %}
-                <div class="form-group">
-                    {{ field.label }}
-                    {{ field }}
-                </div>
+            {% crispy form %}
 
-                {% if field.errors %}
-                    <div class="alert  alert-danger">
-                        {{ field.errors }}
-                    </div>
-                {% endif %}
-            {% endfor %}
             <h4 class="pt-5  mb-3  text-700">Квартиры</h4>
-            <table class="table table-bordered">
+            {% crispy appartament_form appartament_form.form.helper %}
+            
+            <!-- <div class="form-action"> -->
+                <input type="submit" name="submit" value="сохранить" class="form-control btn btn-success" id="submit-save">
+            <!-- </div> -->
+        </form>
+        <div class="new_category_form--back_back">
+            <a class="form-control  btn  btn-outline-secondary mt-3" href="{% url 'directory:list' %}" role="button">на главную</a>
+        </div>
+    </div>
+{% endblock content %}
+
+<!-- <table class="table table-bordered">
                 {{ appartament_form.management_form }}
                 {{ appartament_form.non_form_errors }}
 
@@ -33,7 +35,7 @@
                     <thead class="thead-light">
                         <tr>
                             {% for field in form.visible_fields %}
-                                <th class="{% cycle 'td1' 'td2' 'td3' 'td4' %} order formset_td">
+                                <th class="{% cycle 'td1' 'td2' 'td3' 'td4' 'td5' %} order formset_td">
                                     {{ field.label|capfirst }}
                                 </th>
                             {% endfor %}
@@ -42,7 +44,7 @@
                 {% endif %}
                 <tr class="formset_row">
                     {% for field in form.visible_fields %}
-                        <td class="{% cycle 'td1' 'td2' 'td3' 'td4' %} order formset_td">
+                        <td class="{% cycle 'td1' 'td2' 'td3' 'td4' 'td5' %} order formset_td">
                             {% if forloop.first %}
                                 {% for hidden in form.hidden_fields %}
                                     {{ hidden }}
@@ -60,13 +62,4 @@
                     {% endfor %}
                 </tr>
                 {% endfor %}
-            </table>
-            <div class="new_category_form--btn">
-                <input class="form-control  bg-success  text-white  new_category_form--save" type="submit" value="сохранить">
-            </div>
-        </form>
-        <div class="new_category_form--back_back">
-            <a class="form-control  btn  btn-outline-secondary mt-3" href="{% url 'directory:list' %}" role="button">на главную</a>
-        </div>
-    </div>
-{% endblock content %}
+            </table> -->

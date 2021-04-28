@@ -1,5 +1,8 @@
 from django import forms
 
+from crispy_forms.helper import FormHelper
+from crispy_forms.layout import Layout, Submit, Row, Column
+
 from mainapp.models import Appartament, City, House, Services, ServicesCategory, Street
 from authnapp.forms import BootstrapStylesMixins
 
@@ -45,6 +48,28 @@ class HouseEditForm(BootstrapStylesMixins, forms.ModelForm):
         model = House
         fields = ("city", "street", "number", "add_number", "sq_home", "uk", "category_rate", "is_active")
 
+        
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_tag = False,
+        self.helper.layout = Layout(
+            Row(
+                Column('city', css_class='form-group col-md-3 mb-0', lable='Город'),
+                Column('street', css_class='form-group col-md-5 mb-0'),
+                Column('number', css_class='form-group col-md-2 mb-0'),
+                Column('add_number', css_class='form-group col-md-2 mb-0'),
+                css_class='form-row'
+            ),
+            Row(
+                Column('sq_home', css_class='form-group col-md-3 mb-0'),
+                Column('uk', css_class='form-group col-md-4 mb-0'),
+                Column('category_rate', css_class='form-group col-md-2 mb-0'),
+                css_class='form-row'
+            ),
+            'is_active',
+        )
+
 
 class AppartamentsEditForm(BootstrapStylesMixins, forms.ModelForm):
     field_name = ["user", "house", "number", "add_number", "sq_appart", "num_owner", "is_active"]
@@ -60,6 +85,21 @@ class AppartamentsInlineForm(BootstrapStylesMixins, forms.ModelForm):
     class Meta:
         model = Appartament
         fields = ("number", "add_number", "user", "sq_appart", "num_owner")
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_tag = False,
+        self.helper.layout = Layout(
+            'number',
+            'add_number',
+            'user',
+            'sq_appart',
+            'num_owner',
+        )
+        self.render_required_fields = True,
+        self.template = 'bootstrap/table_inline_formset.html'
+
 
 
 AppartamentFormset = inlineformset_factory(

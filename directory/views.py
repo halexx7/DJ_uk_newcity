@@ -7,6 +7,8 @@ from django.views.generic import CreateView, DeleteView, ListView, UpdateView
 from django.forms.models import BaseInlineFormSet, inlineformset_factory
 from django.contrib.auth.mixins import LoginRequiredMixin
 
+from django.db import transaction
+
 from directory.forms import ServicesCategoryEditForm, ServicesEditForm, CityEditForm, StreetEditForm
 from directory.forms import HouseEditForm, AppartamentsEditForm, AppartamentFormset
 
@@ -258,6 +260,31 @@ class HouseUpdateView(LoginRequiredMixin, UpdateView):
             context['appartament_form'] = AppartamentFormset(instance=self.object)
 
         return context
+
+
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        form_class = self.get_form_class()
+        form = self.get_form(form_class)
+        formset = AppartamentFormset(self.request.POST)
+
+        if form.is_valid() and formset.is_valid():
+            return self.form_valid(form, formset)
+        
+        return self.form_invalid(form, formset)
+
+
+    def form_valid(self, form, appartament_form):
+        """
+        Called if all forms are valid. Creates a Author instance along
+        with associated books and then redirects to a success page.
+        """
+        with transaction.atomic():
+            self.object = form.save()
+            appartament_form.instance = self.object
+            appartament_form.save()
+
+        return HttpResponseRedirect(self.get_success_url())
     
 
 
