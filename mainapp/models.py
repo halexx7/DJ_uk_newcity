@@ -324,9 +324,9 @@ class UserProfile(models.Model):
 
 
 class Appartament(models.Model):
-    user = models.ForeignKey(User, verbose_name="Жилец", related_name="person", null=True, on_delete=SET_NULL)
-    house = models.ForeignKey(House, verbose_name="Дом", null=True, on_delete=SET_NULL)
-    number = models.PositiveIntegerField(verbose_name="Номер квартиры")
+    user = models.ForeignKey(User, verbose_name="Жилец", related_name="person", null=True, blank=True, on_delete=SET_NULL)
+    house = models.ForeignKey(House, verbose_name="Дом", on_delete=CASCADE)
+    number = models.CharField(verbose_name="Номер квартиры", max_length=3)
     add_number = models.CharField(verbose_name="Комната", max_length=2, null=True, blank=True, default='-')
     sq_appart = models.DecimalField(verbose_name="Площадь", max_digits=5, decimal_places=2, null=True, blank=True, default='0')
     num_owner = models.PositiveIntegerField(verbose_name="Кол-во проживающих", null=True, blank=True, default=0)
@@ -338,7 +338,7 @@ class Appartament(models.Model):
     class Meta:
         verbose_name = "Квартира"
         verbose_name_plural = "008 Квартиры"
-        unique_together = ('house', 'number', 'add_number', 'user')
+        unique_together = ('house', 'number', 'add_number')
 
     def __str__(self):
         return f'ул.{self.house.street.street}, д.{self.house.number}, кв.{self.number}, комн.{self.add_number}'

@@ -1,6 +1,6 @@
 $(document).ready(function () {
     // Current state structure
-    var $currentState = $(".formset_row").clone();
+    var $currentState = $("table tbody tr").clone();
 
     function setDefaultValue() {
         // Set default value for new forms
@@ -10,24 +10,24 @@ $(document).ready(function () {
             };
         });
         // Renew current state structure
-        $currentState = $(".formset_row").clone();
+        $currentState = $(".table tbody tr").clone();
     };
 
     function itemDelete(row) {
-        // var quantity_delta = parseInt($(row).find("[type='number']").val());
-        // $order_total_quantity.text(parseInt($order_total_quantity.text()) - quantity_delta);
-        // var $price_object = $(row).find("[class^=orderitems]");
-        // if (!$price_object.length) {
-        //     var item_price = 0;
-        // } else {
-        //     var item_price = parseFloat($price_object.text());
-        // };
-        // $order_total_cost.text(Number(parseFloat($order_total_cost.text()) - quantity_delta * item_price).toFixed(2));
-        // $currentState = $(".formset_row").clone();
+        var quantity_delta = parseInt($(row).find("[type='number']").val());
+        $order_total_quantity.text(parseInt($order_total_quantity.text()) - quantity_delta);
+        var $price_object = $(row).find("[class^=orderitems]");
+        if (!$price_object.length) {
+            var item_price = 0;
+        } else {
+            var item_price = parseFloat($price_object.text());
+        };
+        $order_total_cost.text(Number(parseFloat($order_total_cost.text()) - quantity_delta * item_price).toFixed(2));
+        $currentState = $(".formset_row").clone();
     };
 
     // Be carefull with class of buttons
-    $('.formset_row').formset({
+    $('table tbody tr').formset({
         addText: 'добавить продукт',
         addCssClass: 'btn btn-outline-primary btn-block',
         deleteText: 'удалить',

@@ -16,15 +16,21 @@
             <h4 class="pt-5  mb-3  text-700">Квартиры</h4>
             {% crispy appartament_form appartament_form.form.helper %}
             
-            <!-- <div class="form-action"> -->
+            <div class="form-action">
                 <input type="submit" name="submit" value="сохранить" class="form-control btn btn-success" id="submit-save">
-            <!-- </div> -->
+            </div>
         </form>
-        <div class="new_category_form--back_back">
+        <div class="form-action">
             <a class="form-control  btn  btn-outline-secondary mt-3" href="{% url 'directory:list' %}" role="button">на главную</a>
         </div>
     </div>
 {% endblock content %}
+
+{% block js %}
+    <!-- jQuery formset section -->
+    <script src="{% static 'js/jquery.formset.js' %}"></script>
+    <script src="{% static 'js/user_profiles.js' %}"></script>
+{% endblock %}
 
 <!-- <table class="table table-bordered">
                 {{ appartament_form.management_form }}

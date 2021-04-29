@@ -104,6 +104,7 @@ class AppartamentForm(BootstrapStylesMixins, forms.ModelForm):
         model = Appartament
         fields = ("house", "number", "add_number",)
 
+
 AppartamentFormset = inlineformset_factory(
     User,
     Appartament,

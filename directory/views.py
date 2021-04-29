@@ -266,7 +266,10 @@ class HouseUpdateView(LoginRequiredMixin, UpdateView):
         self.object = self.get_object()
         form_class = self.get_form_class()
         form = self.get_form(form_class)
-        formset = AppartamentFormset(self.request.POST)
+        formset = AppartamentFormset(self.request.POST, instance=self.object)
+
+        test = form.is_valid()
+        test_ = formset.is_valid()
 
         if form.is_valid() and formset.is_valid():
             return self.form_valid(form, formset)

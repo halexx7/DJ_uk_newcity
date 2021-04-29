@@ -52,7 +52,7 @@ class HouseEditForm(BootstrapStylesMixins, forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.helper = FormHelper()
-        self.helper.form_tag = False,
+        self.helper.form_tag = False
         self.helper.layout = Layout(
             Row(
                 Column('city', css_class='form-group col-md-3 mb-0', lable='Город'),
@@ -89,7 +89,7 @@ class AppartamentsInlineForm(BootstrapStylesMixins, forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.helper = FormHelper()
-        self.helper.form_tag = False,
+        self.helper.form_tag = False
         self.helper.layout = Layout(
             'number',
             'add_number',
@@ -98,7 +98,7 @@ class AppartamentsInlineForm(BootstrapStylesMixins, forms.ModelForm):
             'num_owner',
         )
         self.render_required_fields = True,
-        self.template = 'bootstrap/table_inline_formset.html'
+        self.helper.template = 'bootstrap4/table_inline_formset.html'
 
 
 
@@ -107,5 +107,5 @@ AppartamentFormset = inlineformset_factory(
     Appartament,
     form = AppartamentsInlineForm,
     extra=1,
-    can_delete=False,
+    can_delete=True,
 )
