@@ -1,16 +1,16 @@
 $(document).ready(function () {
     // Current state structure
-    var $currentState = $("table tbody tr").clone();
+    var $currentState = $(".formset_row").clone();
 
     function setDefaultValue() {
         // Set default value for new forms
-        $("input[type='number']").each(function () {
-            if (!$(this).val()) {
-                $(this).val(0).prop('disabled', true);
-            };
-        });
+        // $("input[type='number']").each(function () {
+        //     if (!$(this).val()) {
+        //         $(this).val(0).prop('disabled', false);
+        //     };
+        // });
         // Renew current state structure
-        $currentState = $(".table tbody tr").clone();
+        $currentState = $(".formset_row").clone();
     };
 
     function itemDelete(row) {
@@ -27,7 +27,7 @@ $(document).ready(function () {
     };
 
     // Be carefull with class of buttons
-    $('table tbody tr').formset({
+    $('.formset_row').formset({
         addText: 'добавить продукт',
         addCssClass: 'btn btn-outline-primary btn-block',
         deleteText: 'удалить',

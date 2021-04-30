@@ -1,3 +1,4 @@
+from authnapp.forms import AppartamentFormset
 from mainapp.models import Appartament, City, House, Street, UserProfile, Services, ServicesCategory
 
 from django.shortcuts import HttpResponseRedirect, render
@@ -10,7 +11,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db import transaction
 
 from directory.forms import ServicesCategoryEditForm, ServicesEditForm, CityEditForm, StreetEditForm
-from directory.forms import HouseEditForm, AppartamentsEditForm, AppartamentFormset
+from directory.forms import HouseEditForm, AppartamentsEditForm, AppartamentFormSet
 
 class DirectoryList(LoginRequiredMixin, ListView):
     model = UserProfile
@@ -247,48 +248,49 @@ class HouseUpdateView(LoginRequiredMixin, UpdateView):
     success_url = reverse_lazy("directory:list")
     form_class = HouseEditForm
 
-    def get_queryset(self):
-        return House.objects.all()
+    # def get_queryset(self):
+    #     return House.objects.all()
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["title"] = "Дом/редактирование"
 
         if self.request.POST:
-            context['appartament_form'] = AppartamentFormset(self.request.POST, instance=self.object)
+            context['appartament_form'] = AppartamentFormSet(self.request.POST, instance=self.object)
         else:
-            context['appartament_form'] = AppartamentFormset(instance=self.object)
-
+            queryset = self.object.appartament_set.filter(is_active=True).select_related()
+            formset = AppartamentFormSet(instance=self.object, queryset=queryset)
+            context['appartament_form'] = formset
         return context
 
 
-    def post(self, request, *args, **kwargs):
-        self.object = self.get_object()
-        form_class = self.get_form_class()
-        form = self.get_form(form_class)
-        formset = AppartamentFormset(self.request.POST, instance=self.object)
+    # def post(self, request, *args, **kwargs):
+    #     self.object = self.get_object()
+    #     form_class = self.get_form_class()
+    #     form = self.get_form(form_class)
+    #     formset = AppartamentFormset(self.request.POST, instance=self.object)
 
-        test = form.is_valid()
-        test_ = formset.is_valid()
-
-        if form.is_valid() and formset.is_valid():
-            return self.form_valid(form, formset)
+    #     if form.is_valid() and formset.is_valid():
+    #         return self.form_valid(form, formset)
         
-        return self.form_invalid(form, formset)
+    #     return self.form_invalid(form, formset)
 
 
-    def form_valid(self, form, appartament_form):
+    def form_valid(self, form):
         """
         Called if all forms are valid. Creates a Author instance along
         with associated books and then redirects to a success page.
         """
+        context = self.get_context_data()
+        appartament_form = context['appartament_form']
+
         with transaction.atomic():
             self.object = form.save()
-            appartament_form.instance = self.object
-            appartament_form.save()
+            if appartament_form.is_valid():
+                appartament_form.instance = self.object
+                appartament_form.save()
 
-        return HttpResponseRedirect(self.get_success_url())
-    
+        return super().form_valid(form)
 
 
 class HouseDeleteView(LoginRequiredMixin, DeleteView):

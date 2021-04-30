@@ -80,29 +80,30 @@ class AppartamentsEditForm(BootstrapStylesMixins, forms.ModelForm):
 
 
 class AppartamentsInlineForm(BootstrapStylesMixins, forms.ModelForm):
+    
     field_name = ["number", "add_number", "user", "sq_appart", "num_owner"]
 
     class Meta:
         model = Appartament
         fields = ("number", "add_number", "user", "sq_appart", "num_owner")
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.helper = FormHelper()
-        self.helper.form_tag = False
-        self.helper.layout = Layout(
-            'number',
-            'add_number',
-            'user',
-            'sq_appart',
-            'num_owner',
-        )
-        self.render_required_fields = True,
-        self.helper.template = 'bootstrap4/table_inline_formset.html'
+    # def __init__(self, *args, **kwargs):
+    #     super().__init__(*args, **kwargs)
+    #     self.helper = FormHelper()
+    #     self.helper.form_tag = False
+    #     self.helper.layout = Layout(
+    #         'number',
+    #         'add_number',
+    #         'user',
+    #         'sq_appart',
+    #         'num_owner',
+    #     )
+    #     self.render_required_fields = True,
+    #     self.helper.template = 'bootstrap4/table_inline_formset.html'
 
 
 
-AppartamentFormset = inlineformset_factory(
+AppartamentFormSet = inlineformset_factory(
     House,
     Appartament,
     form = AppartamentsInlineForm,
