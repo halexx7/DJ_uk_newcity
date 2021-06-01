@@ -30,15 +30,17 @@
                 </thead>
     
                 {% for house in house %}
+                    <!-- {% if house.is_active %} -->
                 <tbody>
                     <tr>
-                        <td>{{ street.id }}</td>
+                        <td>{{ house.id }}</td>
                         <td class="text-left">Дом №{{ house.number }}, к.{{ house.add_number }}</td>
                         <td><a href="{% url 'directory:appartaments' house.pk %}" type="button" class="btn btn-outline-primary btn-sm" role="button">Квартиры</td>
                         <td><a href="{% url 'directory:house_update' house.pk %}" type="button" class="btn btn-outline-warning btn-sm" role="button">Редактировать</a></td>
                         <td><a href="{% url 'directory:house_delete' house.pk %}" class="text-danger text-decoration-none">удалить</a></td>
                     </tr>
                 </tbody>
+                    <!-- {% endif %} -->
                 {% endfor %}
     
             </table> 

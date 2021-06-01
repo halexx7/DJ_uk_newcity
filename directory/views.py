@@ -100,7 +100,7 @@ class ServicesCreateView(LoginRequiredMixin, CreateView):
 class ServicesUpdateView(LoginRequiredMixin, UpdateView):
     model = Services
     template_name = "directory/services_update.html"
-    success_url = reverse_lazy("directory:services_update")
+    success_url = reverse_lazy("directory:list")
     form_class = ServicesEditForm
 
     def get_context_data(self, **kwargs):
@@ -238,7 +238,6 @@ class HouseListView(LoginRequiredMixin, ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-
         context["street"] = get_object_or_404(Street, pk=self.kwargs["pk"])
         context["house"] = House.objects.filter(street__pk=self.kwargs["pk"]).order_by("street")
         return context

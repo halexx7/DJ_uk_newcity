@@ -4,11 +4,11 @@ $(document).ready(function () {
 
     function setDefaultValue() {
         // Set default value for new forms
-        // $("input[type='number']").each(function () {
-        //     if (!$(this).val()) {
-        //         $(this).val(0).prop('disabled', false);
-        //     };
-        // });
+        $("input[type='number']").each(function () {
+            if (!$(this).val()) {
+                $(this).val(0).prop('disabled', false);
+            };
+        });
         // Renew current state structure
         $currentState = $(".formset_row").clone();
     };
@@ -28,7 +28,7 @@ $(document).ready(function () {
 
     // Be carefull with class of buttons
     $('.formset_row').formset({
-        addText: 'добавить продукт',
+        addText: 'добавить квартиру',
         addCssClass: 'btn btn-outline-primary btn-block',
         deleteText: 'удалить',
         deleteCssClass: 'btn btn-outline-warning',
