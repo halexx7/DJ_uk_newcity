@@ -1,0 +1,28 @@
+[  
+    {
+        "model": "mainapp.userprofile",
+        "pk": 2,
+        "fields": {
+            "user": 1,
+            "appartament": 1,
+            "type_electric_meter": 2
+        }
+    },
+    {
+        "model": "mainapp.userprofile",
+        "pk": 3,
+        "fields": {
+            "user": 2,
+            "appartament": 2,
+            "type_electric_meter": 2
+        }
+    },{
+        "model": "mainapp.userprofile",
+        "pk": 4,
+        "fields": {
+            "user": 3,
+            "appartament": 3,
+            "type_electric_meter": 2
+        }
+    }
+]

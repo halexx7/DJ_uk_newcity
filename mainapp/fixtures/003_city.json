@@ -1,9 +1,0 @@
-[
-  {
-    "model": "invoice.city",
-    "pk": 1,
-    "fields": {
-      "city": "Тюмень"
-    }
-  }
-]

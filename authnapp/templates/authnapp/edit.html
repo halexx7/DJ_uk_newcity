@@ -1,20 +1,77 @@
 {% extends 'authnapp/base.html' %}
 {% load staticfiles %}
 
+{% load auth_extras %}
+{% load crispy_forms_tags %}
+
+{% block menu %}
+{% include 'authnapp/includes/inc_menu.html' %}
+{% endblock menu %}
+
 {% block content %}
 
-<form class="form-horizontal" action="{% url 'auth:edit' %}" method="post" enctype="multipart/form-data">
-    {% csrf_token %}
-    {{ edit_form.as_p }}
-    {{ profile_form.as_p }}
-    <input class="btn btn-outline-primary btn-block" type="submit" value="сохранить">
-</form>
-<a href="{% url 'main' %}" class="btn btn-outline-secondary btn-block" role="button">
-    на главную
-</a>
+<section class="edit  mt-5">
+    <div class="container  d-flex  justify-content-center">
+        <div class="edit__item">
 
-{% if user.avatar %}
-<div class="user_avatar"><img src="{{ media_url }}{{ user.avatar }}"></div>
-{% endif %}
+            <form class="form-horizontal" action="{% url 'auth:edit' object.pk %}" method="post"
+                enctype="multipart/form-data">
+                {% csrf_token %}
+                {% if next_page %}
+                    <input type="hidden" name="next_page" value="{{ next_page }}">
+                {% endif %}
+                <!-- {% crispy form %} -->
+                {% for field in form %}
+                    <div class="form-group">
+                        {{ field.label }}
+                        {{ field }}
+                    </div>
 
+                    {% if field.errors %}
+                        <div class="alert  alert-danger">
+                            {{ field.errors }}
+                        </div>
+                    {% endif %}
+                {% endfor %}
+                <table class="table">
+
+                        {{ appartament_form.management_form }}
+                        {{ appartament_form.non_form_errors }}
+                        
+                            <table>
+                                {% for form in appartament_form %}
+                                <tr><td><ul class="list-inline">{{ form.as_ul }}</ul></td></tr>
+                                    {% if form.errors %}
+                                        <div class="alert  alert-danger">
+                                            {{ form.errors }}
+                                        </div>
+                                    {% endif %}
+                                {% endfor %}
+                            </table>
+                </table>
+                <br>
+
+                <div class="change_pass  pb-5">
+                    <a href="{% url 'authnapp:password_change' %}"
+                        class="col  text-right  text-decoration-none">Изменить пароль</a>
+                </div>
+
+                <input class="btn btn-outline-primary btn-block  mb-3" type="submit" value="сохранить">
+
+            </form>
+            <a href="{% url 'main' %}" class="btn btn-outline-secondary btn-block" role="button">
+                на главную
+            </a>
+
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block js %}
+<script>
+    $('#div_id_password').hide();
+    $('#id_personal_account').hide();
+    $('#id_personal_account').before('<p style="font-weight: bold;">{{ user.personal_account }}</p>');
+</script>
 {% endblock %}

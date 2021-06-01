@@ -1,0 +1,38 @@
+[
+    {
+        "model": "mainapp.historycounter",
+        "pk": 2,
+        "fields": {
+            "user": 1,
+            "period": "2021-01-01",
+            "hist_col_water": 3400,
+            "hist_hot_water": 800,
+            "hist_electric_day": 3454,
+            "hist_electric_night": 655
+        }
+    },
+    {
+        "model": "mainapp.historycounter",
+        "pk": 3,
+        "fields": {
+            "user": 1,
+            "period": "2021-02-01",
+            "hist_col_water": 3400,
+            "hist_hot_water": 800,
+            "hist_electric_day": 3454,
+            "hist_electric_night": 655
+        }
+    },
+    {
+        "model": "mainapp.historycounter",
+        "pk": 4,
+        "fields": {
+            "user": 1,
+            "period": "2021-02-04",
+            "hist_col_water": 3400,
+            "hist_hot_water": 800,
+            "hist_electric_day": 3454,
+            "hist_electric_night": 655
+        }
+    }
+]

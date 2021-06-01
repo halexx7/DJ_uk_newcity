@@ -15,13 +15,22 @@
                 {% if next_page %}
                 <input type="hidden" name="next_page" value="{{ next_page }}">
                 {% endif %}
-                {{ login_form.as_p }}
+                {% for field in form %}
+                    <div class="form-group">
+                        {{ field.label }}
+                        {{ field }}
+                    </div>
+
+                    {% if field.errors %}
+                        <div class="alert  alert-danger">
+                            {{ field.errors }}
+                        </div>
+                    {% endif %}
+                {% endfor %}
                 <br>
+                <a href='{% url "auth:password_reset" %}' class="text-decoration-none  text-right">Забыли пароль?</a>
                 <input class="btn btn-outline-primary btn-block" type="submit" value="войти">
             </form>
-            <a class="btn btn-outline-secondary btn-block mt-3" href="{% url 'auth:register' %}"  role="button">
-                зарегистрироваться
-            </a>
         </div>
     </div>
 </section>

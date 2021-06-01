@@ -1,0 +1,29 @@
+[
+    {
+        "model": "mainapp.subsidies",
+        "pk": 1,
+        "fields": {
+            "user": 1,
+            "service": 2,
+            "sale": 50
+        }
+    },
+    {
+        "model": "mainapp.subsidies",
+        "pk": 2,
+        "fields": {
+            "user": 1,
+            "service": 3,
+            "sale": 20
+        }
+    },
+    {
+        "model": "mainapp.subsidies",
+        "pk": 3,
+        "fields": {
+            "user": 1,
+            "service": 4,
+            "sale": 10
+        }
+    }
+]

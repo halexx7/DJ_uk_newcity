@@ -1,0 +1,29 @@
+[
+    {
+        "model": "mainapp.privileges",
+        "pk": 1,
+        "fields": {
+            "user": 1,
+            "service": 2,
+            "sale": 10
+        }
+    },
+    {
+        "model": "mainapp.privileges",
+        "pk": 2,
+        "fields": {
+            "user": 1,
+            "service": 3,
+            "sale": 10
+        }
+    },
+    {
+        "model": "mainapp.privileges",
+        "pk": 3,
+        "fields": {
+            "user": 1,
+            "service": 4,
+            "sale":10
+        }
+    }
+]

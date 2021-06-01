@@ -131,6 +131,10 @@ ul, ol {
     max-width: 50rem;
 }
 
+.user__item {
+    width: 400px;
+}
+
 
 /* =================
 === Manager Area ===
@@ -157,10 +161,45 @@ ul, ol {
     max-width: 300px;
 }
 
+.edit__item {
+    width: 300px;
+}
+
 
 /* ===============
 === Register Page ===
 ==================*/
 .main-form {
     max-width: 400px;
+}
+
+
+/* ===================
+=== Directory Page ===
+====================*/
+.table {
+    min-width: 400px;
+}
+
+.not_active {
+    opacity: 0.5;
+}
+
+.services__form {
+    width: 100%;
+}
+
+.directory__form {
+    min-width: 400px;
+}
+
+.form_is-active {
+    display: block;
+    width: 35px;
+    margin-left: 20px;
+
+}
+
+.td {
+    width: 10px;
 }

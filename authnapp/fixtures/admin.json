@@ -1,0 +1,21 @@
+[
+    {
+        "model": "authnapp.user",
+        "pk": 1,
+        "fields": {
+            "personal_account": "admin",
+            "password": "pbkdf2_sha256$150000$qvL1wjvrA6ih$ZbCNJtLfvOTG1BTw9Y7R/gWAfflzz3rlfkWTj3Mh7o8=",
+            "name": "",
+            "email": "admin@admin.com",
+            "phone": "",
+            "is_active": true,
+            "is_staff": true,
+            "is_superuser": true,
+            "last_login": null,
+            "activation_key": "",
+            "activation_key_expires": "2021-04-14T03:00:29.359Z",
+            "groups": [],
+            "user_permissions": []
+        }
+    }
+]

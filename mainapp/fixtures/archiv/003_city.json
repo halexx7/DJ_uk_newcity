@@ -1,0 +1,9 @@
+[
+  {
+    "model": "mainapp.city",
+    "pk": 1,
+    "fields": {
+      "city": "Тюмень"
+    }
+  }
+]

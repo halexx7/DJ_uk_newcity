@@ -31,7 +31,6 @@
     <!-- Главная | УК "Новый Город" -->
     <title>
         {% block title %}
-        {{ title|capfirst }}
         {% endblock title %}
     </title>
 </head>
@@ -40,8 +39,8 @@
     <header class="header">
         <nav class="navbar navbar-expand-lg navbar-light bg-warning">
             <div class="container"> 
-                <i class="bi bi-house-fill" style="font-size: 30px;"></i>
-                <a class="navbar-brand  d-inline-flex  mx-3" href="index.html">УК Новый Город</a>
+                <img class="mr-3" src="{% static 'img/icon/house-fill.svg' %}" alt="House" width="30" height="30">
+                <a class="navbar-brand" href="/">УК Новый Город</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                     data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
                     aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span>
@@ -56,11 +55,20 @@
 
     {% block content %}
     {% endblock content %}
-    
+
     <!-- JavaScript -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-b5kHyXgcpbZJO/tY9Ul7kGkf1S0CWuKcCD38l8YkeH8z8QjE0GmW1gYU5S9FOnJ0"
         crossorigin="anonymous"></script>
+    <script src="{% static 'js/jquery-3.6.0.js' %}"></script>
+    <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+    <!-- jQuery formset section -->
+    <script src="{% static 'js/jquery.formset.js' %}"></script>
+    <!-- <script src="{% static 'js/user_profiles.js' %}"></script> -->
+    <!-- <script src="{% static 'js/html2canvas.js' %}"></script> -->
+    <!-- <script src="{% static 'js/invoice.js' %}"></script> -->
+    {% block js %}
+    {% endblock %}
 </body>
 
 </html>

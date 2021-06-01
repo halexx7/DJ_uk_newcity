@@ -1,0 +1,16 @@
+[
+  {
+    "model": "mainapp.street",
+    "pk": 1,
+    "fields": {
+      "street": "Советская"
+    }
+  },
+  {
+    "model": "mainapp.street",
+    "pk": 2,
+    "fields": {
+      "street": "Пушкинская"
+    }
+  }
+]

@@ -1,0 +1,43 @@
+[
+    {
+        "model": "mainapp.appartament",
+        "pk": 1,
+        "fields": {
+            "house": 1,
+            "number": "3",
+            "add_number": "1",
+            "sq_appart": 80.54,
+            "num_owner": 4
+        }
+    },
+    {
+        "model": "mainapp.appartament",
+        "pk": 2,
+        "fields": {
+            "house": 1,
+            "number": "2",
+            "sq_appart": 75.54,
+            "num_owner": 2
+        }
+    },
+    {
+        "model": "mainapp.appartament",
+        "pk": 3,
+        "fields": {
+            "house": 2,
+            "number": "8",
+            "sq_appart": 50.20,
+            "num_owner": 2
+        }
+    },
+    {
+        "model": "mainapp.appartament",
+        "pk": 4,
+        "fields": {
+            "house": 3,
+            "number": "17",
+            "sq_appart": 102.20,
+            "num_owner": 5
+        }
+    }
+]

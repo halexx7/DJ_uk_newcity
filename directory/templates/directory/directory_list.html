@@ -1,0 +1,255 @@
+{% extends 'directory/base.html' %}
+{% load staticfiles %}
+
+{% load auth_extras %}
+{% load crispy_forms_tags %}
+
+{% block menu %}
+    {% include 'directory/includes/inc_menu.html' %}
+{% endblock menu %}
+
+{% block content %}
+
+<section class="edit  mt-5">
+    <div class="container  d-flex  justify-content-center">
+        <div class="directory__item">
+
+            <h4 class="mb-3">Справочники</h4>
+                    <div class="manager__directory-tab">
+                        <div class="row">
+                            <div class="col-3">
+                                <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist"
+                                    aria-orientation="vertical">
+                                    <a class="nav-link active" id="v-pills-city-tab" data-toggle="pill"
+                                        href="#v-pills-city" role="tab" aria-controls="v-pills-city"
+                                        aria-selected="true">Города</a>
+                                    <a class="nav-link" id="v-pills-street-tab" data-toggle="pill"
+                                        href="#v-pills-street" role="tab" aria-controls="v-pills-street"
+                                        aria-selected="false">Улицы</a>
+                                    <a class="nav-link" id="v-pills-house-tab" data-toggle="pill"
+                                        href="#v-pills-house" role="tab" aria-controls="v-pills-house"
+                                        aria-selected="false">Объекты</a>
+                                    <a class="nav-link" id="v-pills-resident-tab" data-toggle="pill"
+                                        href="#v-pills-resident" role="tab" aria-controls="v-pills-resident"
+                                        aria-selected="false">Жильцы</a>
+                                    <a class="nav-link" id="v-pills-rate-tab" data-toggle="pill"
+                                        href="#v-pills-rate" role="tab" aria-controls="v-pills-rate"
+                                        aria-selected="false">Тарифы</a>
+                                </div>
+                            </div>
+
+                            <div class="col-9">
+                                <div class="tab-content" id="v-pills-tabContent">
+
+                                    <!-- Link-CITY -->
+                                    <div class="manager-tab__city  tab-pane  fade show active" id="v-pills-city"
+                                        role="tabpanel" aria-labelledby="v-pills-home-tab">
+
+                                        <a class="btn  btn-outline-primary  new__category  btn-sm  mb-5" href="{% url 'directory:city_create' %}" role="button">новый город</a>
+
+                                        <h4>Города</h4>
+                                        <table class="table">
+                                            <thead class="thead-light">
+                                                <tr>
+                                                    <th scope="col">ID</th>
+                                                    <th scope="col">Город</th>
+                                                    <th scope="col">Список</th>
+                                                    <th scope="col">редактировать</th>
+                                                    <th scope="col">удалить</th>
+                                                </tr>
+                                            </thead>
+                                            {% for city in city %}
+                                            <tbody>
+                                                <tr>
+                                                    <th scope="row">{{ city.id }}</th>
+                                                    <td>{{ city.city }}</td>
+                                                    <td class="text-center"><a type="button" class="btn btn-outline-primary btn-sm" role="button" href="{% url 'directory:streets' city.pk %}">Улицы</a></td>
+                                                    <td class="text-center"><a type="button" class="btn btn-outline-warning btn-sm" role="button" href="{% url 'directory:city_update' city.pk %}">Редактировать</a></td>
+                                                    <td class="text-center"><a class="text-danger text-decoration-none" href="{% url 'directory:city_delete' city.pk %}">удалить</a></td>
+                                                </tr>
+                                            </tbody>
+                                            {% endfor %}
+                                        </table>
+                                    </div><!-- ./manager-tab__city -->
+
+                                    <!-- Link-STREET -->
+                                    <div class="manager-tab__street  tab-pane fade" id="v-pills-street"
+                                        role="tabpanel" aria-labelledby="v-pills-street-tab">
+
+                                        <h4 class="mb-3">Новая улица</h4>
+                                        <form>
+                                            <div class="d-flex  align-items-center  form-row  my-2">
+                                                <div class="form-group  col  manager-tab__street-form">
+                                                    <label for="inputState">Город</label>
+                                                    <select id="inputState" class="form-control mr-5">
+                                                        <option selected>Выберите город</option>
+                                                        <option>Тюмень</option>
+                                                        <option>Екатеринбург</option>
+                                                    </select>
+                                                </div>
+                                                <div class="form-group  col  ml-3">
+                                                    <label for="inputEmail4">Улица</label>
+                                                    <input type="text" class="form-control" id="inputEmail4"
+                                                        placeholder="ул. Советская">
+                                                </div>
+                                            </div>
+                                            <button type="submit"
+                                                class="btn  btn-primary  btn-sm  mt-2">Добавить</button>
+                                        </form>
+
+                                        <h4 class="mb-3 mt-5">Улицы</h4>
+                                        <table class="table">
+                                            <thead class="thead-light">
+                                                <tr>
+                                                    <th scope="col">#</th>
+                                                    <th scope="col">Город</th>
+                                                    <th scope="col">Улица</th>
+                                                    <th scope="col">редактировать</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <th scope="row">1</th>
+                                                    <td>Тюмень</td>
+                                                    <td>ул.Советская</td>
+                                                    <td><a href="#" class="text-decoration-none">редактировать</a>
+                                                    </td>
+
+                                                </tr>
+                                                <tr>
+                                                    <th scope="row">2</th>
+                                                    <td>Тюмень</td>
+                                                    <td>ул.Пушкинская</td>
+                                                    <td><a href="#" class="text-decoration-none">редактировать</a>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+
+                                    </div><!-- ./manager-tab__street -->
+
+                                    <!-- Link-HOUSE -->
+                                    <div class="manager-tab__house  tab-pane fade" id="v-pills-house"
+                                        role="tabpanel" aria-labelledby="v-pills-house-tab">
+
+                                        <a href="#" class="d-inline-flex  mb-5  manager-tab__link  text-decoration-none">Добавить дом</a>
+
+                                        <h4>Объекты</h4>
+                                        <table class="table">
+                                            <thead class="thead-light">
+                                                <tr>
+                                                    <th scope="col">#</th>
+                                                    <th scope="col">Город</th>
+                                                    <th scope="col">Улица</th>
+                                                    <th scope="col">Дом</th>
+                                                    <th scope="col">Квартиры</th> <!-- TODO Добавить ярлыки "Квартиры", "Редактировать" -->
+                                                    <th scope="col">Редактировать</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <th scope="row">1</th>
+                                                    <td>Тюмень</td>
+                                                    <td>ул.Советская</td>
+                                                    <td>56</td>
+                                                    <td><a href="#" class="text-decoration-none">смотреть</a></td>
+                                                    <td><a href="#" class="text-decoration-none">редактировать</a></td>
+
+                                                </tr>
+                                                <tr>
+                                                    <th scope="row">2</th>
+                                                    <td>Тюмень</td>
+                                                    <td>ул.Пушкинская</td>
+                                                    <td>56</td>
+                                                    <td><a href="#" class="text-decoration-none">смотреть</a></td>
+                                                    <td><a href="#" class="text-decoration-none">редактировать</a></td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div><!-- ./manager-tab__object -->
+
+                                    <!-- Link-RESIDENT -->
+                                    <div class="manager-tab__resident  tab-pane fade" id="v-pills-resident"
+                                        role="tabpanel" aria-labelledby="v-pills-resident-tab">
+
+                                        <a href="#" class="d-inline-flex  mb-5  manager-tab__link  text-decoration-none">Добавить жильца</a>
+
+                                        <h4>Жильцы</h4>
+                                        <table class="table">
+                                            <thead class="thead-light">
+                                                <tr>
+                                                    <th scope="col">#</th>
+                                                    <th scope="col">Лицевой счет</th>
+                                                    <th scope="col">ФИО</th>
+                                                    <th scope="col">Адрес</th>
+                                                    <th scope="col">Долг/переплата</th>
+                                                    <th scope="col">редактировать</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <th scope="row">1</th>
+                                                    <td>123456</td>
+                                                    <td>Иванов Иван Иванович</td>
+                                                    <td>ул.Советская, д.10, кв.7</td>
+                                                    <td class="text-danger  text-700  text-center">4200 руб.</td>
+                                                    <td><a href="#" class="text-decoration-none">редактировать</a>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <th scope="row">2</th>
+                                                    <td>123457</td>
+                                                    <td>Сидоров Александр Александрович</td>
+                                                    <td>ул.Советская, д.13, кв.8</td>
+                                                    <td class="text-success  text-center">-329 руб.</td>
+                                                    <td><a href="#" class="text-decoration-none">редактировать</a>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div><!-- ./manager-tab__object -->
+
+                                    <!-- Link-RATE -->
+                                    <div class="tab-pane fade" id="v-pills-rate" role="tabpanel"
+                                        aria-labelledby="v-pills-rate-tab">
+
+                                        <a class="btn  btn-outline-primary  new__category  btn-sm " href="{% url 'directory:category_create' %}" role="button">новая категория</a>
+
+                                        <h4 class="mb-3  mt-5">Категории тарифов</h4>
+
+                                        <table class="table">
+                                            <thead class="thead-light">
+                                                <tr>
+                                                    <th scope="col">#</th>
+                                                    <th scope="col">Наименование</th>
+                                                    <th scope="col">Список</th>
+                                                    <th scope="col">Редактировать</th>
+                                                    <th scope="col">Удалить</th>
+                                                </tr>
+                                            </thead>
+
+                                            {% for category in categories %}
+                                                <tbody>
+                                                    <tr class="{% if not category.is_active %}not_active{% endif %}">
+                                                        <th scope="row">{{ category.id }}</th>
+                                                        <td>{{ category.name }}</td>
+                                                        <td class="text-center"><a type="button" class="btn btn-outline-primary btn-sm" role="button" href="{% url 'directory:services' category.pk %}">Тарифы категории</a></td>
+                                                        <td class="text-center"><a type="button" class="btn btn-outline-warning btn-sm" role="button" href="{% url 'directory:category_update' category.pk %}">Редактировать</a></td>
+                                                        <td class="text-center"><a class="text-danger text-decoration-none" href="{% url 'directory:category_delete' category.pk %}">удалить</a></td>
+                                                    </tr>
+                                                </tbody>
+                                            {% endfor %}
+
+                                        </table>
+
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div><!-- ./row -->
+                    </div><!-- ./manager__directory-tab -->
+
+        </div>
+    </div>
+</section>
+{% endblock %}

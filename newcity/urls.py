@@ -9,8 +9,8 @@ import mainapp.views as mainapp
 urlpatterns = [
     path("", mainapp.main, name="main"),
     path("auth/", include("authnapp.urls", namespace="auth")),
-    # path('products/', mainapp.products),
-    # path('contact/', mainapp.contact),
+    path("person/", include("personalacc.urls", namespace="person")),
+    path("directory/", include("directory.urls", namespace="directory")),
     path("admin/", admin.site.urls, name="admin"),
 ]
 

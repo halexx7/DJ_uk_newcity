@@ -25,7 +25,8 @@ SECRET_KEY = "%649#2u&4_$q2_lja(z3k_yzc5i5j*ffm0n#&olms(+2&&z*6e"
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["*"]
+ALLOWED_HOSTS = ['*']
+# ALLOWED_HOSTS = ['*','127.0.0.1', 'http://localhost:8000']
 
 
 # Application definition
@@ -39,10 +40,18 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "mainapp",
     "authnapp",
+    "personalacc",
+    'crispy_forms',
+    "directory",
+    # "widget_tweaks",
 ]
 
 # Auth model
 AUTH_USER_MODEL = "authnapp.User"
+
+
+CRISPY_TEMPLATE_PACK = 'bootstrap4'
+
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
@@ -55,6 +64,9 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = "newcity.urls"
+
+CSRF_USE_SESSIONS = False
+COOKIE_HTTPONLY = False
 
 TEMPLATES = [
     {

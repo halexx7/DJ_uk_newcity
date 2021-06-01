@@ -1,0 +1,35 @@
+[
+    {
+        "model": "mainapp.house",
+        "pk": 1,
+        "fields": {
+            "number": "7",
+            "city": 1,
+            "street": 1,
+            "sq_home": 3876.49,
+            "uk": 1
+        }
+    },
+    {
+        "model": "mainapp.house",
+        "pk": 2,
+        "fields": {
+            "number": "13",
+            "city": 1,
+            "street": 1,
+            "sq_home": 3876.49,
+            "uk": 1
+        }
+    },
+    {
+        "model": "mainapp.house",
+        "pk": 3,
+        "fields": {
+            "number": "2",
+            "city": 1,
+            "street": 2,
+            "sq_home": 3876.49,
+            "uk": 1
+        }
+    }
+]

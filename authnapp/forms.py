@@ -2,37 +2,81 @@ import hashlib
 import random
 
 from django import forms
-from django.contrib.auth.forms import AuthenticationForm, UserChangeForm, UserCreationForm
+from django.contrib.auth.forms import AuthenticationForm, PasswordChangeForm, UserChangeForm, UserCreationForm
+from django.contrib.auth.forms import PasswordResetForm, SetPasswordForm
 from django.contrib.auth.models import Group
+from django.forms import fields
+from django.forms import models
 
-from mainapp.models import UserProfile
-
+from mainapp.models import Appartament, UserProfile
 from .models import User
 
+from django.forms.models import BaseInlineFormSet, inlineformset_factory
+ 
+class BootstrapStylesMixins:
+    field_name = None
 
-class UserLoginForm(AuthenticationForm):
     def __init__(self, *args, **kwargs):
-        super(UserLoginForm, self).__init__(*args, **kwargs)
-        for field_name, field in self.fields.items():
-            field.widget.attrs["class"] = "form-control"
+        super().__init__(*args, **kwargs)
+
+        if self.field_name:
+            for fieldname in self.field_name:
+                self.fields[fieldname].widget.attrs = {'class': 'form-control'}
+                if fieldname == 'is_active':
+                    self.fields[fieldname].widget.attrs = {'class': 'form_is-active'}
+        else:
+            raise ValueError('The field_name should be set')
+
+
+class UserLoginForm(BootstrapStylesMixins, AuthenticationForm):
+    # В данном конкретном случае username = personal_account
+    field_name = ["username", "password"]
+
+
+class MyPasswordChangeForm(BootstrapStylesMixins, PasswordChangeForm):
+    field_name = ["old_password", "new_password1", "new_password2"]
+
+
+class MyPassResetForm(BootstrapStylesMixins, PasswordResetForm):
+    field_name = ["email"]
+
+
+class MyPassSetForm(BootstrapStylesMixins, SetPasswordForm):
+    field_name = ["new_password1", "new_password2"]
+
+
+class UserEditForm(BootstrapStylesMixins, UserChangeForm):
+    field_name = ["name", "personal_account", "email", "phone"]
 
     class Meta:
         model = User
-        fields = ("personal_account", "password")
+        fields = ("name", "personal_account", "email", "phone")
+        exclude = ("password",)
+
+
+class AppartamentEditForm(BootstrapStylesMixins, forms.ModelForm):
+    field_name = ["house", "number"]
+
+    class Meta:
+        model = Appartament
+        fields = ("house", "number")
+
+
+class UserProfileEditForm(BootstrapStylesMixins, forms.ModelForm):
+    field_name = ["gender", "type_electric_meter"]
+
+    class Meta:
+        model = UserProfile
+        fields = ("gender", "type_electric_meter")
 
 
 class UserRegisterForm(UserCreationForm):
     def __init__(self, *args, **kwargs):
-        super(UserRegisterForm, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         for field_name, field in self.fields.items():
             field.widget.attrs["class"] = "form-control"
             field.help_text = ""
 
-    def clean_age(self):
-        data = self.cleaned_data["age"]
-        if data < 18:
-            raise forms.ValidationError("Вы слишком молоды!")
-        return data
 
     def save(self):
         user = super(UserRegisterForm, self).save()
@@ -50,31 +94,18 @@ class UserRegisterForm(UserCreationForm):
         fields = ("personal_account", "name", "password1", "password2", "email")
 
 
-class UserEditForm(UserChangeForm):
-    def __init__(self, *args, **kwargs):
-        super(UserEditForm, self).__init__(*args, **kwargs)
-        for field_name, field in self.fields.items():
-            field.widget.attrs["class"] = "form-control"
-            field.help_text = ""
-
-    def clean_age(self):
-        data = self.cleaned_data["age"]
-        if data < 18:
-            raise forms.ValidationError("Вы слишком молоды!")
-
-        return data
+class AppartamentForm(BootstrapStylesMixins, forms.ModelForm):
+    field_name = ["house", "number", "add_number",]
 
     class Meta:
-        model = User
-        fields = ("personal_account", "name", "email")
+        model = Appartament
+        fields = ("house", "number", "add_number",)
 
 
-class UserProfileEditForm(forms.ModelForm):
-    class Meta:
-        model = UserProfile
-        fields = ("personal_account", "name", "appartament", "type_electric_meter")
-
-    def __init__(self, *args, **kwargs):
-        super(UserProfileEditForm, self).__init__(*args, **kwargs)
-        for field_name, field in self.fields.items():
-            field.widget.attrs["class"] = "form-control"
+AppartamentFormset = inlineformset_factory(
+    User,
+    Appartament,
+    form=AppartamentForm,
+    extra=1,
+    can_delete=False,
+)

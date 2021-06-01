@@ -1,17 +1,27 @@
+from django import forms
+from django.forms.formsets import formset_factory
+from mainapp.models import Appartament, UserProfile
 from django.conf import settings
 from django.contrib import auth
 from django.contrib.auth.decorators import login_required
 from django.core.mail import send_mail
 from django.db import transaction
 from django.shortcuts import HttpResponseRedirect, render
-from django.urls import reverse
+from django.urls import reverse, reverse_lazy
+from django.shortcuts import HttpResponseRedirect, get_object_or_404
+from django.views.generic import CreateView, DeleteView, ListView, UpdateView
+from django.views.generic.detail import DetailView
+from django.forms.models import BaseInlineFormSet, inlineformset_factory
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.http import JsonResponse
+import datetime
 
-from authnapp.forms import UserEditForm, UserLoginForm, UserProfileEditForm, UserRegisterForm
+from authnapp.forms import UserEditForm, UserLoginForm, UserRegisterForm, AppartamentEditForm, UserProfileEditForm, AppartamentFormset
 from authnapp.models import User
 
 
 def login(request):
-    title = "вход"
+    title = "Вход | УК \"Новый город\""
 
     login_form = UserLoginForm(data=request.POST or None)
     if request.method == "POST" and login_form.is_valid():
@@ -23,7 +33,7 @@ def login(request):
             auth.login(request, user)
             return HttpResponseRedirect(reverse("main"))
 
-    content = {"title": title, "login_form": login_form}
+    content = {"title": title, "form": login_form}
     return render(request, "authnapp/login.html", content)
 
 
@@ -33,7 +43,7 @@ def logout(request):
 
 
 def register(request):
-    title = "регистрация"
+    title = "Регистрация | УК \"Новый город\""
 
     if request.method == "POST":
         register_form = UserRegisterForm(request.POST, request.FILES)
@@ -50,26 +60,6 @@ def register(request):
 
     content = {"title": title, "register_form": register_form}
     return render(request, "authnapp/register.html", content)
-
-
-@login_required
-@transaction.atomic
-def edit(request):
-    title = "редактирование"
-
-    if request.method == "POST":
-        edit_form = UserEditForm(request.POST, request.FILES, instance=request.user)
-        profile_form = UserProfileEditForm(request.POST, instance=request.user.userprofile)
-        if edit_form.is_valid() and profile_form.is_valid():
-            edit_form.save()
-            return HttpResponseRedirect(reverse("auth:edit"))
-    else:
-        edit_form = UserEditForm(instance=request.user)
-        profile_form = UserProfileEditForm(instance=request.user.userprofile)
-
-    content = {"title": title, "edit_form": edit_form, "profile_form": profile_form, "media_url": settings.MEDIA_URL}
-
-    return render(request, "authnapp/edit.html", content)
 
 
 def send_verify_mail(user):
@@ -107,3 +97,129 @@ def verify(request, email, activation_key):
         print(f"error activation user : {e.args}")
 
     return HttpResponseRedirect(reverse("main"))
+
+
+class ProfileUpdateView(LoginRequiredMixin, UpdateView):
+    model = User
+    template_name = "authnapp/edit.html"
+    success_url = reverse_lazy("main")
+    form_class = UserEditForm
+ 
+    def get_context_data(self, **kwargs):
+        """ Add formset and formhelper to the context_data. """
+        context = super().get_context_data(**kwargs)
+
+        if self.request.POST:
+            context['appartament_form'] = AppartamentFormset(self.request.POST, instance=self.object)
+        else:
+            context['appartament_form'] = AppartamentFormset(instance=self.object)
+        return context
+    
+    # def get(self, request, *args, **kwargs):
+    #     self.object = self.get_object()
+    #     form_class = self.get_form_class()
+    #     form = self.get_form(form_class)
+    #     appartament = get_object_or_404(User, id=self.request.user.id)
+    #     # appartament = Appartament.objects.get(pk=self.request.user.id)
+    #     appartament_form = AppartamentFormset(instance=appartament)
+
+    #     return self.render_to_response(
+    #         self.get_context_data(form=form, appartament_form=appartament_form)
+    #         # self.get_context_data(form=form)
+    #     )
+
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        form_class = self.get_form_class()
+        form = self.get_form(form_class)
+        formset = AppartamentFormset(self.request.POST)
+
+        if form.is_valid() and formset.is_valid():
+            return self.form_valid(form, formset)
+        
+        return self.form_invalid(form, formset)
+
+    def form_valid(self, form, appartament_form):
+        """
+        Called if all forms are valid. Creates a Author instance along
+        with associated books and then redirects to a success page.
+        """
+        with transaction.atomic():
+            self.object = form.save()
+            appartament_form.instance = self.object
+            appartament_form.save()
+
+        return HttpResponseRedirect(self.get_success_url())
+
+    # def post(self, *args, **kwargs):
+    #     if self.request.is_ajax and self.request.method == "POST":
+            
+    #         if self.request.POST.get("form_type") == 'houseCounterForm':
+    #             form = self.form_class(self.request.POST)
+    #         elif self.request.POST.get("form_type") == 'recalcForm':
+    #             form = self.second_form_class(self.request.POST)
+            
+    #         if form.is_valid():
+    #             post = self.request.POST
+    #             house = post.get('house')
+    #             period = datetime.datetime.now().date().replace(day=1)
+    #             # period = datetime.datetime.now().date().replace(day=1, month=7)
+    #             update_values = {
+    #                 'col_water': post.get('col_water'),
+    #                 'hot_water': post.get('hot_water'),
+    #                 'electric_day': post.get('electric_day'),
+    #                 'electric_night': post.get('electric_night'),
+    #             }
+    #             obj, created = HouseCurrent.objects.update_or_create(house_id=house, period=period, defaults=update_values)
+    #             #При создании новой записи удаляем старую
+    #             if created:
+    #                 previous_month = (period - datetime.timedelta(days=1)).replace(day=1)
+    #                 previous_value = HouseCurrent.objects.filter(house_id=house, period=previous_month)
+    #                 previous_value.delete()
+    #             ser_instance = serializers.serialize('json', [ obj, ])
+    #             return JsonResponse({"instance": ser_instance}, status=200)
+    #         else:
+    #             return JsonResponse({"error": form.errors}, status=400)
+
+    #     return JsonResponse({"error": ""}, status=400)
+
+    # def form_valid(self, form):
+    #     context = self.get_context_data()
+    #     appartaments = context["appartament_form"]
+
+    #     with transaction.atomic():
+    #         self.object = form.save()
+    #         if appartaments.is_valid():
+    #             appartaments.instance = self.object
+    #             appartaments.save()
+
+    #     return super().form_valid(form)
+
+
+    def form_invalid(self, form, appartament_form):
+        """
+        Called if whether a form is invalid. Re-renders the context
+        data with the data-filled forms and errors.
+        """
+        return self.render_to_response(
+            self.get_context_data(form=form, appartament_form=appartament_form,)
+        )
+
+
+    # def form_valid(self, form):
+    #     context = self.get_context_data()
+    #     appartaments = context["appartament_form"]
+
+    #     with transaction.atomic():
+    #         self.object = form.save()
+    #         if appartaments.is_valid():
+    #             appartaments.instance = self.object
+    #             appartaments.save()
+
+    #     return super().form_valid(form)
+
+
+	
+	
+
+	

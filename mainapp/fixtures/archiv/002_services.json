@@ -1,0 +1,139 @@
+[
+    {
+        "model": "mainapp.services",
+        "pk": 1,
+        "fields": {
+            "category": 1,
+            "name": "Взносы на капитальный ремонт",
+            "unit": "м2",
+            "standart": 1,
+            "rate": 15.323
+        }
+    },
+    {
+        "model": "mainapp.services",
+        "pk": 2,
+        "fields": {
+            "category": 1,
+            "name": "Холодная вода (индивидуальное потребление)",
+            "unit": "м3",
+            "standart": 1,
+            "const": false,
+            "rate": 15.323
+        }
+    },
+    {
+        "model": "mainapp.services",
+        "pk": 3,
+        "fields": {
+            "category": 1,
+            "name": "Горячая вода (индивидуальное потребление)",
+            "unit": "м3",
+            "standart": 1,
+            "const": false,
+            "rate": 25.401
+        }
+    },
+    {
+        "model": "mainapp.services",
+        "pk": 4,
+        "fields": {
+            "category": 1,
+            "name": "Водоотведение (индивидуальное потребление)",
+            "unit": "м3",
+            "standart": 1,
+            "const": false,
+            "rate": 25.401
+        }
+    },
+    {
+        "model": "mainapp.services",
+        "pk": 5,
+        "fields": {
+            "category": 1,
+            "name": "Электроэнергия день",
+            "unit": "кВт.ч",
+            "standart": 1,
+            "const": false,
+            "rate": 10.342
+        }
+    },
+    {
+        "model": "mainapp.services",
+        "pk": 6,
+        "fields": {
+            "category": 1,
+            "name": "Электроэнергия ночь",
+            "unit": "кВт.ч",
+            "standart": 1,
+            "const": false,
+            "rate": 15.323
+        }
+    },
+    {
+        "model": "mainapp.services",
+        "pk": 7,
+        "fields": {
+            "category": 1,
+            "name": "Обращение с ТКО",
+            "unit": "чел.",
+            "standart": 1,
+            "rate": 200.000
+        }
+    },
+    {
+        "model": "mainapp.services",
+        "pk": 8,
+        "fields": {
+            "category": 1,
+            "name": "Обслуживание систем видеонаблюдения",
+            "unit": "кв.",
+            "standart": 1,
+            "rate": 70.000
+        }
+    },
+    {
+        "model": "mainapp.services",
+        "pk": 9,
+        "fields": {
+            "category": 1,
+            "name": "Содержание общ иммущ дома",
+            "unit": "м2",
+            "standart": 1,
+            "rate": 64.000
+        }
+    },
+    {
+        "model": "mainapp.services",
+        "pk": 10,
+        "fields": {
+            "category": 1,
+            "name": "Тех обслуж лифтового иммущества",
+            "unit": "м2",
+            "standart": 1,
+            "rate": 50.300
+        }
+    },
+    {
+        "model": "mainapp.services",
+        "pk": 11,
+        "fields": {
+            "category": 1,
+            "name": "ТО общ коммуникац тех устройств и помещений",
+            "unit": "м2",
+            "standart": 1,
+            "rate": 40.000
+        }
+    },
+    {
+        "model": "mainapp.services",
+        "pk": 12,
+        "fields": {
+            "category": 1,
+            "name": "Управление домом",
+            "unit": "м2",
+            "standart": 1,
+            "rate": 56.000
+        }
+    }
+]

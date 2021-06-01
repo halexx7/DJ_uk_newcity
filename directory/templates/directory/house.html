@@ -1,0 +1,47 @@
+{% extends 'directory/base.html' %}
+{% load staticfiles %}
+
+{% load crispy_forms_tags %}
+
+{% block menu %}
+    {% include 'directory/includes/inc_menu.html' %}
+{% endblock menu %}
+
+{% block content %}
+    <div class="my-5">
+        <div class="row  mt-5  mb-3  d-flex justify-content-between">
+            <h4 class="col">Дом по ул. <span class="text-700"></span></h4>
+            <div class="form-group">
+                <a href="{% url 'directory:house_create' street.pk %}" class="btn btn-outline-primary btn-sm" role="button">Добавить дом</a>
+                <a href="{% url 'directory:list' %}" class="btn  btn-outline-secondary btn-sm" role="button">Назад</a>
+            </div>
+            
+        </div>
+        <div class="manager-area__counters-history  mb-5">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">ID</th>
+                        <th class="text-left" scope="col">Дом №</th>
+                        <th scope="col">Квартиры</th>
+                        <th scope="col">Редактировать</th>
+                        <th scope="col">удалиь</th>
+                    </tr>
+                </thead>
+    
+                {% for house in house %}
+                <tbody>
+                    <tr>
+                        <td>{{ street.id }}</td>
+                        <td class="text-left">Дом №{{ house.number }}, к.{{ house.add_number }}</td>
+                        <td><a href="{% url 'directory:appartaments' house.pk %}" type="button" class="btn btn-outline-primary btn-sm" role="button">Квартиры</td>
+                        <td><a href="{% url 'directory:house_update' house.pk %}" type="button" class="btn btn-outline-warning btn-sm" role="button">Редактировать</a></td>
+                        <td><a href="{% url 'directory:house_delete' house.pk %}" class="text-danger text-decoration-none">удалить</a></td>
+                    </tr>
+                </tbody>
+                {% endfor %}
+    
+            </table> 
+        </div>
+    </div>
+{% endblock %}
