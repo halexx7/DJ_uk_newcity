@@ -2,17 +2,23 @@ import hashlib
 import random
 
 from django import forms
-from django.contrib.auth.forms import AuthenticationForm, PasswordChangeForm, UserChangeForm, UserCreationForm
-from django.contrib.auth.forms import PasswordResetForm, SetPasswordForm
+from django.contrib.auth.forms import (
+    AuthenticationForm,
+    PasswordChangeForm,
+    PasswordResetForm,
+    SetPasswordForm,
+    UserChangeForm,
+    UserCreationForm,
+)
 from django.contrib.auth.models import Group
-from django.forms import fields
-from django.forms import models
+from django.forms import fields, models
+from django.forms.models import BaseInlineFormSet, inlineformset_factory
 
 from mainapp.models import Appartament, UserProfile
+
 from .models import User
 
-from django.forms.models import BaseInlineFormSet, inlineformset_factory
- 
+
 class BootstrapStylesMixins:
     field_name = None
 
@@ -21,11 +27,11 @@ class BootstrapStylesMixins:
 
         if self.field_name:
             for fieldname in self.field_name:
-                self.fields[fieldname].widget.attrs = {'class': 'form-control'}
-                if fieldname == 'is_active':
-                    self.fields[fieldname].widget.attrs = {'class': 'form_is-active'}
+                self.fields[fieldname].widget.attrs = {"class": "form-control"}
+                if fieldname == "is_active":
+                    self.fields[fieldname].widget.attrs = {"class": "form_is-active"}
         else:
-            raise ValueError('The field_name should be set')
+            raise ValueError("The field_name should be set")
 
 
 class UserLoginForm(BootstrapStylesMixins, AuthenticationForm):
@@ -77,7 +83,6 @@ class UserRegisterForm(UserCreationForm):
             field.widget.attrs["class"] = "form-control"
             field.help_text = ""
 
-
     def save(self):
         user = super(UserRegisterForm, self).save()
 
@@ -95,11 +100,19 @@ class UserRegisterForm(UserCreationForm):
 
 
 class AppartamentForm(BootstrapStylesMixins, forms.ModelForm):
-    field_name = ["house", "number", "add_number",]
+    field_name = [
+        "house",
+        "number",
+        "add_number",
+    ]
 
     class Meta:
         model = Appartament
-        fields = ("house", "number", "add_number",)
+        fields = (
+            "house",
+            "number",
+            "add_number",
+        )
 
 
 AppartamentFormset = inlineformset_factory(

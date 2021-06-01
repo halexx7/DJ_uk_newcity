@@ -1,7 +1,7 @@
-from django import forms
-from mainapp.models import CurrentCounter, HouseCurrent, Recalculations, HouseHistory
 from crispy_forms.helper import FormHelper
+from django import forms
 
+from mainapp.models import CurrentCounter, HouseCurrent, HouseHistory, Recalculations
 
 
 class CurrentCounterForm(forms.ModelForm):
@@ -9,7 +9,7 @@ class CurrentCounterForm(forms.ModelForm):
         super(CurrentCounterForm, self).__init__(*args, **kwargs)
         for field_name, field in self.fields.items():
             field.widget.attrs["class"] = "form-control"
-        self.helper = FormHelper()  
+        self.helper = FormHelper()
         self.helper.form_show_labels = False
 
     class Meta:
@@ -22,7 +22,7 @@ class HomeCurrentCounterForm(forms.ModelForm):
         super(HomeCurrentCounterForm, self).__init__(*args, **kwargs)
         for field_name, field in self.fields.items():
             field.widget.attrs["class"] = "form-control"
-        self.helper = FormHelper()  
+        self.helper = FormHelper()
         # self.helper.form_show_labels = False
 
     class Meta:
@@ -35,7 +35,7 @@ class HomeHistoryCounterForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         for field_name, field in self.fields.items():
             field.widget.attrs["class"] = "form-control"
-        self.helper = FormHelper()  
+        self.helper = FormHelper()
         # self.helper.form_show_labels = False
 
     class Meta:
@@ -48,7 +48,7 @@ class RecalculationsForm(forms.ModelForm):
         super(RecalculationsForm, self).__init__(*args, **kwargs)
         for field_name, field in self.fields.items():
             field.widget.attrs["class"] = "form-control"
-        self.helper = FormHelper()  
+        self.helper = FormHelper()
 
     class Meta:
         model = Recalculations

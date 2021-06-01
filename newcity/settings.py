@@ -25,7 +25,7 @@ SECRET_KEY = "%649#2u&4_$q2_lja(z3k_yzc5i5j*ffm0n#&olms(+2&&z*6e"
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ["*"]
 # ALLOWED_HOSTS = ['*','127.0.0.1', 'http://localhost:8000']
 
 
@@ -41,7 +41,7 @@ INSTALLED_APPS = [
     "mainapp",
     "authnapp",
     "personalacc",
-    'crispy_forms',
+    "crispy_forms",
     "directory",
     # "widget_tweaks",
 ]
@@ -50,7 +50,7 @@ INSTALLED_APPS = [
 AUTH_USER_MODEL = "authnapp.User"
 
 
-CRISPY_TEMPLATE_PACK = 'bootstrap4'
+CRISPY_TEMPLATE_PACK = "bootstrap4"
 
 
 MIDDLEWARE = [

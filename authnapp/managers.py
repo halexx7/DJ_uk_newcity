@@ -21,7 +21,7 @@ class UserManager(BaseUserManager):
         extra_fields.setdefault("is_superuser", False)
         extra_fields.setdefault("is_client", True)
         extra_fields.setdefault("is_manager", False)
-        
+
         return self._create_user(personal_account, password, **extra_fields)
 
     def create_superuser(self, personal_account, password, **extra_fields):
