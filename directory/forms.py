@@ -60,8 +60,8 @@ class HouseEditForm(BootstrapStylesMixins, forms.ModelForm):
             ),
             Row(
                 Column("sq_home", css_class="form-group col-md-3 mb-0"),
-                Column("uk", css_class="form-group col-md-4 mb-0"),
-                Column("category_rate", css_class="form-group col-md-2 mb-0"),
+                Column("uk", css_class="form-group col-md-5 mb-0"),
+                Column("category_rate", css_class="form-group col-md-4 mb-0"),
                 css_class="form-row",
             ),
             "is_active",

@@ -34,8 +34,6 @@ class DirectoryList(LoginRequiredMixin, ListView):
 PRODUCT CATEGOTY
 ================
 """
-
-
 class ServicesCategoryCreateView(LoginRequiredMixin, CreateView):
     model = ServicesCategory
     template_name = "directory/category_update.html"
@@ -72,8 +70,6 @@ class ServicesCategoryDeleteView(LoginRequiredMixin, DeleteView):
 SERVICES
 =========
 """
-
-
 class ServicesListView(LoginRequiredMixin, ListView):
     model = Services
     template_name = "directory/services.html"
@@ -131,8 +127,6 @@ class ServicesDeleteView(LoginRequiredMixin, DeleteView):
    CITY
 ==========
 """
-
-
 class CityCreateView(LoginRequiredMixin, CreateView):
     model = City
     template_name = "directory/city_update.html"
@@ -169,8 +163,6 @@ class CityDeleteView(LoginRequiredMixin, DeleteView):
   STREET
 ==========
 """
-
-
 class StreetListView(LoginRequiredMixin, ListView):
     model = Street
     template_name = "directory/streets.html"
@@ -230,8 +222,6 @@ class StreetDeleteView(LoginRequiredMixin, DeleteView):
   HOUSE
 =========
 """
-
-
 class HouseListView(LoginRequiredMixin, ListView):
     model = House
     template_name = "directory/house.html"
@@ -326,8 +316,6 @@ class HouseDeleteView(LoginRequiredMixin, DeleteView):
   APPARTAMENTS
 ================
 """
-
-
 class AppartamentsListView(LoginRequiredMixin, ListView):
     model = Appartament
     template_name = "directory/appartaments.html"

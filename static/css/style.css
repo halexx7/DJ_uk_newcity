@@ -57,6 +57,10 @@ ul, ol {
     font-weight: bold;
 }
 
+.container {
+    width: 1140px;
+}
+
 
 /* ===============
 ==== Home Page ====
@@ -140,9 +144,9 @@ ul, ol {
 === Manager Area ===
 ====================*/
 
-.manager-tab__city {
+/* .manager-tab__city {
     max-width: 30rem;
-}
+} */
 
 .manager-tab__street-form {
     margin-right: 2em;
