@@ -71,6 +71,7 @@
                                         role="tabpanel" aria-labelledby="v-pills-resident-tab">
 
                                         <a href="#" class="d-inline-flex  mb-5  manager-tab__link  text-decoration-none">Добавить жильца</a>
+                                        <a href="#" class="d-inline-flex  mb-5  manager-tab__link  text-decoration-none">Посмотреть всех жильцов</a>
 
                                         <h4>Жильцы</h4>
                                         <table class="table">
@@ -80,30 +81,23 @@
                                                     <th scope="col">Лицевой счет</th>
                                                     <th scope="col">ФИО</th>
                                                     <th scope="col">Адрес</th>
-                                                    <th scope="col">Долг/переплата</th>
                                                     <th scope="col">редактировать</th>
                                                 </tr>
                                             </thead>
-                                            <tbody>
-                                                <tr>
-                                                    <th scope="row">1</th>
-                                                    <td>123456</td>
-                                                    <td>Иванов Иван Иванович</td>
-                                                    <td>ул.Советская, д.10, кв.7</td>
-                                                    <td class="text-danger  text-700  text-center">4200 руб.</td>
-                                                    <td><a href="#" class="text-decoration-none">редактировать</a>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <th scope="row">2</th>
-                                                    <td>123457</td>
-                                                    <td>Сидоров Александр Александрович</td>
-                                                    <td>ул.Советская, д.13, кв.8</td>
-                                                    <td class="text-success  text-center">-329 руб.</td>
-                                                    <td><a href="#" class="text-decoration-none">редактировать</a>
-                                                    </td>
-                                                </tr>
-                                            </tbody>
+                                            {% for resident in users %}
+                                                {% if not resident.is_superuser and not resident.is_staff %}
+                                                    <tbody>
+                                                        <tr>
+                                                            <th scope="row">{{ resident.id }}</th>
+                                                            <td>{{ resident.personal_account }}</td>
+                                                            <td>{{ resident.name }}</td>
+                                                            <td>{{ resident.profile.gender }} </td>
+                                                            <td><a href="#" class="text-decoration-none">редактировать</a>
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                    {% endif %}
+                                            {% endfor %}
                                         </table>
                                     </div><!-- ./manager-tab__object -->
 

@@ -20,7 +20,6 @@
                 {% if next_page %}
                     <input type="hidden" name="next_page" value="{{ next_page }}">
                 {% endif %}
-                <!-- {% crispy form %} -->
                 {% for field in form %}
                     <div class="form-group">
                         {{ field.label }}
@@ -70,7 +69,7 @@
 
 {% block js %}
 <script>
-    $('#div_id_password').hide();
+    $('#id_password').parent().hide();
     $('#id_personal_account').hide();
     $('#id_personal_account').before('<p style="font-weight: bold;">{{ user.personal_account }}</p>');
 </script>

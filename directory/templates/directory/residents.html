@@ -1,0 +1,52 @@
+{% extends 'directory/base.html' %}
+{% load staticfiles %}
+
+{% load crispy_forms_tags %}
+
+{% block menu %}
+    {% include 'directory/includes/inc_menu.html' %}
+{% endblock menu %}
+
+{% block content %}
+    <div class="my-5">
+        <div class="row  mt-5  mb-3  d-flex justify-content-between">
+            <h4 class="col">Адрес дома: <span class="text-700">{{ house.street }}, дом №{{ house.number }}</span></h4>
+            <div class="form-group">
+                <a href="{% url 'directory:appartaments_create' house.pk %}" class="btn btn-outline-primary btn-sm" role="button">Добавить квартиру</a>
+                <a href="{% url 'directory:list' %}" class="btn  btn-outline-secondary btn-sm" role="button">Назад</a>
+            </div>
+        </div>
+        <div class="manager-area__counters-history  mb-5">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">ID</th>
+                        <th class="text-left" scope="col">Квартира №</th>
+                        <th class="text-left" scope="col">Комната</th>
+                        <th scope="col">Владелец</th>
+                        <th scope="col">Площадь</th>
+                        <th scope="col">Кол-во проживающих</th>
+                        <th scope="col">Редактировать</th>
+                        <th scope="col">удалиь</th>
+                    </tr>
+                </thead>
+    
+                {% for item in appartaments %}
+                <tbody>
+                    <tr>
+                        <td>{{ item.id }}</td>
+                        <td class="text-left">кв. №{{ item.number }}</td>
+                        <td class="text-left">{{ item.add_number }}</td>
+                        <td class="text-left">{{ item.user.name }}</td>
+                        <td class="text-left">{{ item.sq_appart }}</td>
+                        <td class="text-left">{{ item.num_owner }}</td>
+                        <td><a href="{% url 'directory:appartaments_update' item.pk %}" type="button" class="btn btn-outline-warning btn-sm" role="button">Редактировать</a></td>
+                        <td><a href="{% url 'directory:appartaments_delete' item.pk %}" class="text-danger text-decoration-none">удалить</a></td>
+                    </tr>
+                </tbody>
+                {% endfor %}
+    
+            </table> 
+        </div>
+    </div>
+{% endblock %}
