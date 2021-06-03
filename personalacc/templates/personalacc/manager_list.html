@@ -233,43 +233,22 @@
                                 <th scope="col">Период</th>
                                 <th scope="col">Лицевой счет</th>
                                 <th scope="col">ФИО</th>
-                                <th scope="col">Адрес</th>
                                 <th scope="col">Долг/переплата</th>
                                 <th scope="col">редактировать</th>
                             </tr>
                         </thead>
+
+                        {% for el in house_rec %}
                         <tbody>
                             <tr>
-                                <th scope="row">1</th>
-                                <td>Январь 2021</td>
-                                <td>123456</td>
-                                <td>Иванов Иван Иванович</td>
-                                <td>ул.Советская, д.10, кв.7</td>
-                                <td class="text-danger  text-700  text-center">4200 руб.</td>
-                                <td><a href="#" class="text-decoration-none">редактировать</a>
-                                </td>
-                            </tr>
-                            <tr>
-                                <th scope="row">1</th>
-                                <td>февраль 2021</td>
-                                <td>123459</td>
-                                <td>Сидоров Александр Александрович</td>
-                                <td>ул.Советская, д.10, кв.6</td>
-                                <td class="text-danger  text-700  text-center">4200 руб.</td>
-                                <td><a href="#" class="text-decoration-none">редактировать</a>
-                                </td>
-                            </tr>
-                            <tr>
-                                <th scope="row">1</th>
-                                <td>Март 2021</td>
-                                <td>123445</td>
-                                <td>Петров Евлампий Аристархович</td>
-                                <td>ул.Советская, д.10, кв.13</td>
-                                <td class="text-danger  text-700  text-center">4200 руб.</td>
-                                <td><a href="#" class="text-decoration-none">редактировать</a>
-                                </td>
+                                <td>{{ el.id }}</td>
+                                <td>{{ el.period|date:"m - Y" }}</td>
+                                <td>{{ el.user.personal_account }}</td>
+                                <td>{{ el.user }}</td>
+                                <td>{{ el.recalc}}</td>
                             </tr>
                         </tbody>
+                        {% endfor %}
                     </table>
                 </div>
 
@@ -329,34 +308,22 @@
                                                 <th scope="col">#</th>
                                                 <th scope="col">Лицевой счет</th>
                                                 <th scope="col">ФИО</th>
-                                                <th scope="col">Адрес</th>
                                                 <th scope="col">Название</th>
                                                 <th scope="col">Льгота, %</th>
                                                 <th scope="col">редактировать</th>
                                             </tr>
                                         </thead>
+                                        {% for el in house_privileges %}
                                         <tbody>
                                             <tr>
-                                                <th scope="row">1</th>
-                                                <td>123456</td>
-                                                <td>Иванов Иван Иванович</td>
-                                                <td>ул.Советская, д.10, кв.7</td>
-                                                <td class="text-center">Холодная вода</td>
-                                                <td class="text-700  text-center">20</td>
-                                                <td><a href="#" class="text-decoration-none">редактировать</a>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <th scope="row">2</th>
-                                                <td>123457</td>
-                                                <td>Сидоров Александр Александрович</td>
-                                                <td>ул.Советская, д.13, кв.8</td>
-                                                <td class="text-center">Горячая вода</td>
-                                                <td class="text-700  text-center">10</td>
-                                                <td><a href="#" class="text-decoration-none">редактировать</a>
-                                                </td>
+                                                <td>{{ el.id }}</td>
+                                                <td>{{ el.user.personal_account }}</td>
+                                                <td>{{ el.user }}</td>
+                                                <td>{{ el.service }}</td>
+                                                <td>{{ el.sale }}</td>
                                             </tr>
                                         </tbody>
+                                        {% endfor %}
                                     </table>
                                 </div>
 
@@ -398,34 +365,22 @@
                                                 <th scope="col">#</th>
                                                 <th scope="col">Лицевой счет</th>
                                                 <th scope="col">ФИО</th>
-                                                <th scope="col">Адрес</th>
                                                 <th scope="col">Название</th>
                                                 <th scope="col">Субсидия, %</th>
                                                 <th scope="col">Редактировать</th>
                                             </tr>
                                         </thead>
+                                        {% for el in house_privileges %}
                                         <tbody>
                                             <tr>
-                                                <th scope="row">1</th>
-                                                <td>123456</td>
-                                                <td>Иванов Иван Иванович</td>
-                                                <td>ул.Советская, д.10, кв.7</td>
-                                                <td class="text-center">Холодная вода</td>
-                                                <td class="text-700  text-center">20</td>
-                                                <td><a href="#" class="text-decoration-none">редактировать</a>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <th scope="row">2</th>
-                                                <td>123457</td>
-                                                <td>Сидоров Александр Александрович</td>
-                                                <td>ул.Советская, д.13, кв.8</td>
-                                                <td class="text-center">Горячая вода</td>
-                                                <td class="text-700  text-center">10</td>
-                                                <td><a href="#" class="text-decoration-none">редактировать</a>
-                                                </td>
+                                                <td>{{ el.id }}</td>
+                                                <td>{{ el.user.personal_account }}</td>
+                                                <td>{{ el.user }}</td>
+                                                <td>{{ el.service }}</td>
+                                                <td>{{ el.sale }}</td>
                                             </tr>
                                         </tbody>
+                                        {% endfor %}                                        
                                     </table>
                                 </div>
                             </div>
