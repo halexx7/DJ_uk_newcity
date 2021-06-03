@@ -32,22 +32,23 @@
                         </div>
                     {% endif %}
                 {% endfor %}
+                {% if not user.is_staff and not user.is_superuser %}
                 <table class="table">
-
-                        {{ appartament_form.management_form }}
-                        {{ appartament_form.non_form_errors }}
-                        
-                            <table>
-                                {% for form in appartament_form %}
-                                <tr><td><ul class="list-inline">{{ form.as_ul }}</ul></td></tr>
-                                    {% if form.errors %}
-                                        <div class="alert  alert-danger">
-                                            {{ form.errors }}
-                                        </div>
-                                    {% endif %}
-                                {% endfor %}
-                            </table>
+                    {{ appartament_form.management_form }}
+                    {{ appartament_form.non_form_errors }}
+                    
+                        <table>
+                            {% for form in appartament_form %}
+                            <tr><td><ul class="list-inline">{{ form.as_ul }}</ul></td></tr>
+                                {% if form.errors %}
+                                    <div class="alert  alert-danger">
+                                        {{ form.errors }}
+                                    </div>
+                                {% endif %}
+                            {% endfor %}
+                        </table>
                 </table>
+                {% endif %}
                 <br>
 
                 <div class="change_pass  pb-5">
