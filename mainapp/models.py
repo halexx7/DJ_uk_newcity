@@ -328,7 +328,7 @@ class UserProfile(models.Model):
 
 class Appartament(models.Model):
     user = models.ForeignKey(
-        User, verbose_name="Жилец", related_name="person", null=True, blank=True, on_delete=SET_NULL
+        User, verbose_name="Жилец", related_name="appartament", null=True, blank=True, on_delete=SET_NULL
     )
     house = models.ForeignKey(House, verbose_name="Дом", on_delete=CASCADE)
     number = models.CharField(verbose_name="Номер квартиры", max_length=3)

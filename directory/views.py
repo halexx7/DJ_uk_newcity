@@ -25,7 +25,7 @@ class DirectoryList(LoginRequiredMixin, ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["users"] = User.objects.all()
+        context["residents"] = User.objects.filter(is_staff = False).filter(is_superuser = False)
         context["categories"] = ServicesCategory.objects.all()
         context["city"] = City.objects.all()
         return context

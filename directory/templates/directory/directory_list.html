@@ -80,23 +80,19 @@
                                                     <th scope="col">#</th>
                                                     <th scope="col">Лицевой счет</th>
                                                     <th scope="col">ФИО</th>
-                                                    <th scope="col">Адрес</th>
                                                     <th scope="col">редактировать</th>
                                                 </tr>
                                             </thead>
-                                            {% for resident in users %}
-                                                {% if not resident.is_superuser and not resident.is_staff %}
-                                                    <tbody>
-                                                        <tr>
-                                                            <th scope="row">{{ resident.id }}</th>
-                                                            <td>{{ resident.personal_account }}</td>
-                                                            <td>{{ resident.name }}</td>
-                                                            <td>{{ resident.profile.gender }} </td>
-                                                            <td><a href="#" class="text-decoration-none">редактировать</a>
-                                                            </td>
-                                                        </tr>
-                                                    </tbody>
-                                                    {% endif %}
+                                            {% for resident in residents %}
+                                                <tbody>
+                                                    <tr>
+                                                        <th scope="row">{{ resident.id }}</th>
+                                                        <td>{{ resident.personal_account }}</td>
+                                                        <td>{{ resident.name }}</td>
+                                                        <td><a href="#" class="text-decoration-none">редактировать</a>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
                                             {% endfor %}
                                         </table>
                                     </div><!-- ./manager-tab__object -->
