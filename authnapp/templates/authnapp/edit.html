@@ -37,15 +37,16 @@
                     {{ appartament_form.management_form }}
                     {{ appartament_form.non_form_errors }}
                     
-                        <table>
-                            {% for form in appartament_form %}
-                            <tr><td><ul class="list-inline">{{ form.as_ul }}</ul></td></tr>
-                                {% if form.errors %}
-                                    <div class="alert  alert-danger">
-                                        {{ form.errors }}
-                                    </div>
-                                {% endif %}
-                            {% endfor %}
+                        {% for form in appartament_form %}
+                        <div class="list-inline">
+                            {{ form.as_p }}
+                        </div>
+                            {% if form.errors %}
+                                <div class="alert  alert-danger">
+                                    {{ form.errors }}
+                                </div>
+                            {% endif %}
+                        {% endfor %}
                         </table>
                 </table>
                 {% endif %}
