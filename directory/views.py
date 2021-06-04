@@ -7,9 +7,12 @@ from django.urls import reverse, reverse_lazy
 from django.views.generic import CreateView, DeleteView, ListView, UpdateView
 
 from authnapp.forms import AppartamentFormset
+from authnapp.managers import UserManager
+from authnapp.admin import UserCreationForm
 from directory.forms import (
     AppartamentFormSet,
     AppartamentsEditForm,
+    ResidentsEditForm,
     CityEditForm,
     HouseEditForm,
     ServicesCategoryEditForm,
@@ -376,48 +379,46 @@ class AppartamentsDeleteView(LoginRequiredMixin, DeleteView):
 ==============
 """
 class ResidentsListView(LoginRequiredMixin, ListView):
-    model = Appartament
-    template_name = "directory/appartaments.html"
+    model = User
+    template_name = "directory/residents.html"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["house"] = get_object_or_404(House, pk=self.kwargs["pk"])
-        context["appartaments"] = Appartament.objects.filter(house__pk=self.kwargs["pk"]).order_by("house")
         return context
 
 
-class AppartamentsCreateView(LoginRequiredMixin, CreateView):
-    model = Appartament
-    template_name = "directory/appartaments_update.html"
+class ResidentsCreateView(LoginRequiredMixin, CreateView, UserManager):
+    model = User
+    template_name = "directory/residents_update.html"
     success_url = reverse_lazy("directory:list")
-    form_class = AppartamentsEditForm
+    form_class = ResidentsEditForm
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["title"] = "Квартира/создание"
+        context["title"] = "Жильцы/создание"
         return context
 
 
-class AppartamentsUpdateView(LoginRequiredMixin, UpdateView):
-    model = Appartament
-    template_name = "directory/appartaments_update.html"
+class ResidentsUpdateView(LoginRequiredMixin, UpdateView):
+    model = User
+    template_name = "directory/residents_update.html"
     success_url = reverse_lazy("directory:list")
-    form_class = AppartamentsEditForm
+    form_class = ResidentsEditForm
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["title"] = "Квартира/редактирование"
+        context["title"] = "Жильцы/редактирование"
         return context
 
 
-class AppartamentsDeleteView(LoginRequiredMixin, DeleteView):
-    model = Appartament
+class ResidentsDeleteView(LoginRequiredMixin, DeleteView):
+    model = User
     template_name = "directory/appartaments_delete.html"
     success_url = reverse_lazy("directory:list")
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["title"] = "Квартира/удаление"
+        context["title"] = "Жильцы/удаление"
         return context
 
     def delete(self, request, *args, **kwargs):

@@ -1,0 +1,47 @@
+{% extends 'directory/base.html' %}
+{% load staticfiles %}
+
+{% load crispy_forms_tags %}
+
+{% block menu %}
+    {% include 'directory/includes/inc_menu.html' %}
+{% endblock menu %}
+
+{% block content %}
+    <div class="directory__form">
+        <form class="" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            {% crispy form %}
+
+            {% comment  'Подумать нужно ли использовать??'%}
+                {% for error in form.non_field_errors %}
+                    <div class="alert  alert-danger">
+                        {{ error }}
+                    </div>
+                {% endfor %}
+
+                {% for field in form %}
+                    <div class="form-group">
+                        {{ field.label }}
+                        {{ field }}
+                    </div>
+
+                    {% if field.errors %}
+                        <div class="alert  alert-danger">
+                            {{ field.errors }}
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            {% endcomment %}
+
+            
+            <div class="new_category_form--btn">
+                <input class="form-control  bg-success  text-white  new_category_form--save" type="submit" value="сохранить">
+            </div>
+        </form>
+        <div class="new_category_form--back_back">
+            <a class="form-control  btn  btn-outline-secondary mt-3" href="{% url 'directory:list' %}" role="button">на главную</a>
+        </div>
+    </div>
+{% endblock content %}

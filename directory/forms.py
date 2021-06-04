@@ -5,6 +5,7 @@ from django.forms.models import inlineformset_factory
 
 from authnapp.forms import BootstrapStylesMixins
 from mainapp.models import Appartament, City, House, Services, ServicesCategory, Street
+from authnapp.models import User
 
 
 class ServicesCategoryEditForm(BootstrapStylesMixins, forms.ModelForm):
@@ -106,3 +107,11 @@ AppartamentFormSet = inlineformset_factory(
     extra=1,
     can_delete=True,
 )
+
+
+class ResidentsEditForm(BootstrapStylesMixins, forms.ModelForm):
+    field_name = ["personal_account", "password", "name", "email", "phone", "is_client", "is_active"]
+
+    class Meta:
+        model = User
+        fields = ("personal_account", "password", "name", "email", "phone", "is_client", "is_active")

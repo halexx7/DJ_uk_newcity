@@ -48,4 +48,9 @@ urlpatterns = [
     re_path(
         r"^appartaments/delete/(?P<pk>\d+)/$", directory.AppartamentsDeleteView.as_view(), name="appartaments_delete"
     ),
+    # Residents
+    re_path(r"^resident/read/$", directory.ResidentsListView.as_view(), name="residents"),
+    re_path(r"^resident/create/$", directory.ResidentsCreateView.as_view(), name="residents_create"),
+    re_path(r"^resident/update/(?P<pk>\d+)/$", directory.ResidentsUpdateView.as_view(), name="residents_update"),
+    re_path(r"^resident/delete/(?P<pk>\d+)/$", directory.ResidentsDeleteView.as_view(), name="residents_delete"),
 ]
