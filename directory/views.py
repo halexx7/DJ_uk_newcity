@@ -86,7 +86,7 @@ class ServicesListView(LoginRequiredMixin, ListView):
 class ServicesCreateView(LoginRequiredMixin, CreateView):
     model = Services
     template_name = "directory/services_update.html"
-    success_url = reverse_lazy("directory:services")
+    success_url = reverse_lazy("directory:list")
     form_class = ServicesEditForm
 
     def get_context_data(self, **kwargs):
