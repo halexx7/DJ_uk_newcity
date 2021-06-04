@@ -6,6 +6,7 @@ from django.forms.models import inlineformset_factory
 from authnapp.forms import BootstrapStylesMixins
 from mainapp.models import Appartament, City, House, Services, ServicesCategory, Street
 from authnapp.models import User
+from authnapp.admin import UserCreationForm
 
 
 class ServicesCategoryEditForm(BootstrapStylesMixins, forms.ModelForm):
@@ -109,9 +110,20 @@ AppartamentFormSet = inlineformset_factory(
 )
 
 
-class ResidentsEditForm(BootstrapStylesMixins, forms.ModelForm):
-    field_name = ["personal_account", "password", "name", "email", "phone", "is_client", "is_active"]
+class ResidentsEditForm(BootstrapStylesMixins, UserCreationForm):
+    field_name = ["personal_account", "name", "email", "phone", "is_client", "is_active"]
 
     class Meta:
         model = User
-        fields = ("personal_account", "password", "name", "email", "phone", "is_client", "is_active")
+        fields = ("personal_account", "name", "email", "phone", "is_client", "is_active")
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_id = 'id-ResidentEditForm'
+        self.helper.form_class = 'blueForms'
+        self.helper.form_method = 'post'
+        self.helper.form_action = 'submit_survey'
+
+        self.helper.add_input(Submit('submit', 'Сохранить', css_class='form-control  bg-success  text-white  new_category_form--save'))
+ 

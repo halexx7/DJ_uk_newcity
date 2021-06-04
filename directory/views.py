@@ -384,6 +384,7 @@ class ResidentsListView(LoginRequiredMixin, ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        context["residents"] = User.objects.filter(is_staff = False).filter(is_superuser = False)
         return context
 
 

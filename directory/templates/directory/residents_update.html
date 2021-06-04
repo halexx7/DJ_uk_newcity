@@ -11,9 +11,7 @@
     <div class="directory__form">
         <form class="" method="post" enctype="multipart/form-data">
             {% csrf_token %}
-
             {% crispy form %}
-
             {% comment  'Подумать нужно ли использовать??'%}
                 {% for error in form.non_field_errors %}
                     <div class="alert  alert-danger">
@@ -34,11 +32,6 @@
                     {% endif %}
                 {% endfor %}
             {% endcomment %}
-
-            
-            <div class="new_category_form--btn">
-                <input class="form-control  bg-success  text-white  new_category_form--save" type="submit" value="сохранить">
-            </div>
         </form>
         <div class="new_category_form--back_back">
             <a class="form-control  btn  btn-outline-secondary mt-3" href="{% url 'directory:list' %}" role="button">на главную</a>
