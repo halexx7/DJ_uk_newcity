@@ -3,10 +3,10 @@ from crispy_forms.layout import Column, Layout, Row, Submit
 from django import forms
 from django.forms.models import inlineformset_factory
 
-from authnapp.forms import BootstrapStylesMixins
-from mainapp.models import Appartament, City, House, Services, ServicesCategory, Street
-from authnapp.models import User
 from authnapp.admin import UserCreationForm
+from authnapp.forms import BootstrapStylesMixins
+from authnapp.models import User
+from mainapp.models import Appartament, City, House, Services, ServicesCategory, Street
 
 
 class ServicesCategoryEditForm(BootstrapStylesMixins, forms.ModelForm):
@@ -116,10 +116,11 @@ class ResidentsEditForm(BootstrapStylesMixins, UserCreationForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.helper = FormHelper()
-        self.helper.form_id = 'id-ResidentEditForm'
-        self.helper.form_class = 'blueForms'
-        self.helper.form_method = 'post'
-        self.helper.form_action = 'submit_survey'
+        self.helper.form_id = "id-ResidentEditForm"
+        self.helper.form_class = "blueForms"
+        self.helper.form_method = "post"
+        self.helper.form_action = "submit_survey"
 
-        self.helper.add_input(Submit('submit', 'Сохранить', css_class='form-control  bg-success  text-white  new_category_form--save'))
- 
+        self.helper.add_input(
+            Submit("submit", "Сохранить", css_class="form-control  bg-success  text-white  new_category_form--save")
+        )

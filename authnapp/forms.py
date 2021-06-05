@@ -84,6 +84,7 @@ ProfileFormset = inlineformset_factory(
     can_delete=False,
 )
 
+
 class UserRegisterForm(UserCreationForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -122,4 +123,3 @@ AppartamentFormset = inlineformset_factory(
     extra=1,
     can_delete=False,
 )
-

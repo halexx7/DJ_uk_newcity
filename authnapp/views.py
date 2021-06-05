@@ -127,16 +127,22 @@ class ProfileUpdateView(LoginRequiredMixin, UpdateView):
         form = self.get_form(form_class)
         formset = ProfileFormset(self.request.POST, instance=self.object)
 
-        if form.is_valid() and formset.is_valid():
-            return self.form_valid(form, formset)
-
-        return self.form_invalid(form, formset)
+        if not self.request.user.is_staff:
+            if form.is_valid() and formset.is_valid():
+                return self.form_valid(form, formset)
+            return self.form_invalid(form, formset)
+        else:
+            if form.is_valid():
+                return self.form_valid(form, formset)
 
     def form_valid(self, form, formset):
-        with transaction.atomic():
+        if self.request.user.is_staff:
             self.object = form.save()
-            formset.instance = self.object
-            formset.save()
+        else:
+            with transaction.atomic():
+                self.object = form.save()
+                formset.instance = self.object
+                formset.save()
 
         return HttpResponseRedirect(self.get_success_url())
 

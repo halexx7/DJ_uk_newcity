@@ -1,4 +1,3 @@
-from authnapp.models import User
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db import transaction
 from django.forms.models import BaseInlineFormSet, inlineformset_factory
@@ -6,15 +5,16 @@ from django.shortcuts import HttpResponseRedirect, get_object_or_404, render
 from django.urls import reverse, reverse_lazy
 from django.views.generic import CreateView, DeleteView, ListView, UpdateView
 
+from authnapp.admin import UserCreationForm
 from authnapp.forms import AppartamentFormset
 from authnapp.managers import UserManager
-from authnapp.admin import UserCreationForm
+from authnapp.models import User
 from directory.forms import (
     AppartamentFormSet,
     AppartamentsEditForm,
-    ResidentsEditForm,
     CityEditForm,
     HouseEditForm,
+    ResidentsEditForm,
     ServicesCategoryEditForm,
     ServicesEditForm,
     StreetEditForm,
@@ -28,7 +28,7 @@ class DirectoryList(LoginRequiredMixin, ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["residents"] = User.objects.filter(is_staff = False).filter(is_superuser = False)
+        context["residents"] = User.objects.filter(is_staff=False).filter(is_superuser=False)
         context["categories"] = ServicesCategory.objects.all()
         context["city"] = City.objects.all()
         return context
@@ -39,6 +39,8 @@ class DirectoryList(LoginRequiredMixin, ListView):
 PRODUCT CATEGOTY
 ================
 """
+
+
 class ServicesCategoryCreateView(LoginRequiredMixin, CreateView):
     model = ServicesCategory
     template_name = "directory/category_update.html"
@@ -75,6 +77,8 @@ class ServicesCategoryDeleteView(LoginRequiredMixin, DeleteView):
 SERVICES
 =========
 """
+
+
 class ServicesListView(LoginRequiredMixin, ListView):
     model = Services
     template_name = "directory/services.html"
@@ -132,6 +136,8 @@ class ServicesDeleteView(LoginRequiredMixin, DeleteView):
    CITY
 ==========
 """
+
+
 class CityCreateView(LoginRequiredMixin, CreateView):
     model = City
     template_name = "directory/city_update.html"
@@ -168,6 +174,8 @@ class CityDeleteView(LoginRequiredMixin, DeleteView):
   STREET
 ==========
 """
+
+
 class StreetListView(LoginRequiredMixin, ListView):
     model = Street
     template_name = "directory/streets.html"
@@ -227,6 +235,8 @@ class StreetDeleteView(LoginRequiredMixin, DeleteView):
   HOUSE
 =========
 """
+
+
 class HouseListView(LoginRequiredMixin, ListView):
     model = House
     template_name = "directory/house.html"
@@ -321,6 +331,8 @@ class HouseDeleteView(LoginRequiredMixin, DeleteView):
   APPARTAMENTS
 ================
 """
+
+
 class AppartamentsListView(LoginRequiredMixin, ListView):
     model = Appartament
     template_name = "directory/appartaments.html"
@@ -378,13 +390,15 @@ class AppartamentsDeleteView(LoginRequiredMixin, DeleteView):
   RESIDENTS
 ==============
 """
+
+
 class ResidentsListView(LoginRequiredMixin, ListView):
     model = User
     template_name = "directory/residents.html"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["residents"] = User.objects.filter(is_staff = False).filter(is_superuser = False)
+        context["residents"] = User.objects.filter(is_staff=False).filter(is_superuser=False)
         return context
 
 
