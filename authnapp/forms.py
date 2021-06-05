@@ -69,11 +69,11 @@ class AppartamentEditForm(BootstrapStylesMixins, forms.ModelForm):
 
 
 class UserProfileEditForm(BootstrapStylesMixins, forms.ModelForm):
-    field_name = ["gender", "type_electric_meter", "user", "is_active"]
+    field_name = ["gender", "type_electric_meter"]
 
     class Meta:
         model = UserProfile
-        fields = ("gender", "type_electric_meter", "user", "is_active")
+        fields = ("gender", "type_electric_meter")
 
 
 ProfileFormset = inlineformset_factory(
