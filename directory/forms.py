@@ -111,11 +111,7 @@ AppartamentFormSet = inlineformset_factory(
 
 
 class ResidentsEditForm(BootstrapStylesMixins, UserCreationForm):
-    field_name = ["personal_account", "name", "email", "phone", "is_client", "is_active"]
-
-    class Meta:
-        model = User
-        fields = ("personal_account", "name", "email", "phone", "is_client", "is_active")
+    field_name = ["personal_account", "email"]
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

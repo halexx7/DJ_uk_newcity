@@ -18,6 +18,7 @@ from django.views.generic.detail import DetailView
 from authnapp.forms import (
     AppartamentEditForm,
     AppartamentFormset,
+    ProfileFormset,
     UserEditForm,
     UserLoginForm,
     UserProfileEditForm,
@@ -113,48 +114,29 @@ class ProfileUpdateView(LoginRequiredMixin, UpdateView):
     form_class = UserEditForm
 
     def get_context_data(self, **kwargs):
-        """Add formset and formhelper to the context_data."""
         context = super().get_context_data(**kwargs)
-
         if self.request.POST:
-            context["appartament_form"] = AppartamentFormset(self.request.POST, instance=self.object)
+            context["profile_form"] = ProfileFormset(self.request.POST, instance=self.object)
         else:
-            context["appartament_form"] = AppartamentFormset(instance=self.object)
+            context["profile_form"] = ProfileFormset(instance=self.object)
         return context
-
-    # def get(self, request, *args, **kwargs):
-    #     self.object = self.get_object()
-    #     form_class = self.get_form_class()
-    #     form = self.get_form(form_class)
-    #     appartament = get_object_or_404(User, id=self.request.user.id)
-    #     # appartament = Appartament.objects.get(pk=self.request.user.id)
-    #     appartament_form = AppartamentFormset(instance=appartament)
-
-    #     return self.render_to_response(
-    #         self.get_context_data(form=form, appartament_form=appartament_form)
-    #         # self.get_context_data(form=form)
-    #     )
 
     def post(self, request, *args, **kwargs):
         self.object = self.get_object()
         form_class = self.get_form_class()
         form = self.get_form(form_class)
-        formset = AppartamentFormset(self.request.POST)
+        formset = ProfileFormset(self.request.POST, instance=self.object)
 
         if form.is_valid() and formset.is_valid():
             return self.form_valid(form, formset)
 
         return self.form_invalid(form, formset)
 
-    def form_valid(self, form, appartament_form):
-        """
-        Called if all forms are valid. Creates a Author instance along
-        with associated books and then redirects to a success page.
-        """
+    def form_valid(self, form, formset):
         with transaction.atomic():
             self.object = form.save()
-            appartament_form.instance = self.object
-            appartament_form.save()
+            formset.instance = self.object
+            formset.save()
 
         return HttpResponseRedirect(self.get_success_url())
 
@@ -202,26 +184,10 @@ class ProfileUpdateView(LoginRequiredMixin, UpdateView):
 
     #     return super().form_valid(form)
 
-    def form_invalid(self, form, appartament_form):
-        """
-        Called if whether a form is invalid. Re-renders the context
-        data with the data-filled forms and errors.
-        """
+    def form_invalid(self, form, formset):
         return self.render_to_response(
             self.get_context_data(
                 form=form,
-                appartament_form=appartament_form,
+                appartament_form=formset,
             )
         )
-
-    # def form_valid(self, form):
-    #     context = self.get_context_data()
-    #     appartaments = context["appartament_form"]
-
-    #     with transaction.atomic():
-    #         self.object = form.save()
-    #         if appartaments.is_valid():
-    #             appartaments.instance = self.object
-    #             appartaments.save()
-
-    #     return super().form_valid(form)

@@ -69,12 +69,20 @@ class AppartamentEditForm(BootstrapStylesMixins, forms.ModelForm):
 
 
 class UserProfileEditForm(BootstrapStylesMixins, forms.ModelForm):
-    field_name = ["gender", "type_electric_meter"]
+    field_name = ["gender", "type_electric_meter", "user", "is_active"]
 
     class Meta:
         model = UserProfile
-        fields = ("gender", "type_electric_meter")
+        fields = ("gender", "type_electric_meter", "user", "is_active")
 
+
+ProfileFormset = inlineformset_factory(
+    User,
+    UserProfile,
+    form=UserProfileEditForm,
+    extra=1,
+    can_delete=False,
+)
 
 class UserRegisterForm(UserCreationForm):
     def __init__(self, *args, **kwargs):
@@ -100,19 +108,11 @@ class UserRegisterForm(UserCreationForm):
 
 
 class AppartamentForm(BootstrapStylesMixins, forms.ModelForm):
-    field_name = [
-        "house",
-        "number",
-        "add_number",
-    ]
+    field_name = ["house", "number", "add_number"]
 
     class Meta:
         model = Appartament
-        fields = (
-            "house",
-            "number",
-            "add_number",
-        )
+        fields = ("house", "number", "add_number")
 
 
 AppartamentFormset = inlineformset_factory(
@@ -122,3 +122,4 @@ AppartamentFormset = inlineformset_factory(
     extra=1,
     can_delete=False,
 )
+

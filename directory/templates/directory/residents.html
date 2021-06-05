@@ -39,8 +39,8 @@
                         <td class="text-left">{{ item.name }}</td>
                         <td class="text-left">{{ item.email }}</td>
                         <td class="text-left">{{ item.phone }}</td>
-                        <td><a href="{% url 'directory:list' %}" type="button" class="btn btn-outline-warning btn-sm" role="button">Редактировать</a></td>
-                        <td><a href="{% url 'directory:list' %}" class="text-danger text-decoration-none">удалить</a></td>
+                        <td><a href="{% url 'directory:residents_update' item.pk %}" type="button" class="btn btn-outline-warning btn-sm" role="button">Редактировать</a></td>
+                        <td><a href="{% url 'directory:residents_delete' item.pk %}" class="text-danger text-decoration-none">удалить</a></td>
                     </tr>
                 </tbody>
                 {% endfor %}

@@ -400,7 +400,7 @@ class ResidentsCreateView(LoginRequiredMixin, CreateView, UserManager):
         return context
 
 
-class ResidentsUpdateView(LoginRequiredMixin, UpdateView):
+class ResidentsUpdateView(LoginRequiredMixin, UpdateView, UserManager):
     model = User
     template_name = "directory/residents_update.html"
     success_url = reverse_lazy("directory:list")
@@ -414,7 +414,7 @@ class ResidentsUpdateView(LoginRequiredMixin, UpdateView):
 
 class ResidentsDeleteView(LoginRequiredMixin, DeleteView):
     model = User
-    template_name = "directory/appartaments_delete.html"
+    template_name = "directory/residents_delete.html"
     success_url = reverse_lazy("directory:list")
 
     def get_context_data(self, **kwargs):

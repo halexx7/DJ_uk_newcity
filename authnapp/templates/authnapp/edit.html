@@ -34,10 +34,10 @@
                 {% endfor %}
                 {% if not user.is_staff and not user.is_superuser %}
                 <table class="table">
-                    {{ appartament_form.management_form }}
-                    {{ appartament_form.non_form_errors }}
+                    {{ profile_form.management_form }}
+                    {{ profile_form.non_form_errors }}
                     
-                        {% for form in appartament_form %}
+                        {% for form in profile_form %}
                         <div class="list-inline">
                             {{ form.as_p }}
                         </div>

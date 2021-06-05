@@ -291,14 +291,14 @@ class UserProfile(models.Model):
     MALE = "M"
     FEMALE = "W"
 
-    COUNTER_TYPE = ((SINGLE, "однотарифный"), (TWO, "двухтарифный"), (MULTI, "многотарифный"))
+    COUNTER_TYPE = ((SINGLE, "однотарифный"), (TWO, "двухтарифный"))
     GENDER_CHOICES = ((MALE, "М"), (FEMALE, "Ж"))
 
     user = models.OneToOneField(
         User, verbose_name="Пользоваель", null=False, db_index=True, on_delete=models.CASCADE, related_name="profiles"
     )
-    gender = models.CharField(verbose_name="Пол", max_length=1, choices=GENDER_CHOICES, blank=True)
-    type_electric_meter = models.CharField(verbose_name="Тип счетчика", max_length=1, choices=COUNTER_TYPE, blank=True)
+    gender = models.CharField(verbose_name="Пол", max_length=1, choices=GENDER_CHOICES, blank=True, null=True, default=None)
+    type_electric_meter = models.CharField(verbose_name="Тип счетчика", max_length=1, choices=COUNTER_TYPE, blank=True, null=True, default=None)
 
     is_active = models.BooleanField(verbose_name="Активный", db_index=True, default=True)
     created = models.DateTimeField(verbose_name="Создан", auto_now_add=True)
