@@ -6,7 +6,7 @@ from mainapp.models import CurrentCounter, HouseCurrent, HouseHistory, Recalcula
 
 class CurrentCounterForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
-        super(CurrentCounterForm, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         for field_name, field in self.fields.items():
             field.widget.attrs["class"] = "form-control"
         self.helper = FormHelper()
@@ -14,12 +14,12 @@ class CurrentCounterForm(forms.ModelForm):
 
     class Meta:
         model = CurrentCounter
-        exclude = ("user", "created", "updated")
+        exclude = ("user", "col_water", "hot_water", "created", "updated")
 
 
 class HomeCurrentCounterForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
-        super(HomeCurrentCounterForm, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         for field_name, field in self.fields.items():
             field.widget.attrs["class"] = "form-control"
         self.helper = FormHelper()

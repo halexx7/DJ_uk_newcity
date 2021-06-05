@@ -38,10 +38,6 @@
                         aria-controls="profile" aria-selected="false">Подать показания</a>
                 </li>
                 <li class="nav-item" role="presentation">
-                    <a class="nav-link" id="contact-tab" data-toggle="tab" href="#changePass" role="tab"
-                        aria-controls="contact" aria-selected="false">Сменить пароль</a>
-                </li>
-                <li class="nav-item" role="presentation">
                     <a class="nav-link" id="contact-tab" data-toggle="tab" href="#history" role="tab"
                         aria-controls="contact" aria-selected="false">История платежей</a>
                 </li>
@@ -92,86 +88,60 @@
                 <div class="tab-pane  fade" id="testimony" role="tabpanel" aria-labelledby="profile-tab">
                     <h4 class="mb-3">Введите показания счетчиков в поля</h4>
                     <ul class="mb-5">
-                        <li><span class="text-700">Счетчик ГВС</span>  (горячая вода), укажите целое число до запятой</li>
-                        <li><span class="text-700">Счетчик ХВС</span> (холодная вода), укажите целое число до запятой</li>
+                        {% comment %}
+                            <li><span class="text-700">Счетчик ГВС</span> (горячая вода), укажите целое число до запятой</li>
+                            <li><span class="text-700">Счетчик ХВС</span> (холодная вода), укажите целое число до запятой</li>
+                        {% endcomment %}
                         <li><span class="text-700">Электроэнергия день</span> (горячая вода), укажите целое число до запятой</li>
                         <li><span class="text-700">Электроэнергия ночь</span> (горячая вода), укажите целое число до запятой</li>
                         <li>Нажать кнопку <span class="text-700">СОХРАНИТЬ</span></li>
                     </ul>
-                    <h5 class="text-danger text-700">ВНИМАНИЕ! Показания принимаются с 20 по 26 число каждого месяца!</h5>
-                    <h4 class="mt-5">Таблица для заполнения</h4>
-                    <div class="user-area__table">
-                    
-                    {% csrf_token %}
-                    {% for item in history %}
-                    <form class="form-horizontal" method="post" enctype="multipart/form-data">
 
-                        <table class="user-area__table  table">
-                            <thead>
-                                <tr>
-                                    <th scope="col"></th>
-                                    <th scope="col">старые</th>
-                                    <th class="text-center" scope="col">новые</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <th scope="row">Горячая вода:</th>
-                                    <td>{{ item.hist_hot_water }}</td>
-                                    <td class="text-center">{{ form.hot_water|as_crispy_field }}</td>
-                                </tr>
-                                <tr>
-                                    <th scope="row">Холодная вода:</th>
-                                    <td>{{ item.hist_col_water }}</td>
-                                    <td class="text-center">{{ form.col_water|as_crispy_field }}</td>
-                                </tr>
-                                <tr>
-                                    <th scope="row">Электроэнергия день:</th>
-                                    <td>{{ item.hist_electric_day }}</td>
-                                    <td class="text-center">{{ form.electric_day|as_crispy_field }}</td>
-                                </tr>
-                                <tr>
-                                    <th scope="row">Электроэнергия ночь:</th>
-                                    <td>{{ item.hist_electric_night }}</td>
-                                    <td class="text-center">{{ form.electric_night|as_crispy_field }}</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                        <input class="btn  btn-primary  mt-4" type="submit" value="сохранить">
-                    </form>
-                    {% endfor %}
-                    </div>
-                </div>
+                    {% now "d" as today %}
+                    {% if "19" < today and today < "27" %}
+                        <h4 class="mt-5">Таблица для заполнения</h4>
+                        <div class="user-area__table">
+                            <form id="counterForm" method="POST" name="counterForm">
+                                {% csrf_token %}
+                                <input type="hidden" name="form_type" value="counterForm">
+        
+                                <div class="user-area__table">
+                                    <table class="user-area__table  table">
+                                        
+                                        <thead>
+                                            <tr>
+                                                <th scope="col"></th>
+                                                <th class="text-center" scope="col">Показания</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% if user.profiles.type_electric_meter == '2' %}
+                                            <tr>
+                                                <th scope="row">Электроэнергия день:</th>
+                                                <td class="text-center" id="electricDay">{{ form.electric_day|as_crispy_field }}</td>
+                                            </tr>
+                                            <tr>
+                                                <th scope="row">Электроэнергия ночь:</th>
+                                                <td class="text-center" id="electricDay">{{ form.electric_night|as_crispy_field }}</td>
+                                            </tr>
+                                            {% elif user.profiles.type_electric_meter == '1'  %}
+                                            <tr>
+                                                <th scope="row">Электроэнергия:</th>
+                                                <td class="text-center" id="electricSingle">{{ form.electric_single|as_crispy_field }}</td>
+                                            </tr>
+                                            {% endif %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <button action="{% url 'person:user' %}" type="button" class="btn  btn-primary  my-2" id="CounterBtn">Сохранить</button>
+                            </form>
+                        </div>
+                    {% else %}
+                        <div class="alert alert-danger" role="alert">
+                            ВНИМАНИЕ! Показания принимаются с 20 по 26 число каждого месяца!
+                        </div>
+                    {% endif %}
 
-                <!-- Tab-CHANGEPASS -->
-                <div class="tab-pane fade" id="changePass" role="tabpanel" aria-labelledby="contact-tab">
-                    <h3 class="mb-3">Изменить пароль</h3>
-                    <p>Придумайте сложный пароль, который нельзя подобрать:<br>
-                        от 6 до 50 символов - цифры, английские буквы и спецсимволы.
-                    </p>
-                    <div class="user-area__form-pwd">
-                        <form class="mt-5">
-                            <div class="form-group  row  mb-3">
-                                <label for="inputPassword" class="col-sm-5 col-form-label">Текущий пароль</label>
-                                <div class="col-sm-7">
-                                    <input type="password" class="form-control" id="inputPassword">
-                                </div>
-                            </div>
-                            <div class="form-group  row  mb-3">
-                                <label for="inputPassword" class="col-sm-5 col-form-label">Новый пароль</label>
-                                <div class="col-sm-7">
-                                    <input type="password" class="form-control" id="inputPassword">
-                                </div>
-                            </div>
-                            <div class="form-group  row  mb-3">
-                                <label for="inputPassword" class="col-sm-5 col-form-label">Повторите новый пароль</label>
-                                <div class="col-sm-7">
-                                    <input type="password" class="form-control" id="inputPassword">
-                                </div>
-                            </div>
-                          </form>
-                    </div>
-                      <button type="submit" class="btn btn-primary  mt-3">Сохранить</button>
                 </div>
 
                 <!-- Tab-HISTORY -->

@@ -362,12 +362,12 @@ class Appartament(models.Model):
 # Текущие показания счетчиков (индивидуальные)
 class CurrentCounter(models.Model):
     user = models.OneToOneField(User, on_delete=CASCADE)
-    col_water = models.PositiveIntegerField(verbose_name="Холодная вода", null=True)
-    hot_water = models.PositiveIntegerField(verbose_name="Горячая вода", null=True)
-    electric_day = models.PositiveIntegerField(verbose_name="Электроэнергия день", null=True, blank=True, default="")
-    electric_night = models.PositiveIntegerField(verbose_name="Электроэнергия ночь", null=True, blank=True, default="")
+    col_water = models.PositiveIntegerField(verbose_name="Холодная вода", null=True, default=None)
+    hot_water = models.PositiveIntegerField(verbose_name="Горячая вода", null=True, default=None)
+    electric_day = models.PositiveIntegerField(verbose_name="Электроэнергия день", null=True, blank=True, default=None)
+    electric_night = models.PositiveIntegerField(verbose_name="Электроэнергия ночь", null=True, blank=True, default=None)
     electric_single = models.PositiveIntegerField(
-        verbose_name="Электроэнергия однотариф", null=True, blank=True, default=""
+        verbose_name="Электроэнергия однотариф", null=True, blank=True, default=None
     )
 
     created = models.DateTimeField(verbose_name="Создан", auto_now_add=True)

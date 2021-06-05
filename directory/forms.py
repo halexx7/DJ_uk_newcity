@@ -79,7 +79,6 @@ class AppartamentsEditForm(BootstrapStylesMixins, forms.ModelForm):
 
 
 class AppartamentsInlineForm(BootstrapStylesMixins, forms.ModelForm):
-
     field_name = ["number", "add_number", "user", "sq_appart", "num_owner"]
 
     class Meta:
