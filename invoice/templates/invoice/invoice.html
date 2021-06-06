@@ -1,0 +1,31 @@
+{% extends 'invoice/base.html' %}
+{% load staticfiles %}
+
+{% block content %}
+<div class="header__button  no-print">
+    <div class="wrapper_invoice">
+        <div class="header">
+            <ul class="btn__invoice">
+                <li><input type="button" value="Print" id="invoice-print"></li>
+                <li><input type="button" value="Save PDF" id="invoice-pdf"></li>
+                <li><input type="button" value="Home"></li>
+            </ul>
+        </div>
+    </div>
+</div>
+  
+<div class="page">
+    <div class="wrapper_invoice">
+
+        <div class="content">
+
+            <div class="header__top"></div>
+            <div class="header__center"></div>
+            <div class="header__bottom"></div>
+
+            <div class="body__content"></div>
+
+        </div>
+    </div>
+</div>
+{% endblock content %}

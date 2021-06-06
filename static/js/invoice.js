@@ -18,42 +18,42 @@ var pay = [
 function convertDate(item) {
     let date = new Date(Date.parse(item))
 
-    switch (date.getMonth()) {
+    switch(date.getMonth()){
         case 0:
-            return (` Январь ${date.getFullYear()} `);
+            return(` Январь ${date.getFullYear()} `);
             break;
         case 1:
-            return (` Февраль ${date.getFullYear()} `);
+            return(` Февраль ${date.getFullYear()} `);
             break;
         case 2:
-            return (` Март ${date.getFullYear()} `);
+            return(` Март ${date.getFullYear()} `);
             break;
         case 3:
-            return (` Апрель ${date.getFullYear()} `);
+            return(` Апрель ${date.getFullYear()} `);
             break;
         case 4:
-            return (` Май ${date.getFullYear()} `);
+            return(` Май ${date.getFullYear()} `);
             break;
         case 5:
-            return (` Июнь ${date.getFullYear()} `);
+            return(` Июнь ${date.getFullYear()} `);
             break;
         case 6:
-            return (` Июль ${date.getFullYear()} `);
+            return(` Июль ${date.getFullYear()} `);
             break;
         case 7:
-            return (` Август ${date.getFullYear()} `);
+            return(` Август ${date.getFullYear()} `);
             break;
         case 8:
-            return (` Сентябрь ${date.getFullYear()} `);
+            return(` Сентябрь ${date.getFullYear()} `);
             break;
         case 9:
-            return (` Октябрь ${date.getFullYear()} `);
+            return(` Октябрь ${date.getFullYear()} `);
             break;
         case 10:
-            return (` Ноябрь ${date.getFullYear()} `);
+            return(` Ноябрь ${date.getFullYear()} `);
             break;
         case 11:
-            return (` Декабрь ${date.getFullYear()} `);
+            return(` Декабрь ${date.getFullYear()} `);
             break;
     }
 }
@@ -62,7 +62,7 @@ let variable_pay = []
 //Парсим объект
 Object.values(variable).forEach(value => {
     variable_pay.push(value.fields);
-});
+  });
 
 
 // Добавим верхнюю часть Шапки
@@ -129,7 +129,7 @@ console.log(variable_pay);
 
 // Пройдем циклом по всем элементам массива и сгенерируем строки таблицы
 
-function drawingTable(object) {
+function drawingTable (object) {
     let total = Number();
     let num = Number();
     object.forEach(function (item, i, arr) {
@@ -139,14 +139,14 @@ function drawingTable(object) {
             `<tr>
             <td class="pad__table">${item.service}</td>
             <td class="text__center  pad__table">${item.unit}</td>
-            <td class="text__right  pad__table">${(item.standart > 0) ? item.standart : ''}</td>
+            <td class="text__right  pad__table">${(item.standart > 0) ? item.standart: ''}</td>
             <td class="text__right  pad__table">${item.volume}</td>
             <td class="text__right  pad__table">${item.rate}</td>
             <td class="text__right  pad__table">${Number(item.accured).toFixed(3)}</td>
             <td class="text__right  pad__table">${item.coefficient}</td>
-            <td class="text__right  pad__table">${(item.subsidies > 0) ? item.subsidies : ''}</td>
-            <td class="text__right  pad__table">${(item.privileges > 0) ? item.privileges : ''}</td>
-            <td class="text__right  pad__table">${(item.recalculations > 0) ? item.recalculations : ''}</td>
+            <td class="text__right  pad__table">${(item.subsidies > 0) ? item.subsidies: ''}</td>
+            <td class="text__right  pad__table">${(item.privileges > 0) ? item.privileges: ''}</td>
+            <td class="text__right  pad__table">${(item.recalculations > 0) ? item.recalculations: ''}</td>
             <td class="text__right  pad__table">${item.total}</td>
         </tr>`
         );
@@ -169,12 +169,12 @@ $('.body__content > table').append(
 
 
 //Слушаем кнопку Печать
-$('#invoice-print').on('click', (function () {
+$('#invoice-print').on('click', (function(){
     print();
 }));
 
 //Слушаем кнопку Созранить PDF
-$('#invoice-pdf').on('click', (function () {
+$('#invoice-pdf').on('click', (function() {
     //Сохраняем в ПДФ
     var pdf = new jsPDF('p', 'pt', 'a4');
     var pdfContainer = document.querySelector('.content');
@@ -182,7 +182,7 @@ $('#invoice-pdf').on('click', (function () {
     //Конвертим в JPEG и сохраняем в PDF
     //Опция scale - задает масштаб относительно разрешения устройства,
     //используем для увеличения разшения pdf
-    html2canvas(pdfContainer, { background: "white", scale: 4 }).then(function (canvas) {
+    html2canvas(pdfContainer, {background: "white", scale: 4}).then(function(canvas) {
         pdf.addImage(canvas, "jpeg", 20, 20, 557, 0);
         pdf.save('TEST.pdf');
     });

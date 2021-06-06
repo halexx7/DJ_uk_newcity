@@ -1,0 +1,60 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>
+        {% block title %}
+        {{ title|capfirst }}
+        {% endblock title %}
+    </title>
+
+    {% block css %}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    {% endblock css %}
+
+</head>
+
+<body>
+
+    {% block content %}
+    {% endblock content %}  
+    
+
+    {% block js %}
+
+    <script id="hello-data" type="application/json">{{ appartaments }}</script>
+
+    
+    <script>
+
+        const current = {{ curr }}[0].fields;
+        const history = {{ hist }}[0].fields;
+        const user = {{ user }}[0].fields;
+        const constant = JSON.parse({{ const }}[0].fields.data);
+        const variable = {{ variable }};
+        const appartaments = {{ appartaments }}[0].fields;
+        const house = {{ house }}[0].fields;
+        const city = {{ city }}[0].fields;
+        const street = {{ street }}[0].fields;
+        const uk = {{ uk }}[0].fields;
+
+        
+    </script>
+
+    <!-- jQuery -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <!-- jsPDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.5.3/jspdf.min.js"></script>
+    <!-- html2canvas -->
+    <script src="{% static 'js/html2canvas.js' %}"></script>
+    <!-- Javascript -->
+    <script src="{% static 'js/invoice.js' %}"></script>
+    {% endblock js %}  
+
+</body>
+
+</html>

@@ -74,7 +74,7 @@ class InvoiceViews(ListView):
         return context
 
 
-# Расчет КОНСТАНТНЫХ платежей (по сигналу)
+# Расчет КОНСТАНТНЫХ платежей (по сигналу когда идет изменения в таблице Services)
 def get_calc_const():
     users = User.objects.select_related()
     rate = Services.get_const_payments(1)
@@ -111,6 +111,7 @@ def get_calc_const():
 
 
 # Расчет ПЕРЕМЕННЫХ платежей (по сигналу)
+#TODO Какой сигнал? 30 число? или же после внесения счетчиков?
 def get_calc_variable():
     users = User.objects.select_related()
     curr = CurrentCounter.objects.get(id=1)
@@ -118,6 +119,7 @@ def get_calc_variable():
     rate = Services.get_varybose_payments(1)
     subs = Subsidies.objects.select_related()
     priv = Privileges.objects.select_related()
+    recl = Recalculations.objects.get_last_val(1)[0]
 
     for user in users:
         user_id = User.objects.get(id=user.id)
@@ -126,13 +128,14 @@ def get_calc_variable():
 
         for el in rate:
             standart = el.standart
-            if el.name == "Холодная вода (индивидуальное потребление)":
-                accured = el.rate * (curr.col_water - hist.hist_col_water)
-                sewage += accured
-            elif el.name == "Горячая вода (индивидуальное потребление)":
-                accured = el.rate * (curr.hot_water - hist.hist_hot_water)
-                sewage += accured
-            elif el.name == "Электроэнергия день":
+            #TODO вода отменяется
+            # if el.name == "Холодная вода (индивидуальное потребление)":
+            #     accured = el.rate * (curr.col_water - hist.hist_col_water)
+            #     sewage += accured
+            # elif el.name == "Горячая вода (индивидуальное потребление)":
+            #     accured = el.rate * (curr.hot_water - hist.hist_hot_water)
+            #     sewage += accured
+            if el.name == "Электроэнергия день":
                 accured = el.rate * (curr.electric_day - hist.hist_electric_day)
             elif el.name == "Электроэнергия ночь":
                 accured = el.rate * (curr.electric_night - hist.hist_electric_night)
@@ -140,10 +143,7 @@ def get_calc_variable():
             subsidies = get_sale(el.name, subs)
             privileges = get_sale(el.name, priv)
 
-            # Заменить на значение
-            recalculations = 0
-
-            total = (accured * coefficient) * decimal.Decimal(1 - (subsidies + privileges) / 100) - recalculations
+            total = (accured * coefficient) * decimal.Decimal(1 - (subsidies + privileges) / 100) - recl
 
             record = VariablePayments(
                 user=user_id,
@@ -158,7 +158,7 @@ def get_calc_variable():
                 coefficient=coefficient,
                 subsidies=subsidies,
                 privileges=privileges,
-                recalculations=recalculations,
+                recalculations=recl,
                 total=total,
             )
             record.save()
