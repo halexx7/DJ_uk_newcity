@@ -365,7 +365,9 @@ class CurrentCounter(models.Model):
     col_water = models.PositiveIntegerField(verbose_name="Холодная вода", null=True, default=None)
     hot_water = models.PositiveIntegerField(verbose_name="Горячая вода", null=True, default=None)
     electric_day = models.PositiveIntegerField(verbose_name="Электроэнергия день", null=True, blank=True, default=None)
-    electric_night = models.PositiveIntegerField(verbose_name="Электроэнергия ночь", null=True, blank=True, default=None)
+    electric_night = models.PositiveIntegerField(
+        verbose_name="Электроэнергия ночь", null=True, blank=True, default=None
+    )
     electric_single = models.PositiveIntegerField(
         verbose_name="Электроэнергия однотариф", null=True, blank=True, default=None
     )
