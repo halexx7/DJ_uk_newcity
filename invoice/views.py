@@ -6,6 +6,7 @@ from django.conf import settings
 from django.contrib.postgres import fields
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.core.serializers import serialize
+from django.db import models
 from django.shortcuts import get_object_or_404, render
 from django.utils.safestring import mark_safe
 from django.views.generic import CreateView, DeleteView, ListView, UpdateView
@@ -39,22 +40,18 @@ from mainapp.models import (
 
 
 def main(request):
-
-    invoice = mark_safe(serialize("json", User.objects.filter(pk=1)))
-    return render(request, "invoice/main.html", context={"data": invoice})
-
-
-# class InvoiceViews(ListView):
-#     model = User
-
-#     def get_context_data(self, **kwargs):
-#         pass
+    pass
 
 
 class InvoiceViews(ListView):
+    model = User
     context_object_name = "user"
     template_name = "invoice/main.html"
-    queryset = mark_safe(serialize("json", User.objects.filter(pk=1)))
+    queryset = mark_safe(serialize("json", User.objects.filter(id = 1)))
+
+    def get_queryset(self):
+        qs = super().get_queryset()
+        return qs.filter(id = self.request.user)
 
     def get_context_data(self, **kwargs):
         # get_calc_const()
@@ -63,7 +60,7 @@ class InvoiceViews(ListView):
         context["const"] = mark_safe(serialize("json", ConstantPayments.objects.filter(id=1)))
         context["hist"] = mark_safe(serialize("json", HistoryCounter.get_last_val(1)))
         context["curr"] = mark_safe(serialize("json", CurrentCounter.get_last_val(1)))
-        context["appartaments"] = mark_safe(serialize("json", Appartament.objects.all()))
+        context["appartaments"] = mark_safe(serialize("json", Appartament.objects.filter(id = self.request.user)))
         context["house"] = mark_safe(serialize("json", House.objects.all()))
         context["city"] = mark_safe(serialize("json", City.objects.all()))
         context["street"] = mark_safe(serialize("json", Street.objects.all()))
@@ -72,6 +69,7 @@ class InvoiceViews(ListView):
             serialize("json", VariablePayments.objects.filter(user_id=1).distinct("service"))
         )
         return context
+    
 
 
 # Расчет КОНСТАНТНЫХ платежей (по сигналу когда идет изменения в таблице Services)
@@ -105,7 +103,7 @@ def get_calc_const():
 
             data.append(element)
         user_id = User.objects.get(id=user.id)
-        record = ConstantPayments(user=user_id, data=json.dumps(data, ensure_ascii=False, default=str))
+        record = ConstantPayments(user=user_id, data=json.dumps(data, ensure_ascii=False, default=str), total=decimal.Decimal(element["total"]))
         record.save()
     return data
 
@@ -139,6 +137,8 @@ def get_calc_variable():
                 accured = el.rate * (curr.electric_day - hist.hist_electric_day)
             elif el.name == "Электроэнергия ночь":
                 accured = el.rate * (curr.electric_night - hist.hist_electric_night)
+            elif el.name == "Электроэнергия":
+                accured = el.rate * curr.electric_single
             coefficient = el.factor if el.factor > 0 else 1
             subsidies = get_sale(el.name, subs)
             privileges = get_sale(el.name, priv)

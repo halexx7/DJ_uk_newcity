@@ -369,7 +369,7 @@ class CurrentCounter(models.Model):
         verbose_name="Электроэнергия ночь", null=True, blank=True, default=None
     )
     electric_single = models.PositiveIntegerField(
-        verbose_name="Электроэнергия однотариф", null=True, blank=True, default=None
+        verbose_name="Электроэнергия", null=True, blank=True, default=None
     )
 
     created = models.DateTimeField(verbose_name="Создан", auto_now_add=True)
@@ -418,6 +418,7 @@ class HistoryCounter(models.Model):
 class ConstantPayments(models.Model):
     user = models.ForeignKey(User, verbose_name="Пользователь", on_delete=CASCADE)
     data = JSONField(verbose_name="data")
+    total = models.DecimalField(verbose_name="Сумма", max_digits=8, decimal_places=3)
 
     created = models.DateTimeField(verbose_name="Создан", auto_now_add=True)
     updated = models.DateTimeField(verbose_name="Обновлен", auto_now=True)
@@ -471,12 +472,11 @@ class Subsidies(models.Model):
     user = models.ForeignKey(User, verbose_name="Пользователь", on_delete=CASCADE)
     service = models.ForeignKey(Services, verbose_name="Услуга", on_delete=CASCADE)
     sale = models.PositiveIntegerField(verbose_name="Субсидии", default=0)
-    desc = models.TextField(verbose_name="Субсидии")
+    desc = models.TextField(verbose_name="Описание", blank=True, null=True)
 
     is_active = models.BooleanField(verbose_name="Активный", db_index=True, default=True)
     created = models.DateTimeField(verbose_name="Создан", auto_now_add=True)
     updated = models.DateTimeField(verbose_name="Обновлен", auto_now=True)
-    desc = models.TextField(verbose_name="Описание", blank=True, null=True)
 
     class Meta:
         ordering = ("-updated",)
@@ -500,11 +500,11 @@ class Privileges(models.Model):
     user = models.ForeignKey(User, verbose_name="Пользователь", on_delete=CASCADE)
     service = models.ForeignKey(Services, verbose_name="Услуга", related_name="service", on_delete=CASCADE)
     sale = models.PositiveIntegerField(verbose_name="Льготы", default=0)
+    desc = models.TextField(verbose_name="Описание", blank=True, null=True)
 
     is_active = models.BooleanField(verbose_name="Активный", db_index=True, default=True)
     created = models.DateTimeField(verbose_name="Создан", auto_now_add=True)
     updated = models.DateTimeField(verbose_name="Обновлен", auto_now=True)
-    desc = models.TextField(verbose_name="Описание", blank=True, null=True)
 
     class Meta:
         ordering = ("-updated",)
@@ -568,6 +568,43 @@ class Payment(models.Model):
         self.save()
 
 
+# Главная книга (дебет / кредит)
+class MainBook(models.Model):
+    DEBIT = "D"
+    CREDIT = "C"
+
+    DIRECTION_TRAVEL = ((DEBIT, "Дебет"), (CREDIT, "Кредит"))
+
+    user = models.ForeignKey(User, verbose_name="Пользователь", null=True, on_delete=SET_NULL)
+    period = models.DateField(verbose_name="Период", auto_now_add=True)
+    direction = models.CharField(verbose_name="Направление", max_length=1, choices=DIRECTION_TRAVEL)
+    amount_profit = models.DecimalField(verbose_name="Сумма", max_digits=7, decimal_places=2)
+
+    created = models.DateTimeField(verbose_name="Создан", auto_now_add=True)
+    updated = models.DateTimeField(verbose_name="Обновлен", auto_now=True)
+
+    class Meta:
+        ordering = ("-period",)
+        verbose_name = "Главная книга"
+        verbose_name_plural = "Главная книга"
+
+
+    @staticmethod
+    def get_all_income(user):
+        """ Возвращает все поступления на счет """
+        return MainBook.objects.filter(user = user).filter(direction = 'D')
+    
+
+    def get_all_income(user):
+        """ Возвращает все списания на счет """
+        return MainBook.objects.filter(user = user).filter(direction = 'C')
+
+
+    def delete(self):
+        self.is_active = False
+        self.save()
+
+
 # Перерасчеты
 class Recalculations(models.Model):
     user = models.ForeignKey(User, verbose_name="Пользователь", null=True, on_delete=SET_NULL)
@@ -593,9 +630,10 @@ class Recalculations(models.Model):
         self.save()
 
 
+# Текущее состояние счета
 class PersonalAccountStatus(models.Model):
     user = models.OneToOneField(User, verbose_name="Пользователь", on_delete=CASCADE)
-    amount = models.DecimalField(verbose_name="Сумма", max_digits=7, decimal_places=2)
+    amount = models.DecimalField(verbose_name="Состояние", max_digits=8, decimal_places=2)
 
     created = models.DateTimeField(verbose_name="Создан", auto_now_add=True)
     updated = models.DateTimeField(verbose_name="Обновлен", auto_now=True)

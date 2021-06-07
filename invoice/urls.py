@@ -1,5 +1,5 @@
 from django.conf import settings
-from django.urls import re_path
+from django.urls import re_path, path
 import invoice.views as invoice
 from invoice.apps import InvoiceConfig
 
