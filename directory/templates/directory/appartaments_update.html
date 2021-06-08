@@ -11,6 +11,11 @@
     <div class="directory__form">
         <form class="" method="post" enctype="multipart/form-data">
             {% csrf_token %}
+            {% if form.errors %}
+                <div class="alert  alert-danger">
+                    {{ form.non_field_errors }}
+                </div>
+            {% endif %}
             {% for field in form %}
                 <div class="form-group">
                     {{ field.label }}

@@ -14,7 +14,7 @@ class CurrentCounterForm(forms.ModelForm):
 
     class Meta:
         model = CurrentCounter
-        exclude = ("user", "col_water", "hot_water", "created", "updated")
+        exclude = ("col_water", "hot_water", "created", "updated")
 
 
 class HomeCurrentCounterForm(forms.ModelForm):

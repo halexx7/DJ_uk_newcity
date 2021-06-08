@@ -73,6 +73,22 @@ class UserPageCreate(LoginRequiredMixin, CreateView):
         context["history"] = HistoryCounter.get_last_val(self.request.user)
         context["title"] = "Пользователь | ООО Новый город"
         return context
+    
+    def get_form_kwargs(self, *args, **kwargs):
+        kwargs = super().get_form_kwargs(*args, **kwargs)
+        #Заполняем форму начальными данными
+        kwargs['initial'] = {'user': self.request.user.id}
+        return kwargs
+
+    def post(self, request, *args, **kwargs):
+        form_class = self.get_form_class()
+        form = self.get_form(form_class)
+
+        if form.is_valid():
+            return self.form_valid(form)
+
+        return self.form_invalid(form)
+
 
 
 class ManagerPageCreate(LoginRequiredMixin, CreateView):

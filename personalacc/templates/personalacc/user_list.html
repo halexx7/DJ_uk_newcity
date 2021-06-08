@@ -120,7 +120,10 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <div type="hidden" name="user_name">{{ form.user_id = user.profiles.id }}</div>
+                                            <tr>
+                                                <th scope="row" type>Пользователь:</th>
+                                                <td class="text-center" id="electricDay" disabled>{{ form.user|as_crispy_field }}</td>
+                                            </tr>
                                             {% if user.profiles.type_electric_meter == '2' %}
                                             <tr>
                                                 <th scope="row">Электроэнергия день:</th>
@@ -128,7 +131,7 @@
                                             </tr>
                                             <tr>
                                                 <th scope="row">Электроэнергия ночь:</th>
-                                                <td class="text-center" id="electricDay">{{ form.electric_night|as_crispy_field }}</td>
+                                                <td class="text-center" id="electricNight">{{ form.electric_night|as_crispy_field }}</td>
                                             </tr>
                                             {% elif user.profiles.type_electric_meter == '1'  %}
                                             <tr>
