@@ -57,7 +57,7 @@ class InvoiceViews(ListView):
         # get_calc_variable()
         user = self.request.user
         context = super(InvoiceViews, self).get_context_data(**kwargs)
-        context["const"] = mark_safe(serialize("json", ConstantPayments.objects.filter(id=1)))
+        context["const"] = mark_safe(serialize("json", ConstantPayments.objects.filter(user=user)))
         context["hist"] = mark_safe(serialize("json", HistoryCounter.get_last_val(1)))
         context["curr"] = mark_safe(serialize("json", CurrentCounter.get_item(user)))
         context["appartaments"] = mark_safe(serialize("json", Appartament.objects.filter(user = user)))
@@ -71,10 +71,9 @@ class InvoiceViews(ListView):
         return context
     
 
-
 # Расчет КОНСТАНТНЫХ платежей (по сигналу когда идет изменения в таблице Services)
 def get_calc_const():
-    users = User.objects.select_related()
+    users = User.objects.select_related().filter(is_staff=False)
     rate = Services.get_const_payments(1)
 
     for user in users:

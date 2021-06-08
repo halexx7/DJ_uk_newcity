@@ -87,18 +87,24 @@
                 <!-- Tab-COUNTER -->
                 <div class="tab-pane  fade" id="testimony" role="tabpanel" aria-labelledby="profile-tab">
                     <h4 class="mb-3">Введите показания счетчиков в поля</h4>
-                    <ul class="mb-5">
-                        {% comment %}
-                            <li><span class="text-700">Счетчик ГВС</span> (горячая вода), укажите целое число до запятой</li>
-                            <li><span class="text-700">Счетчик ХВС</span> (холодная вода), укажите целое число до запятой</li>
-                        {% endcomment %}
-                        <li><span class="text-700">Электроэнергия день</span> (горячая вода), укажите целое число до запятой</li>
-                        <li><span class="text-700">Электроэнергия ночь</span> (горячая вода), укажите целое число до запятой</li>
-                        <li>Нажать кнопку <span class="text-700">СОХРАНИТЬ</span></li>
-                    </ul>
+                        <div class="alert alert-warning" role="alert">
+                            <ul class="mb-5">
+                                {% comment 'Заказчик отменил пока'%}
+                                    <li><span class="text-700">Счетчик ГВС</span> (горячая вода), укажите целое число до запятой</li>
+                                    <li><span class="text-700">Счетчик ХВС</span> (холодная вода), укажите целое число до запятой</li>
+                                {% endcomment %}
+                                {% if user.profiles.type_electric_meter == '2' %}
+                                    <li><span class="text-700">Электроэнергия (день)</span>, укажите целое число до запятой</li>
+                                    <li><span class="text-700">Электроэнергия (ночь)</span>, укажите целое число до запятой</li>
+                                {% else %}
+                                    <li><span class="text-700">Электроэнергия</span>, укажите целое число до запятой</li>
+                                {% endif %}
+                                <li>Нажать кнопку <span class="text-700">СОХРАНИТЬ</span></li>
+                            </ul>
+                        </div>
 
                     {% now "d" as today %}
-                    {% if "19" < today and today < "27" %}
+                    {% if "01" < today and today < "31" %}
                         <h4 class="mt-5">Таблица для заполнения</h4>
                         <div class="user-area__table">
                             <form id="counterForm" method="POST" name="counterForm">
@@ -107,7 +113,6 @@
         
                                 <div class="user-area__table">
                                     <table class="user-area__table  table">
-                                        
                                         <thead>
                                             <tr>
                                                 <th scope="col"></th>
@@ -115,6 +120,7 @@
                                             </tr>
                                         </thead>
                                         <tbody>
+                                            <div type="hidden" name="user_name">{{ form.user_id = user.profiles.id }}</div>
                                             {% if user.profiles.type_electric_meter == '2' %}
                                             <tr>
                                                 <th scope="row">Электроэнергия день:</th>
@@ -133,7 +139,9 @@
                                         </tbody>
                                     </table>
                                 </div>
-                                <button action="{% url 'person:user' %}" type="button" class="btn  btn-primary  my-2" id="CounterBtn">Сохранить</button>
+                                <div class="new_category_form--btn">
+                                    <input class="form-control  bg-success  text-white  new_category_form--save" type="submit" value="сохранить">
+                                </div>
                             </form>
                         </div>
                     {% else %}

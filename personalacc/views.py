@@ -155,3 +155,7 @@ class HouseHistoryListView(LoginRequiredMixin, ListView):
     model = HouseHistory
     context_object_name = "history"
     template_name = "personalacc/house_history_list.html"
+
+
+class ThanksListView(LoginRequiredMixin, ListView):
+    template_name = "personalacc/thanks.html"
