@@ -28,7 +28,7 @@ class BootstrapStylesMixins:
         if self.field_name:
             for fieldname in self.field_name:
                 self.fields[fieldname].widget.attrs = {"class": "form-control"}
-                if fieldname == "is_active":
+                if fieldname == "is_active" or fieldname == "const":
                     self.fields[fieldname].widget.attrs = {"class": "form_is-active"}
         else:
             raise ValueError("The field_name should be set")
