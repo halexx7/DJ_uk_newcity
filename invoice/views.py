@@ -46,21 +46,21 @@ def main(request):
 class InvoiceViews(ListView):
     model = User
     context_object_name = "user"
-    template_name = "invoice/main.html"
+    template_name = "invoice/invoice.html"
     queryset = mark_safe(serialize("json", User.objects.filter(id = 1)))
 
     def get_queryset(self):
-        qs = super().get_queryset()
-        return qs.filter(id = self.request.user)
+        return User.objects.filter(pk = self.request.user.id)
 
     def get_context_data(self, **kwargs):
         # get_calc_const()
         # get_calc_variable()
+        user = self.request.user
         context = super(InvoiceViews, self).get_context_data(**kwargs)
         context["const"] = mark_safe(serialize("json", ConstantPayments.objects.filter(id=1)))
         context["hist"] = mark_safe(serialize("json", HistoryCounter.get_last_val(1)))
-        context["curr"] = mark_safe(serialize("json", CurrentCounter.get_last_val(1)))
-        context["appartaments"] = mark_safe(serialize("json", Appartament.objects.filter(id = self.request.user)))
+        context["curr"] = mark_safe(serialize("json", CurrentCounter.get_item(user)))
+        context["appartaments"] = mark_safe(serialize("json", Appartament.objects.filter(user = user)))
         context["house"] = mark_safe(serialize("json", House.objects.all()))
         context["city"] = mark_safe(serialize("json", City.objects.all()))
         context["street"] = mark_safe(serialize("json", Street.objects.all()))
@@ -100,10 +100,11 @@ def get_calc_const():
             element["privileges"] = ""
             element["recalculations"] = ""
             element["total"] = element["accured"]
+            total += element["total"]
 
             data.append(element)
         user_id = User.objects.get(id=user.id)
-        record = ConstantPayments(user=user_id, data=json.dumps(data, ensure_ascii=False, default=str), total=decimal.Decimal(element["total"]))
+        record = ConstantPayments(user=user_id, data=json.dumps(data, ensure_ascii=False, default=str), total=decimal.Decimal(total))
         record.save()
     return data
 
@@ -121,6 +122,7 @@ def get_calc_variable():
 
     for user in users:
         user_id = User.objects.get(id=user.id)
+        prof = UserProfile.objects.get(id=user_id)
         # Канализация (водоотведение)
         sewage = 0
 
@@ -133,11 +135,12 @@ def get_calc_variable():
             # elif el.name == "Горячая вода (индивидуальное потребление)":
             #     accured = el.rate * (curr.hot_water - hist.hist_hot_water)
             #     sewage += accured
-            if el.name == "Электроэнергия день":
+            #TODO поиск регуляркой - день, ночь без учета регистра
+            if el.name == "Электроэнергия (день)" and prof.type_electric_meter == 2:
                 accured = el.rate * (curr.electric_day - hist.hist_electric_day)
-            elif el.name == "Электроэнергия ночь":
+            elif el.name == "Электроэнергия (ночь)" and prof.type_electric_meter == 2:
                 accured = el.rate * (curr.electric_night - hist.hist_electric_night)
-            elif el.name == "Электроэнергия":
+            elif el.name == "Электроэнергия" and prof.type_electric_meter == 1:
                 accured = el.rate * curr.electric_single
             coefficient = el.factor if el.factor > 0 else 1
             subsidies = get_sale(el.name, subs)

@@ -42,7 +42,7 @@
                                 <td>{{ item.unit }}</td>
                                 <td class="text-left">{{ item.rate }}</td>
                                 <td>{{ item.factor }}</td>
-                                <td><input type="checkbox" class="form-check-input" id="exampleCheck1" checked="{{ item.const }}"></td>
+                                <td class="text-700">{% if item.const %} Да {% else %} Нет {% endif %}</td>
                                 <td><a href="{% url 'directory:services_update' item.pk %}" type="button" class="btn btn-outline-warning btn-sm" role="button">Редактировать</a></td>
                                 <td><a href="{% url 'directory:services_delete' item.pk %}" class="text-danger text-decoration-none">удалить</a></td>
                             </tr>

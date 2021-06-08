@@ -393,9 +393,9 @@ class HistoryCounter(models.Model):
     period = models.DateField(verbose_name="Период")
     hist_col_water = models.PositiveIntegerField(verbose_name="Гор.вода")
     hist_hot_water = models.PositiveIntegerField(verbose_name="Хол.вода")
-    hist_electric_day = models.PositiveIntegerField(verbose_name="Электр.день", null=True, blank=True, default="")
-    hist_electric_night = models.PositiveIntegerField(verbose_name="Электр.ночь", null=True, blank=True, default="")
-    electric_single = models.PositiveIntegerField(verbose_name="Электр.однотариф", null=True, blank=True, default="")
+    hist_electric_day = models.PositiveIntegerField(verbose_name="Электр.день", null=True, blank=True, default=None)
+    hist_electric_night = models.PositiveIntegerField(verbose_name="Электр.ночь", null=True, blank=True, default=None)
+    hist_electric_single = models.PositiveIntegerField(verbose_name="Электр.однотариф", null=True, blank=True, default=None)
 
     created = models.DateTimeField(verbose_name="Создан", auto_now_add=True)
     updated = models.DateTimeField(verbose_name="Обновлен", auto_now=True)
