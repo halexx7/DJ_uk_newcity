@@ -8,17 +8,15 @@
 
 {% block content %}
 
-<section class="password  mt-5">
+<section class="thanks  mt-5">
     <div class="container  d-flex  justify-content-center">
-        <div class="password__items">
-            <div class="mt-5  flex-column  d-flex  justify-content-center">
-
-                <h1>Спасибо!</h1>
-                <div class="alert  alert-success  mt-3  mb-5">
+        <div class="thanks__items">
+            <div class="mt-5  flex-column  d-flex  align-items-center">
+                <h1 class="flex-fill">Спасибо!</h1>
+                <div class="flex-fill  alert  alert-success  mt-3  mb-5">
                     <p>Данные успешно приняты!</p>
                 </div>
-                <a href="{% url 'person' %}" class="text-decoration-none  text-center">На главную</a>
-
+                <a href="{% if user.is_staff %}{% url 'person:manager' %}{% else %}{% url 'person:user' %}{% endif %}" class="text-decoration-none  text-center">На главную</a>
             </div>
         </div>
     </div>

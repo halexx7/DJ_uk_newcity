@@ -195,10 +195,10 @@ class House(models.Model):
 class HouseCurrent(models.Model):
     period = models.DateField(verbose_name="Создан", default=datetime.datetime.now().replace(day=1))
     house = models.ForeignKey(House, verbose_name="Дом", null=True, on_delete=SET_NULL)
-    col_water = models.PositiveIntegerField(verbose_name="Хол.вода", null=True)
-    hot_water = models.PositiveIntegerField(verbose_name="Гор.вода", null=True)
-    electric_day = models.PositiveIntegerField(verbose_name="Электр.день", null=True)
-    electric_night = models.PositiveIntegerField(verbose_name="Электр.ночь", null=True)
+    col_water = models.PositiveIntegerField(verbose_name="Хол.вода", null=True, default=None)
+    hot_water = models.PositiveIntegerField(verbose_name="Гор.вода", null=True, default=None)
+    electric_day = models.PositiveIntegerField(verbose_name="Электр.день", null=True, default=None)
+    electric_night = models.PositiveIntegerField(verbose_name="Электр.ночь", null=True, default=None)
 
     created = models.DateTimeField(verbose_name="Создан", auto_now_add=True)
     updated = models.DateTimeField(verbose_name="Обновлен", auto_now=True)
@@ -362,6 +362,7 @@ class Appartament(models.Model):
 # Текущие показания счетчиков (индивидуальные)
 class CurrentCounter(models.Model):
     user = models.OneToOneField(User, on_delete=CASCADE)
+    period = models.DateField(verbose_name="Создан", default=datetime.datetime.now().replace(day=1))
     col_water = models.PositiveIntegerField(verbose_name="Холодная вода", null=True, default=None)
     hot_water = models.PositiveIntegerField(verbose_name="Горячая вода", null=True, default=None)
     electric_day = models.PositiveIntegerField(verbose_name="Электроэнергия день", null=True, blank=True, default=None)
@@ -391,11 +392,11 @@ class CurrentCounter(models.Model):
 class HistoryCounter(models.Model):
     user = models.ForeignKey(User, verbose_name="Пользователь", null=True, on_delete=SET_NULL)
     period = models.DateField(verbose_name="Период")
-    hist_col_water = models.PositiveIntegerField(verbose_name="Гор.вода")
-    hist_hot_water = models.PositiveIntegerField(verbose_name="Хол.вода")
-    hist_electric_day = models.PositiveIntegerField(verbose_name="Электр.день", null=True, blank=True, default=None)
-    hist_electric_night = models.PositiveIntegerField(verbose_name="Электр.ночь", null=True, blank=True, default=None)
-    hist_electric_single = models.PositiveIntegerField(verbose_name="Электр.однотариф", null=True, blank=True, default=None)
+    hist_col_water = models.PositiveIntegerField(verbose_name="Гор.вода", null=True)
+    hist_hot_water = models.PositiveIntegerField(verbose_name="Хол.вода", null=True)
+    hist_electric_day = models.PositiveIntegerField(verbose_name="Электр.день", null=True, blank=True)
+    hist_electric_night = models.PositiveIntegerField(verbose_name="Электр.ночь", null=True, blank=True)
+    hist_electric_single = models.PositiveIntegerField(verbose_name="Электр.однотариф", null=True, blank=True)
 
     created = models.DateTimeField(verbose_name="Создан", auto_now_add=True)
     updated = models.DateTimeField(verbose_name="Обновлен", auto_now=True)

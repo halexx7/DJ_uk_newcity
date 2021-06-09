@@ -4,6 +4,7 @@ import json
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core import serializers
 from django.db import transaction
+from django.db import models
 from django.db.models import F
 from django.db.models.signals import pre_delete, pre_save
 from django.dispatch import receiver
@@ -17,6 +18,7 @@ from django.views.generic.detail import DetailView
 from authnapp.forms import UserEditForm, UserLoginForm, UserProfileEditForm, UserRegisterForm
 from authnapp.models import User
 from mainapp.models import (
+    CurrentCounter,
     UK,
     Appartament,
     HistoryCounter,
@@ -64,7 +66,7 @@ class UserPageCreate(LoginRequiredMixin, CreateView):
     form_class = CurrentCounterForm
     context_object_name = "user"
     template_name = "personalacc/user_list.html"
-    success_url = reverse_lazy("person:user")
+    success_url = reverse_lazy("person:thanks")
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -85,10 +87,28 @@ class UserPageCreate(LoginRequiredMixin, CreateView):
         form = self.get_form(form_class)
 
         if form.is_valid():
+            post = self.request.POST
+            user = self.request.user
+            period = datetime.datetime.now().date().replace(day=1)
+            #TODO для проверки работы скрипта
+            # period = datetime.datetime.now().date().replace(day=1, month=7)
+            update_values = {
+                "col_water": post.get("col_water"),
+                "hot_water": post.get("hot_water"),
+                #TODO электричество пока отменяется
+                # "electric_day": post.get("electric_day"),
+                # "electric_night": post.get("electric_night"),
+            }
+            obj, created = CurrentCounter.objects.update_or_create(
+                user=user, period=period, defaults=update_values
+            )
+            # При создании новой записи удаляем старую
+            if created:
+                previous_month = (period - datetime.timedelta(days=1)).replace(day=1)
+                previous_value = CurrentCounter.objects.filter(user=user, period=previous_month)
+                previous_value.delete()
             return self.form_valid(form)
-
         return self.form_invalid(form)
-
 
 
 class ManagerPageCreate(LoginRequiredMixin, CreateView):
@@ -125,12 +145,14 @@ class ManagerPageCreate(LoginRequiredMixin, CreateView):
                 post = self.request.POST
                 house = post.get("house")
                 period = datetime.datetime.now().date().replace(day=1)
+                #TODO для проверки работы скрипта
                 # period = datetime.datetime.now().date().replace(day=1, month=7)
                 update_values = {
                     "col_water": post.get("col_water"),
                     "hot_water": post.get("hot_water"),
-                    "electric_day": post.get("electric_day"),
-                    "electric_night": post.get("electric_night"),
+                    #TODO электричество пока отменяется
+                    # "electric_day": post.get("electric_day"),
+                    # "electric_night": post.get("electric_night"),
                 }
                 obj, created = HouseCurrent.objects.update_or_create(
                     house_id=house, period=period, defaults=update_values
@@ -149,11 +171,10 @@ class ManagerPageCreate(LoginRequiredMixin, CreateView):
                 return JsonResponse({"instance": ser_instance}, status=200)
             else:
                 return JsonResponse({"error": form.errors}, status=400)
-
         return JsonResponse({"error": ""}, status=400)
 
 
-# При удалении ловим и сохраняем объект
+# При удалении ловим и сохраняем объект ДОМОВЫЕ ПОКАЗАНИЯ
 @receiver(pre_delete, sender=HouseCurrent)
 def copy_arhive_current_to_history_house(sender, instance, **kwargs):
     house = instance.house_id
@@ -161,11 +182,26 @@ def copy_arhive_current_to_history_house(sender, instance, **kwargs):
     upd_val = {
         "col_water": instance.col_water,
         "hot_water": instance.hot_water,
-        "electric_day": instance.electric_day,
-        "electric_night": instance.electric_night,
+        #TODO электричество пока отменяется
+        # "electric_day": instance.electric_day,
+        # "electric_night": instance.electric_night,
     }
     obj, created = HouseHistory.objects.update_or_create(house_id=house, period=period, defaults=upd_val)
 
+
+# При удалении ловим и сохраняем объект ИНДИВИДУАЛЬНЫЕ ПОКАЗАНИЯ
+@receiver(pre_delete, sender=CurrentCounter)
+def copy_arhive_current_to_history_house(sender, instance, **kwargs):
+    user = instance.user
+    period = instance.period
+    upd_val = {
+        "col_water": instance.col_water,
+        "hot_water": instance.hot_water,
+        #TODO электричество пока отменяется
+        # "electric_day": instance.electric_day,
+        # "electric_night": instance.electric_night,
+    }
+    obj, created = HistoryCounter.objects.update_or_create(user=user, period=period, defaults=upd_val)
 
 class HouseHistoryListView(LoginRequiredMixin, ListView):
     model = HouseHistory
@@ -174,4 +210,5 @@ class HouseHistoryListView(LoginRequiredMixin, ListView):
 
 
 class ThanksListView(LoginRequiredMixin, ListView):
+    model = User
     template_name = "personalacc/thanks.html"

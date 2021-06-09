@@ -124,21 +124,46 @@
                                                 <th scope="row" type>Пользователь:</th>
                                                 <td class="text-center" id="electricDay" disabled>{{ form.user|as_crispy_field }}</td>
                                             </tr>
-                                            {% if user.profiles.type_electric_meter == '2' %}
                                             <tr>
-                                                <th scope="row">Электроэнергия день:</th>
-                                                <td class="text-center" id="electricDay">{{ form.electric_day|as_crispy_field }}</td>
+                                                <th scope="row">Холодная вода:</th>
+                                                <td class="text-center" id="electricDay">{{ form.col_water|as_crispy_field }}</td>
                                             </tr>
                                             <tr>
-                                                <th scope="row">Электроэнергия ночь:</th>
-                                                <td class="text-center" id="electricNight">{{ form.electric_night|as_crispy_field }}</td>
+                                                <th scope="row">Горячая вода:</th>
+                                                <td class="text-center" id="electricDay">{{ form.hot_water|as_crispy_field }}</td>
                                             </tr>
-                                            {% elif user.profiles.type_electric_meter == '1'  %}
-                                            <tr>
-                                                <th scope="row">Электроэнергия:</th>
-                                                <td class="text-center" id="electricSingle">{{ form.electric_single|as_crispy_field }}</td>
-                                            </tr>
-                                            {% endif %}
+                                            {% comment 'Электроэнергию не считаем'%}
+                                                {% if user.profiles.type_electric_meter == '2' %}
+                                                <tr>
+                                                    <th scope="row">Электроэнергия день:</th>
+                                                    <td class="text-center" id="electricDay">{{ form.electric_day|as_crispy_field }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <th scope="row">Электроэнергия ночь:</th>
+                                                    <td class="text-center" id="electricNight">{{ form.electric_night|as_crispy_field }}</td>
+                                                </tr>
+                                                {% elif user.profiles.type_electric_meter == '1'  %}
+                                                <tr>
+                                                    <th scope="row">Электроэнергия:</th>
+                                                    <td class="text-center" id="electricSingle">{{ form.electric_single|as_crispy_field }}</td>
+                                                </tr>
+                                                {% endif %}
+                                                {% if user.profiles.type_electric_meter == '2' %}
+                                                <tr>
+                                                    <th scope="row">Электроэнергия день:</th>
+                                                    <td class="text-center" id="electricDay">{{ form.electric_day|as_crispy_field }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <th scope="row">Электроэнергия ночь:</th>
+                                                    <td class="text-center" id="electricNight">{{ form.electric_night|as_crispy_field }}</td>
+                                                </tr>
+                                                {% elif user.profiles.type_electric_meter == '1'  %}
+                                                <tr>
+                                                    <th scope="row">Электроэнергия:</th>
+                                                    <td class="text-center" id="electricSingle">{{ form.electric_single|as_crispy_field }}</td>
+                                                </tr>
+                                                {% endif %}
+                                            {% endcomment %}
                                         </tbody>
                                     </table>
                                 </div>

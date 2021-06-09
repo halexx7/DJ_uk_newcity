@@ -210,6 +210,14 @@ ul, ol {
 
 
 /* ===============
+=== Thanks Page ===
+==================*/
+.thanks__items {
+    min-width: 320 px;
+}
+
+
+/* ===============
 === Invoice Page ===
 ==================*/
 .wrapper_invoice {
