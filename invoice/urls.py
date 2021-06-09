@@ -6,8 +6,8 @@ from invoice.apps import InvoiceConfig
 app_name = InvoiceConfig.name
 
 urlpatterns = [
-    re_path(r"^$", invoice.InvoiceViews.as_view(), name="invoice_list"),
-    # path('invoice/', invoice.main, name='invoice'),
+    # re_path(r"^$", invoice.InvoiceViews.as_view(), name="invoice_list"),
+    path('invoice/', invoice.main, name='invoice'),
 ]
 
 if settings.DEBUG:

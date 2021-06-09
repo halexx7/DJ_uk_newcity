@@ -81,34 +81,45 @@ class UserPageCreate(LoginRequiredMixin, CreateView):
         #Заполняем форму начальными данными
         kwargs['initial'] = {'user': self.request.user.id}
         return kwargs
+    
+
+    def get_queryset(self):
+        qs = super().get_queryset()
+        return qs.get(pk=self.request.user.id)
+
 
     def post(self, request, *args, **kwargs):
         form_class = self.get_form_class()
         form = self.get_form(form_class)
-
+        
         if form.is_valid():
-            post = self.request.POST
-            user = self.request.user
-            period = datetime.datetime.now().date().replace(day=1)
-            #TODO для проверки работы скрипта
-            # period = datetime.datetime.now().date().replace(day=1, month=7)
-            update_values = {
-                "col_water": post.get("col_water"),
-                "hot_water": post.get("hot_water"),
-                #TODO электричество пока отменяется
-                # "electric_day": post.get("electric_day"),
-                # "electric_night": post.get("electric_night"),
-            }
-            obj, created = CurrentCounter.objects.update_or_create(
-                user=user, period=period, defaults=update_values
-            )
-            # При создании новой записи удаляем старую
-            if created:
-                previous_month = (period - datetime.timedelta(days=1)).replace(day=1)
-                previous_value = CurrentCounter.objects.filter(user=user, period=previous_month)
-                previous_value.delete()
             return self.form_valid(form)
         return self.form_invalid(form)
+
+
+    def form_valid(self, form):
+        post = self.request.POST
+        user = self.request.user
+        period = datetime.datetime.now().date().replace(day=1)
+        #TODO для проверки работы скрипта
+        # period = datetime.datetime.now().date().replace(day=1, month=7)
+        update_values = {
+            "col_water": post.get("col_water"),
+            "hot_water": post.get("hot_water"),
+            #TODO электричество пока отменяется
+            # "electric_day": post.get("electric_day"),
+            # "electric_night": post.get("electric_night"),
+        }
+        obj, created = CurrentCounter.objects.update_or_create(
+            user=user, period=period, defaults=update_values
+        )
+        # При создании новой записи удаляем старую
+        if created:
+            previous_month = (period - datetime.timedelta(days=1)).replace(day=1)
+            previous_value = CurrentCounter.objects.filter(user=user, period=previous_month)
+            previous_value.delete()
+
+        return HttpResponseRedirect(self.get_success_url())
 
 
 class ManagerPageCreate(LoginRequiredMixin, CreateView):

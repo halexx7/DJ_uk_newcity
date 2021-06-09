@@ -361,7 +361,7 @@ class Appartament(models.Model):
 
 # Текущие показания счетчиков (индивидуальные)
 class CurrentCounter(models.Model):
-    user = models.OneToOneField(User, on_delete=CASCADE)
+    user = models.ForeignKey(User, verbose_name="Пользователь", on_delete=CASCADE)
     period = models.DateField(verbose_name="Создан", default=datetime.datetime.now().replace(day=1))
     col_water = models.PositiveIntegerField(verbose_name="Холодная вода", null=True, default=None)
     hot_water = models.PositiveIntegerField(verbose_name="Горячая вода", null=True, default=None)
