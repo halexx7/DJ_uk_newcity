@@ -3,13 +3,9 @@ import json
 
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core import serializers
-from django.db import transaction
-from django.db import models
-from django.db.models import F
-from django.db.models.signals import pre_delete, pre_save
+from django.db.models.signals import pre_delete
 from django.dispatch import receiver
-from django.forms import inlineformset_factory
-from django.http import JsonResponse, request
+from django.http import JsonResponse
 from django.shortcuts import HttpResponseRedirect, get_object_or_404, render
 from django.urls import reverse, reverse_lazy
 from django.views.generic import CreateView, DeleteView, ListView, UpdateView
@@ -29,7 +25,14 @@ from mainapp.models import (
     Subsidies,
     UserProfile,
 )
-from personalacc.forms import CurrentCounterForm, HomeCurrentCounterForm, HomeHistoryCounterForm, RecalculationsForm
+from personalacc.forms import (
+    CurrentCounterForm, 
+    HomeCurrentCounterForm, 
+    HomeHistoryCounterForm, 
+    RecalculationsForm, 
+    SubsidiesForm,
+    PrivilegesForm
+    )
 
 
 # @login_required
@@ -124,17 +127,25 @@ class UserPageCreate(LoginRequiredMixin, CreateView):
 
 class ManagerPageCreate(LoginRequiredMixin, CreateView):
     form_class = HomeCurrentCounterForm
-    first_form_class = HomeHistoryCounterForm
-    second_form_class = RecalculationsForm
+    form_classes = {
+        "currentCount": HomeCurrentCounterForm,
+        "historyCount": HomeHistoryCounterForm,
+        "recalculations": RecalculationsForm,
+        "subsidies": SubsidiesForm,
+        "privilege": PrivilegesForm}
     template_name = "personalacc/manager_list.html"
     success_url = reverse_lazy("person:manager")
 
+
     def get_context_data(self, **kwargs):
-        context = super(ManagerPageCreate, self).get_context_data(**kwargs)
-        if "form" not in context:
-            context["form"] = self.form_class()
-        if "form2" not in context:
-            context["form2"] = self.second_form_class()
+        context = super().get_context_data(**kwargs)
+        for name, form in self.form_classes.items():
+            if name not in context:
+                context[name] = form()
+        # if "form" not in context:
+        #     context["form"] = self.form_class()
+        # if "form2" not in context:
+        #     context["form2"] = self.second_form_class()
         context["uk"] = UK.objects.all()
         context["house_history"] = HouseHistory.objects.all()
         context["house_current"] = HouseCurrent.objects.all()
@@ -146,6 +157,7 @@ class ManagerPageCreate(LoginRequiredMixin, CreateView):
 
     def post(self, *args, **kwargs):
         if self.request.is_ajax and self.request.method == "POST":
+            form_class = self.request.POST.get("form_type")
 
             if self.request.POST.get("form_type") == "houseCounterForm":
                 form = self.form_class(self.request.POST)
@@ -202,7 +214,6 @@ def copy_arhive_current_to_history_house(sender, instance, **kwargs):
 
 # При удалении ловим и сохраняем объект ИНДИВИДУАЛЬНЫЕ ПОКАЗАНИЯ
 @receiver(pre_delete, sender=CurrentCounter)
-@receiver(pre_save, sender=CurrentCounter)
 def copy_arhive_current_to_history_house(sender, instance, **kwargs):
     user = instance.user
     period = instance.period

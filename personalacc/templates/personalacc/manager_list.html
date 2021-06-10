@@ -127,6 +127,8 @@
                         месяца!</p>
 
                     <h4 class="mt-2">Таблица для заполнения</h4>
+                    
+                    {% comment %}
                     <form id="houseCounterForm" method="POST" name="houseCounterForm">
                         {% csrf_token %}
                         <input type="hidden" name="form_type" value="houseCounterForm">
@@ -162,8 +164,12 @@
                         </div>
                         <button action="{% url 'person:user' %}" type="button" class="btn  btn-primary  my-2" id="houseCounterBtn">Сохранить</button>
                     </form>
+                    {% endcomment %}
 
-
+                    
+                    {% csrf_token %}
+                    {% crispy subsidies %}
+                    
                     <div class="my-5">
                         <div class="row  mt-5  mb-3  d-flex justify-content-between">
                             <h4 class="col">Текущие домовые показания</h4>
@@ -207,6 +213,8 @@
 
                     <div class="wrapper__form-recalc">
                         <h4 class="mb-4">Внести перерасчет</h4>
+                        
+                        {% comment %}
                         <form class="mb-5" id="recalcForm" name="recalcForm">
                             {% csrf_token %}
                             <input type="hidden" name="form_type" value="recalcForm">
@@ -222,6 +230,7 @@
                             </div>
                             <button action="{% url 'person:user' %}" type="button" class="btn  btn-primary  my-2" id="recalcBtn">Внести</button>
                         </form>
+                        {% endcomment %}
                     </div>
 
                     <h4 class="pt-2  mb-4">История перерасчетов</h4>
