@@ -15,8 +15,8 @@ jQuery(document).ready(function(){
         }
             return cookieValue;
     }
+    
     var csrftoken = getCookie('csrftoken');
-    console.log(csrftoken);
 
     function csrfSafeMethod(method) {
         // these HTTP methods do not require CSRF protection
@@ -40,10 +40,10 @@ jQuery(document).ready(function(){
             type : 'POST',
             data: mForm,
             success: function (e) {
-        	    console.log(e);
+        	    console.log('hello');
             },
             error: function (e) {
-                console.log(e);
+                console.log('world');
             }
         });
     });
@@ -61,6 +61,30 @@ jQuery(document).ready(function(){
             },
             error: function (data) {
                 console.log(data.responseText);
+            }
+        });
+    });
+
+    //Ловим событие формы COUNTERFORM
+    $('#counterBtn').on('click', function (e) {
+        e.preventDefault();
+        var mForm = $('#counterForm').serialize();
+        $.ajax({
+            type : 'POST',
+            data: mForm,
+            success: function (data) {
+                $('form input[name="col_water"], form input[name="hot_water"]').val('');
+                $('#counterBtn').before('<div class="flex-fill  alert  alert-success  mt-3  mb-5" id="successAlert"><p>Данные успешно приняты!</p></div>');
+                setTimeout(function(){
+                    $('#successAlert').remove();
+                }, 50000);
+            },
+            error: function (data) {
+                $('form input[name="col_water"], form input[name="hot_water"]').val('');
+                $('#counterBtn').before('<div class="flex-fill  alert  alert-danger  mt-3  mb-5" id="successAlert"><p>Что-то пошло не так! Попробуйте чуть позже!</p></div>');
+                setTimeout(function(){
+                    $('#successAlert').remove();
+                }, 50000);
             }
         });
     });

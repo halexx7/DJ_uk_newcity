@@ -89,37 +89,37 @@ class UserPageCreate(LoginRequiredMixin, CreateView):
 
 
     def post(self, request, *args, **kwargs):
-        form_class = self.get_form_class()
-        form = self.get_form(form_class)
+        if self.request.is_ajax and self.request.method == "POST":
+
+            if self.request.POST.get("form_type") == "counterForm":
+                form = self.form_class(self.request.POST)
         
-        if form.is_valid():
-            return self.form_valid(form)
-        return self.form_invalid(form)
-
-
-    def form_valid(self, form):
-        post = self.request.POST
-        user = self.request.user
-        period = datetime.datetime.now().date().replace(day=1)
-        #TODO для проверки работы скрипта
-        # period = datetime.datetime.now().date().replace(day=1, month=7)
-        update_values = {
-            "col_water": post.get("col_water"),
-            "hot_water": post.get("hot_water"),
-            #TODO электричество пока отменяется
-            # "electric_day": post.get("electric_day"),
-            # "electric_night": post.get("electric_night"),
-        }
-        obj, created = CurrentCounter.objects.update_or_create(
-            user=user, period=period, defaults=update_values
-        )
-        # При создании новой записи удаляем старую
-        if created:
-            previous_month = (period - datetime.timedelta(days=1)).replace(day=1)
-            previous_value = CurrentCounter.objects.filter(user=user, period=previous_month)
-            previous_value.delete()
-
-        return HttpResponseRedirect(self.get_success_url())
+            if form.is_valid():
+                post = self.request.POST
+                user = self.request.user
+                # period = datetime.datetime.now().date().replace(day=1)
+                #TODO для проверки работы скрипта
+                period = datetime.datetime.now().date().replace(day=1, month=7)
+                update_values = {
+                    "col_water": post.get("col_water"),
+                    "hot_water": post.get("hot_water"),
+                    #TODO электричество пока отменяется
+                    # "electric_day": post.get("electric_day"),
+                    # "electric_night": post.get("electric_night"),
+                }
+                obj, created = CurrentCounter.objects.update_or_create(
+                    user=user, period=period, defaults=update_values
+                )
+                # При создании новой записи удаляем старую
+                if created:
+                    previous_month = (period - datetime.timedelta(days=1)).replace(day=1)
+                    previous_value = CurrentCounter.objects.filter(user=user, period=previous_month)
+                    previous_value.delete()
+                ser_instance = serializers.serialize("json", [obj,],)
+                return JsonResponse({"instance": ser_instance}, status=200)
+            else:
+                return JsonResponse({"error": form.errors}, status=400)
+        return JsonResponse({"error": ""}, status=400)
 
 
 class ManagerPageCreate(LoginRequiredMixin, CreateView):

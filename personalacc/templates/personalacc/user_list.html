@@ -122,7 +122,7 @@
                                         <tbody>
                                             <tr>
                                                 <th scope="row" type>Пользователь:</th>
-                                                <td class="text-center" id="electricDay" disabled>{{ form.user|as_crispy_field }}</td>
+                                                <td class="text-center" id="userName">{{ form.user|as_crispy_field }}</td>
                                             </tr>
                                             <tr>
                                                 <th scope="row">Холодная вода:</th>
@@ -130,7 +130,7 @@
                                             </tr>
                                             <tr>
                                                 <th scope="row">Горячая вода:</th>
-                                                <td class="text-center" id="electricDay">{{ form.hot_water|as_crispy_field }}</td>
+                                                <td class="text-center" id="electricNight">{{ form.hot_water|as_crispy_field }}</td>
                                             </tr>
                                             {% comment 'Электроэнергию не считаем'%}
                                                 {% if user.profiles.type_electric_meter == '2' %}
@@ -167,9 +167,7 @@
                                         </tbody>
                                     </table>
                                 </div>
-                                <div class="new_category_form--btn">
-                                    <input class="form-control  bg-success  text-white  new_category_form--save" type="submit" value="сохранить">
-                                </div>
+                                <button action="{% url 'person:user' %}" type="button" class="form-control  bg-success  text-white  new_category_form--save" id="counterBtn">Сохранить</button>
                             </form>
                         </div>
                     {% else %}
