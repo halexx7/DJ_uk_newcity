@@ -99,7 +99,7 @@ class UserPageCreate(LoginRequiredMixin, CreateView):
                 user = self.request.user
                 # period = datetime.datetime.now().date().replace(day=1)
                 #TODO для проверки работы скрипта
-                period = datetime.datetime.now().date().replace(day=1, month=7)
+                period = datetime.datetime.now().date().replace(day=1, month=10)
                 update_values = {
                     "col_water": post.get("col_water"),
                     "hot_water": post.get("hot_water"),
@@ -115,8 +115,8 @@ class UserPageCreate(LoginRequiredMixin, CreateView):
                     previous_month = (period - datetime.timedelta(days=1)).replace(day=1)
                     previous_value = CurrentCounter.objects.filter(user=user, period=previous_month)
                     previous_value.delete()
-                ser_instance = serializers.serialize("json", [obj,],)
-                return JsonResponse({"instance": ser_instance}, status=200)
+                data = serializers.serialize("json", [obj,],)
+                return JsonResponse({"instance": data}, status=200)
             else:
                 return JsonResponse({"error": form.errors}, status=400)
         return JsonResponse({"error": ""}, status=400)
@@ -202,6 +202,7 @@ def copy_arhive_current_to_history_house(sender, instance, **kwargs):
 
 # При удалении ловим и сохраняем объект ИНДИВИДУАЛЬНЫЕ ПОКАЗАНИЯ
 @receiver(pre_delete, sender=CurrentCounter)
+@receiver(pre_save, sender=CurrentCounter)
 def copy_arhive_current_to_history_house(sender, instance, **kwargs):
     user = instance.user
     period = instance.period
@@ -213,6 +214,7 @@ def copy_arhive_current_to_history_house(sender, instance, **kwargs):
         # "electric_night": instance.electric_night,
     }
     obj, created = HistoryCounter.objects.update_or_create(user=user, period=period, defaults=upd_val)
+
 
 class HouseHistoryListView(LoginRequiredMixin, ListView):
     model = HouseHistory

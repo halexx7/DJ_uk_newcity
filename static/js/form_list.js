@@ -65,6 +65,17 @@ jQuery(document).ready(function(){
         });
     });
 
+    // Выводим сообщение в соответствующий Alert bootstrap
+    function displayCounterAlert(say, typeAlert, time){
+        $('#successAlert').remove();
+            $('form input[name="col_water"], form input[name="hot_water"]').val('');
+            $('#counterBtn').before(`<div class="flex-fill  alert  alert-${typeAlert}  mt-3  mb-5" id="successAlert"><p>${say}</p></div>`);
+            setTimeout(function(){
+                $('#successAlert').remove();
+            }, time);
+    };
+
+    // USER_LIST
     //Ловим событие формы COUNTERFORM
     $('#counterBtn').on('click', function (e) {
         e.preventDefault();
@@ -73,18 +84,16 @@ jQuery(document).ready(function(){
             type : 'POST',
             data: mForm,
             success: function (data) {
-                $('form input[name="col_water"], form input[name="hot_water"]').val('');
-                $('#counterBtn').before('<div class="flex-fill  alert  alert-success  mt-3  mb-5" id="successAlert"><p>Данные успешно приняты!</p></div>');
-                setTimeout(function(){
-                    $('#successAlert').remove();
-                }, 50000);
+                say = `Данные успешно приняты!`;
+                time = 15000;
+                typeAlert = `success`;
+                displayCounterAlert(say, typeAlert, time);
             },
             error: function (data) {
-                $('form input[name="col_water"], form input[name="hot_water"]').val('');
-                $('#counterBtn').before('<div class="flex-fill  alert  alert-danger  mt-3  mb-5" id="successAlert"><p>Что-то пошло не так! Попробуйте чуть позже!</p></div>');
-                setTimeout(function(){
-                    $('#successAlert').remove();
-                }, 50000);
+                say = `Что-то пошло не так! Попробуйте чуть позже!`;
+                time = 15000;
+                typeAlert = `danger`;
+                displayCounterAlert(say, typeAlert, time);
             }
         });
     });
