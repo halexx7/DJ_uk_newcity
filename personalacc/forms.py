@@ -11,6 +11,9 @@ class MultipleForm(forms.Form):
 class CurrentCounterForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        # self.fields['user'].queryset = User.objects.filter(id=kwargs['initial']['user'])
+        test = self.initial.get('user')
+        self.fields['user'].queryset = User.objects.filter(id=self.initial.get('user'))
         for field_name, field in self.fields.items():
             field.widget.attrs["class"] = "form-control"
         self.helper = FormHelper()
