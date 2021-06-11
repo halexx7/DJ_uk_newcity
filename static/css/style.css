@@ -38,6 +38,10 @@ p {
     margin: 0 0 10px;
 }
 
+textarea {
+    max-height: 5em;
+}
+
 /* Сбрасываем отступы и стилизацию списков */
 ul, ol {
     margin: 0;

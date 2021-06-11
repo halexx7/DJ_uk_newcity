@@ -250,6 +250,7 @@
                                 <th scope="col">#</th>
                                 <th scope="col">Период</th>
                                 <th scope="col">(Лицевой счет) - ФИО</th>
+                                <th scope="col">Услуга</th>
                                 <th scope="col">Долг(+)/переплата(-)</th>
                                 <th scope="col">Описание</th>
                             </tr>
@@ -261,6 +262,7 @@
                                 <td>{{ el.id }}</td>
                                 <td>{{ el.period|date:"m - Y" }}</td>
                                 <td>{{ el.user }}</td>
+                                <td>{{ el.service }}</td>
                                 <td>{{ el.recalc}}</td>
                                 <td>{{ el.desc}}</td>
                             </tr>
@@ -293,31 +295,32 @@
 
                                     <h4 class="mb-4">Добваить льготу</h4>
                                     <div class="manager-privileges__form">
-                                        <form class="">
-                                            <div class="form-group  mb-3">
-                                                <label for="exampleFormControlInput1">Лицевой счет</label>
-                                                <input type="email" class="form-control" id="exampleFormControlInput1"
-                                                    placeholder="123456">
+                                        
+                                    <form class="ml-3  mb-5" id="privilege_form" name="privilege_form">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="form_type" value="privilege_form">
+                                        <div class="row  d-flex  flex-column">
+                                            <div class="mb-3">
+                                                <label for="formGroupExampleInput">Лицевой счет</label>
+                                                {{ privilege_form.user|as_crispy_field }}
                                             </div>
-                                            <div class="form-group  mb-3">
-                                                <label for="exampleFormControlSelect1">Тариф</label>
-                                                <select class="form-control" id="exampleFormControlSelect1">
-                                                    <option selected>Выберите из списка</option>
-                                                    <option>Холодная вода</option>
-                                                    <option>Горячая вода</option>
-                                                    <option>Электроэнергия</option>
-                                                </select>
+                                            <div class="mb-3">
+                                                <label for="formGroupExampleInput">Услуга</label>
+                                                {{ privilege_form.service|as_crispy_field }}
                                             </div>
-                                            <div class="form-group  mb-3">
-                                                <label for="exampleFormControlInput1">Скидка, %</label>
-                                                <input type="email" class="form-control" id="exampleFormControlInput2"
-                                                    placeholder="10">
+                                            <div class="mb-3">
+                                                <label for="formGroupExampleInput2">Скидка, %</label>
+                                                {{ privilege_form.sale|as_crispy_field }}
                                             </div>
-                                        </form>
+                                            <div class="">
+                                                <label for="formGroupExampleInput2">Описание</label>
+                                                {{ privilege_form.desc|as_crispy_field }}
+                                            </div>
+                                        </div>
+                                        <button action="{% url 'person:user' %}" type="button" class="btn  btn-primary  my-2" id="privilegeBtn">Внести</button>
+                                    </form>
                                     </div>
                                     
-                                    <button type="button" class="btn btn-primary  mt-2 mb-5">Добавить</button>
-
                                     <h4  class="pt-4  mb-4">Действующие льготы</h4>
                                     <table class="table  mb-5">
                                         <thead class="thead-light">
@@ -344,36 +347,36 @@
                                     </table>
                                 </div>
 
-                                <!-- Link-GRANT -->
+                                <!-- Link-SUBSIDIES -->
                                 <div class="tab-pane fade" id="v-pills-grant" role="tabpanel"
                                     aria-labelledby="v-pills-grant-tab">
 
                                     <h4 class="mb-4">Добваить субсидию</h4>
                                     <div class="manager-privileges__form">
-                                        <form>
-                                            <div class="form-group  mb-3">
-                                                <label for="exampleFormControlInput1">Лицевой счет</label>
-                                                <input type="email" class="form-control" id="exampleFormControlInput3"
-                                                    placeholder="123456">
+                                        <form class="ml-3  mb-5" id="subsidies_form" name="subsidies_form">
+                                            {% csrf_token %}
+                                            <input type="hidden" name="form_type" value="subsidies_form">
+                                            <div class="row  d-flex  flex-column">
+                                                <div class="mb-3">
+                                                    <label for="formGroupExampleInput">Лицевой счет</label>
+                                                    {{ subsidies_form.user|as_crispy_field }}
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label for="formGroupExampleInput">Услуга</label>
+                                                    {{ subsidies_form.service|as_crispy_field }}
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label for="formGroupExampleInput2">Скидка, %</label>
+                                                    {{ subsidies_form.sale|as_crispy_field }}
+                                                </div>
+                                                <div class="">
+                                                    <label for="formGroupExampleInput2">Описание</label>
+                                                    {{ subsidies_form.desc|as_crispy_field }}
+                                                </div>
                                             </div>
-                                            <div class="form-group  mb-3">
-                                                <label for="exampleFormControlSelect1">Тариф</label>
-                                                <select class="form-control" id="exampleFormControlSelect2">
-                                                    <option selected>Выберите из списка</option>
-                                                    <option>Холодная вода</option>
-                                                    <option>Горячая вода</option>
-                                                    <option>Электроэнергия</option>
-                                                </select>
-                                            </div>
-                                            <div class="form-group  mb-3">
-                                                <label for="exampleFormControlInput1">Скидка, %</label>
-                                                <input type="email" class="form-control" id="exampleFormControlInput4"
-                                                    placeholder="10">
-                                            </div>
+                                            <button action="{% url 'person:user' %}" type="button" class="btn  btn-primary  my-2" id="subsidiesBtn">Внести</button>
                                         </form>
                                     </div>
-                                    <button type="button" class="btn btn-primary  mt-2 mb-5">Добавить</button>
-
 
                                     <h4  class="pt-4  mb-4">Действующие субсидии</h4>
                                     <table class="table  mb-5">

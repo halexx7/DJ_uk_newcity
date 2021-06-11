@@ -41,6 +41,8 @@ jQuery(document).ready(function(){
             }, time);
     };
 
+
+    // MANAGER_LIST
     //Ловим событие формы CURRENT
     $('#currentCountBtn').on('click', function (e) {
         e.preventDefault();
@@ -86,6 +88,54 @@ jQuery(document).ready(function(){
             }
         });
     });
+
+    //Ловим событие формы PRIVILEGE
+    $('#privilegeBtn').on('click', function (e) {
+        e.preventDefault();
+        var mForm = $('#privilege_form').serialize();
+        console.log(mForm);
+        $.ajax({
+            type : 'POST',
+            data: mForm,
+            success: function (data) {
+                say = `Данные успешно приняты!`;
+                time = 15000;
+                typeAlert = `success`;
+                displayCounterAlert(say, typeAlert, time, e.target.id);
+            },
+            error: function (data) {
+                say = `Что-то пошло не так! Попробуйте чуть позже!`;
+                time = 15000;
+                typeAlert = `danger`;
+                displayCounterAlert(say, typeAlert, time, e.target.id);
+            }
+        });
+    });
+
+    //Ловим событие формы SUBSIDIES
+    $('#subsidiesBtn').on('click', function (e) {
+        e.preventDefault();
+        var mForm = $('#subsidies_form').serialize();
+        console.log(mForm);
+        $.ajax({
+            type : 'POST',
+            data: mForm,
+            success: function (data) {
+                say = `Данные успешно приняты!`;
+                time = 15000;
+                typeAlert = `success`;
+                displayCounterAlert(say, typeAlert, time, e.target.id);
+            },
+            error: function (data) {
+                say = `Что-то пошло не так! Попробуйте чуть позже!`;
+                time = 15000;
+                typeAlert = `danger`;
+                displayCounterAlert(say, typeAlert, time, e.target.id);
+            }
+        });
+    });
+
+
 
     // USER_LIST
     //Ловим событие формы COUNTERFORM

@@ -2,6 +2,7 @@ from authnapp.models import User
 from crispy_forms.helper import FormHelper
 from django import forms
 
+from authnapp.forms import BootstrapStylesMixins
 from mainapp.models import CurrentCounter, HouseCurrent, HouseHistory, Privileges, Recalculations, Services, Subsidies
 
 class MultipleForm(forms.Form):
@@ -67,24 +68,31 @@ class RecalculationsForm(forms.ModelForm):
 
 
 class SubsidiesForm(forms.ModelForm):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        for field_name, field in self.fields.items():
-            field.widget.attrs["class"] = "form-control"
-        self.helper = FormHelper()
-
+    field_name = ["user", "service", "sale", "desc"]
     class Meta:
-        model = Subsidies
-        exclude = ("desc", "created", "updated")
+            model = Subsidies
+            exclude = ("created", "updated")
 
-
-class PrivilegesForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        for field_name, field in self.fields.items():
-            field.widget.attrs["class"] = "form-control"
+        self.fields['service'].queryset = Services.objects.filter(const=False)
+        self.fields['user'].queryset = User.objects.filter(is_staff=False)
         self.helper = FormHelper()
+        self.helper.form_show_labels = False
 
+
+class PrivilegesForm(BootstrapStylesMixins, forms.ModelForm):
+    field_name = ["user", "service", "sale", "desc"]
     class Meta:
         model = Privileges
-        exclude = ("desc", "created", "updated")
+        exclude = ("is_active", "created", "updated")
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['service'].queryset = Services.objects.filter(const=False)
+        self.fields['user'].queryset = User.objects.filter(is_staff=False)
+        self.helper = FormHelper()
+        self.helper.form_show_labels = False
+
+
+    
