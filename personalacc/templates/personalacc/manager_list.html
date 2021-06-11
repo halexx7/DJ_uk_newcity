@@ -132,12 +132,12 @@
                     {% now "d" as today %}
                     {% if "01" < today and today < "31" %}
                         <h4 class="mt-2  mb-5">Таблица для заполнения</h4>
-                        <form id="currentCountForm" method="POST" name="currentCount">
+                        <form id="house_count_form" method="POST" name="house_count_form">
                             {% csrf_token %}
-                            <input type="hidden" name="form_type" value="house_count">
+                            <input type="hidden" name="form_type" value="house_count_form">
                             <div class="d-flex  justify-content-start">
                                 <p class="text-700">Дом:</p>
-                                <div class="form-row  ml-4">{{ currentCount.house|as_crispy_field }}</div>
+                                <div class="form-row  ml-4">{{ house_count_form.house|as_crispy_field }}</div>
                             </div>
                             <div class="user-area__table">
                                 <table class="user-area__table  table">
@@ -150,16 +150,16 @@
                                     <tbody>
                                         <tr>
                                             <th scope="row">Горячая вода:</th>
-                                            <td class="text-center" id='houseHotWater'>{{ currentCount.hot_water|as_crispy_field }}</td>
+                                            <td class="text-center" id='houseHotWater'>{{ house_count_form.hot_water|as_crispy_field }}</td>
                                         </tr>
                                         <tr>
                                             <th scope="row">Холодная вода:</th>
-                                            <td class="text-center">{{ currentCount.col_water|as_crispy_field }}</td>
+                                            <td class="text-center">{{ house_count_form.col_water|as_crispy_field }}</td>
                                         </tr>
                                         {% comment 'Электричество пока отменяется'%}
                                             <tr>
                                                 <th scope="row">Электроэнергия день:</th>
-                                                <td class="text-center">{{ currentCount.electric_day|as_crispy_field }}</td>
+                                                <td class="text-center">{{ house_count_form.electric_day|as_crispy_field }}</td>
                                             </tr>
                                             <tr>
                                                 <th scope="row">Электроэнергия ночь:</th>
@@ -191,8 +191,6 @@
                                         <th scope="col">Адрес</th>
                                         <th scope="col">ХВС</th>
                                         <th scope="col">ХГС</th>
-                                        <th scope="col">Эл.день</th>
-                                        <th scope="col">Эл.ночь</th>
                                     </tr>
                                 </thead>
 
@@ -204,8 +202,6 @@
                                         <td class="text-left">{{ el.house }}</td>
                                         <td>{{ el.col_water }}</td>
                                         <td>{{ el.hot_water }}</td>
-                                        <td>{{ el.electric_day }}</td>
-                                        <td>{{ el.electric_night }}</td>
                                     </tr>
                                 </tbody>
                                 {% endfor %}

@@ -32,10 +32,10 @@ jQuery(document).ready(function(){
     });
 
     // Выводим сообщение в соответствующий Alert bootstrap
-    function displayCounterAlert(say, typeAlert, time){
+    function displayCounterAlert(say, typeAlert, time, target){
         $('#successAlert').remove();
             $('form input[name="col_water"], form input[name="hot_water"]').val('');
-            $('#counterBtn').before(`<div class="flex-fill  alert  alert-${typeAlert}  mt-3  mb-5" id="successAlert"><p>${say}</p></div>`);
+            $(`#${target}`).before(`<div class="flex-fill  alert  alert-${typeAlert}  mt-3  mb-5" id="successAlert"><p>${say}</p></div>`);
             setTimeout(function(){
                 $('#successAlert').remove();
             }, time);
@@ -44,7 +44,7 @@ jQuery(document).ready(function(){
     //Ловим событие формы currentCount
     $('#currentCountBtn').on('click', function (e) {
         e.preventDefault();
-        var mForm = $('#currentCountForm').serialize();
+        var mForm = $('#house_count_form').serialize();
         console.log(mForm);
         $.ajax({
             type : 'POST',
@@ -53,13 +53,13 @@ jQuery(document).ready(function(){
                 say = `Данные успешно приняты!`;
                 time = 15000;
                 typeAlert = `success`;
-                displayCounterAlert(say, typeAlert, time);
+                displayCounterAlert(say, typeAlert, time, e.target.id);
             },
             error: function (data) {
                 say = `Что-то пошло не так! Попробуйте чуть позже!`;
                 time = 15000;
                 typeAlert = `danger`;
-                displayCounterAlert(say, typeAlert, time);
+                displayCounterAlert(say, typeAlert, time, e.target.id);
             }
         });
     });
@@ -93,13 +93,13 @@ jQuery(document).ready(function(){
                 say = `Данные успешно приняты!`;
                 time = 15000;
                 typeAlert = `success`;
-                displayCounterAlert(say, typeAlert, time);
+                displayCounterAlert(say, typeAlert, time, e.target.id);
             },
             error: function (data) {
                 say = `Что-то пошло не так! Попробуйте чуть позже!`;
                 time = 15000;
                 typeAlert = `danger`;
-                displayCounterAlert(say, typeAlert, time);
+                displayCounterAlert(say, typeAlert, time, e.target.id);
             }
         });
     });
