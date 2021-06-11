@@ -41,7 +41,7 @@ jQuery(document).ready(function(){
             }, time);
     };
 
-    //Ловим событие формы currentCount
+    //Ловим событие формы CURRENT
     $('#currentCountBtn').on('click', function (e) {
         e.preventDefault();
         var mForm = $('#house_count_form').serialize();
@@ -64,19 +64,25 @@ jQuery(document).ready(function(){
         });
     });
 
-    //Ловим событие формы 2
+    //Ловим событие формы RECALCULATIONS
     $('#recalcBtn').on('click', function (e) {
         e.preventDefault();
-        var mForm = $('#recalcForm').serialize();
+        var mForm = $('#recalculations_form').serialize();
         console.log(mForm);
         $.ajax({
             type : 'POST',
             data: mForm,
             success: function (data) {
-        	    console.log(data.responseText);
+                say = `Данные успешно приняты!`;
+                time = 15000;
+                typeAlert = `success`;
+                displayCounterAlert(say, typeAlert, time, e.target.id);
             },
             error: function (data) {
-                console.log(data.responseText);
+                say = `Что-то пошло не так! Попробуйте чуть позже!`;
+                time = 15000;
+                typeAlert = `danger`;
+                displayCounterAlert(say, typeAlert, time, e.target.id);
             }
         });
     });

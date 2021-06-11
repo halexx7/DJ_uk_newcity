@@ -6,7 +6,7 @@ from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models.deletion import CASCADE, PROTECT, SET_NULL
 from django.db.models.lookups import In
-from django.db.models.signals import post_save
+from django.db.models.signals import post_save, pre_delete
 from django.dispatch import receiver
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
@@ -609,7 +609,8 @@ class MainBook(models.Model):
 # Перерасчеты
 class Recalculations(models.Model):
     user = models.ForeignKey(User, verbose_name="Пользователь", null=True, on_delete=SET_NULL)
-    period = models.DateField(verbose_name="Период", auto_now_add=True)
+    period = models.DateField(verbose_name="Создан", default=datetime.datetime.now().replace(day=1))
+    service = models.ForeignKey(Services, verbose_name="Услуга", null=True, on_delete=SET_NULL)
     recalc = models.DecimalField(verbose_name="Сумма", max_digits=7, decimal_places=2, default=0)
     desc = models.TextField(verbose_name="Описание", blank=True, null=True)
 
@@ -652,3 +653,34 @@ class PersonalAccountStatus(models.Model):
     def delete(self):
         self.is_active = False
         self.save()
+
+
+# При удалении ловим и сохраняем объект ДОМОВЫЕ ПОКАЗАНИЯ
+@receiver(pre_delete, sender=HouseCurrent)
+def copy_arhive_current_to_history_house(sender, instance, **kwargs):
+    house = instance.house_id
+    period = instance.period
+    upd_val = {
+        "col_water": instance.col_water,
+        "hot_water": instance.hot_water,
+        #TODO электричество пока отменяется
+        # "electric_day": instance.electric_day,
+        # "electric_night": instance.electric_night,
+    }
+    obj, created = HouseHistory.objects.update_or_create(house_id=house, period=period, defaults=upd_val)
+    print('DONE!!!!')
+
+
+# При удалении ловим и сохраняем объект ИНДИВИДУАЛЬНЫЕ ПОКАЗАНИЯ
+@receiver(pre_delete, sender=CurrentCounter)
+def copy_arhive_current_to_history(sender, instance, **kwargs):
+    user = instance.user
+    period = instance.period
+    upd_val = {
+        "col_water": instance.col_water,
+        "hot_water": instance.hot_water,
+        #TODO электричество пока отменяется
+        # "electric_day": instance.electric_day,
+        # "electric_night": instance.electric_night,
+    }
+    obj, created = HistoryCounter.objects.update_or_create(user=user, period=period, defaults=upd_val)

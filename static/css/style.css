@@ -169,6 +169,10 @@ ul, ol {
     width: 300px;
 }
 
+.wrapper__form-recalc {
+    max-width: 500px;
+}
+
 
 /* ===============
 === Register Page ===

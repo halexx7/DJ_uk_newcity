@@ -137,16 +137,11 @@ class ManagerPageCreate(LoginRequiredMixin, CreateView):
     template_name = "personalacc/manager_list.html"
     success_url = reverse_lazy("person:manager")
 
-
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         for name, form in self.form_classes.items():
             if name not in context:
                 context[name] = form()
-        # if "form" not in context:
-        #     context["form"] = self.form_class()
-        # if "form2" not in context:
-        #     context["form2"] = self.second_form_class()
         context["uk"] = UK.objects.all()
         context["house_history"] = HouseHistory.objects.all()
         context["house_current"] = HouseCurrent.objects.all()
@@ -160,7 +155,6 @@ class ManagerPageCreate(LoginRequiredMixin, CreateView):
     def post(self, *args, **kwargs):
         handle = {
             "house_count_form": self.house_count_process,
-            "house_history_form": self.house_history_process,
             "recalculations_form": self.recalculations_process,
             "subsidies_form": self.subsidies_process,
             "privilege_form": self.privilege_process
@@ -177,13 +171,6 @@ class ManagerPageCreate(LoginRequiredMixin, CreateView):
                         return JsonResponse({"instance": ser_instance}, status=200)
                     else:
                         return JsonResponse({"error": form.errors}, status=400)
-                    
-            # form = self.form_classes[form_class]
-            # if self.request.POST.get("form_type") == "houseCounterForm":
-            #     form = self.form_class(self.request.POST)
-            # elif self.request.POST.get("form_type") == "recalcForm":
-            #     form = self.second_form_class(self.request.POST)
-            
         return JsonResponse({"error": ""}, status=400)
     
 
@@ -191,8 +178,9 @@ class ManagerPageCreate(LoginRequiredMixin, CreateView):
         post = self.request.POST
         house = post.get("house")
         period = datetime.datetime.now().date().replace(day=1)
+        test = HouseCurrent.objects.filter(period=period)
         #TODO для проверки работы скрипта
-        # period = datetime.datetime.now().date().replace(day=1, month=7)
+        # period = datetime.datetime.now().date().replace(day=1, month=9)
         update_values = {
             "col_water": post.get("col_water"),
             "hot_water": post.get("hot_water"),
@@ -210,50 +198,28 @@ class ManagerPageCreate(LoginRequiredMixin, CreateView):
             previous_value.delete()
         ser_instance = serializers.serialize("json", [obj,],)
         return ser_instance
-    
-    def house_history_process(self, form, *args, **kwargs):
-        pass
+
 
     def recalculations_process(self, form, *args, **kwargs):
+        post = self.request.POST
+        user = post.get("user")
+        period = datetime.datetime.now().date().replace(day=1)
+        update_values = {
+            "recalc": post.get("recalc"),
+            "desc": post.get('desc')
+        }
+        test = Recalculations.objects.filter(period=period)
+        obj, created = Recalculations.objects.update_or_create(
+            user_id=user, period=period, defaults=update_values
+        )
+      
+
+    def subsidies_process(self, form, post, *args, **kwargs):
         pass
 
-    def subsidies_process(self, form, *args, **kwargs):
-        pass
-
-    def privilege_process(self, form, *args, **kwargs):
+    def privilege_process(self, form, post, *args, **kwargs):
         pass
         
-
-
-# При удалении ловим и сохраняем объект ДОМОВЫЕ ПОКАЗАНИЯ
-@receiver(pre_delete, sender=HouseCurrent)
-def copy_arhive_current_to_history_house(sender, instance, **kwargs):
-    house = instance.house_id
-    period = instance.period
-    upd_val = {
-        "col_water": instance.col_water,
-        "hot_water": instance.hot_water,
-        #TODO электричество пока отменяется
-        # "electric_day": instance.electric_day,
-        # "electric_night": instance.electric_night,
-    }
-    obj, created = HouseHistory.objects.update_or_create(house_id=house, period=period, defaults=upd_val)
-
-
-# При удалении ловим и сохраняем объект ИНДИВИДУАЛЬНЫЕ ПОКАЗАНИЯ
-@receiver(pre_delete, sender=CurrentCounter)
-def copy_arhive_current_to_history_house(sender, instance, **kwargs):
-    user = instance.user
-    period = instance.period
-    upd_val = {
-        "col_water": instance.col_water,
-        "hot_water": instance.hot_water,
-        #TODO электричество пока отменяется
-        # "electric_day": instance.electric_day,
-        # "electric_night": instance.electric_night,
-    }
-    obj, created = HistoryCounter.objects.update_or_create(user=user, period=period, defaults=upd_val)
-
 
 class HouseHistoryListView(LoginRequiredMixin, ListView):
     model = HouseHistory

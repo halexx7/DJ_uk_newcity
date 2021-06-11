@@ -217,23 +217,29 @@
                     <div class="wrapper__form-recalc">
                         <h4 class="mb-4">Внести перерасчет</h4>
                         
-                        {% comment %}
-                        <form class="mb-5" id="recalcForm" name="recalcForm">
+                        <form class="ml-3  mb-5" id="recalculations_form" name="recalculations_form">
                             {% csrf_token %}
-                            <input type="hidden" name="form_type" value="recalcForm">
-                            <div class="row">
-                                <div class="col-md-3  mb-3">
+                            <input type="hidden" name="form_type" value="recalculations_form">
+                            <div class="row  d-flex  flex-column">
+                                <div class="mb-3">
                                     <label for="formGroupExampleInput">Лицевой счет</label>
-                                    {{ form2.user|as_crispy_field }}
+                                    {{ recalculations_form.user|as_crispy_field }}
                                 </div>
-                                <div class="col-md-3">
+                                <div class="mb-3">
+                                    <label for="formGroupExampleInput">Услуга:</label>
+                                    {{ recalculations_form.service|as_crispy_field }}
+                                </div>
+                                <div class="mb-3">
                                     <label for="formGroupExampleInput2">Сумма</label>
-                                    {{ form2.recalc|as_crispy_field }}
+                                    {{ recalculations_form.recalc|as_crispy_field }}
+                                </div>
+                                <div class="">
+                                    <label for="formGroupExampleInput2">Описание</label>
+                                    {{ recalculations_form.desc|as_crispy_field }}
                                 </div>
                             </div>
                             <button action="{% url 'person:user' %}" type="button" class="btn  btn-primary  my-2" id="recalcBtn">Внести</button>
                         </form>
-                        {% endcomment %}
                     </div>
 
                     <h4 class="pt-2  mb-4">История перерасчетов</h4>

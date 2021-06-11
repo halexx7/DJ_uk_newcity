@@ -1,7 +1,8 @@
+from authnapp.models import User
 from crispy_forms.helper import FormHelper
 from django import forms
 
-from mainapp.models import CurrentCounter, HouseCurrent, HouseHistory, Privileges, Recalculations, Subsidies
+from mainapp.models import CurrentCounter, HouseCurrent, HouseHistory, Privileges, Recalculations, Services, Subsidies
 
 class MultipleForm(forms.Form):
     """Добавляем клас Мульти формности, идентификация форм будет по скрытому полю action"""
@@ -49,13 +50,17 @@ class HomeHistoryCounterForm(forms.ModelForm):
 class RecalculationsForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(RecalculationsForm, self).__init__(*args, **kwargs)
+        #Отправляем фильтрованные данные в форму
+        self.fields['service'].queryset = Services.objects.filter(const=False)
+        self.fields['user'].queryset = User.objects.filter(is_staff=False)
         for field_name, field in self.fields.items():
             field.widget.attrs["class"] = "form-control"
         self.helper = FormHelper()
+        self.helper.form_show_labels = False
 
     class Meta:
         model = Recalculations
-        exclude = ("desc", "created", "updated")
+        exclude = ("period", "created", "updated")
 
 
 class SubsidiesForm(forms.ModelForm):

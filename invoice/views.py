@@ -44,135 +44,135 @@ def main(request):
     pass
 
 
-class InvoiceViews(ListView):
-    model = User
-    context_object_name = "user"
-    template_name = "invoice/invoice.html"
-    queryset = mark_safe(serialize("json", User.objects.filter(id = 1)))
+# class InvoiceViews(ListView):
+#     model = User
+#     context_object_name = "user"
+#     template_name = "invoice/invoice.html"
+#     queryset = mark_safe(serialize("json", User.objects.filter(id = 1)))
 
-    def get_queryset(self):
-        return User.objects.filter(pk = self.request.user.id)
+#     def get_queryset(self):
+#         return User.objects.filter(pk = self.request.user.id)
 
-    def get_context_data(self, **kwargs):
-        # get_calc_const()
-        get_calc_variable()
-        user = self.request.user
-        context = super(InvoiceViews, self).get_context_data(**kwargs)
-        context["const"] = mark_safe(serialize("json", ConstantPayments.objects.filter(user=user)))
-        context["hist"] = mark_safe(serialize("json", HistoryCounter.get_last_val(1)))
-        context["curr"] = mark_safe(serialize("json", CurrentCounter.get_item(user)))
-        context["appartaments"] = mark_safe(serialize("json", Appartament.objects.filter(user = user)))
-        context["house"] = mark_safe(serialize("json", House.objects.all()))
-        context["city"] = mark_safe(serialize("json", City.objects.all()))
-        context["street"] = mark_safe(serialize("json", Street.objects.all()))
-        context["uk"] = mark_safe(serialize("json", UK.objects.all()))
-        context["variable"] = mark_safe(
-            serialize("json", VariablePayments.objects.filter(user_id=1).distinct("service"))
-        )
-        return context
+#     def get_context_data(self, **kwargs):
+#         # get_calc_const()
+#         # get_calc_variable()
+#         user = self.request.user
+#         context = super(InvoiceViews, self).get_context_data(**kwargs)
+#         context["const"] = mark_safe(serialize("json", ConstantPayments.objects.filter(user=user)))
+#         context["hist"] = mark_safe(serialize("json", HistoryCounter.get_last_val(1)))
+#         context["curr"] = mark_safe(serialize("json", CurrentCounter.get_item(user)))
+#         context["appartaments"] = mark_safe(serialize("json", Appartament.objects.filter(user = user)))
+#         context["house"] = mark_safe(serialize("json", House.objects.all()))
+#         context["city"] = mark_safe(serialize("json", City.objects.all()))
+#         context["street"] = mark_safe(serialize("json", Street.objects.all()))
+#         context["uk"] = mark_safe(serialize("json", UK.objects.all()))
+#         context["variable"] = mark_safe(
+#             serialize("json", VariablePayments.objects.filter(user_id=1).distinct("service"))
+#         )
+#         return context
     
 
-# Расчет КОНСТАНТНЫХ платежей (по сигналу когда идет изменения в таблице Services)
-def get_calc_const():
-    users = User.objects.select_related().filter(is_staff=False)
-    rate = Services.get_const_payments(1)
+# # Расчет КОНСТАНТНЫХ платежей (по сигналу когда идет изменения в таблице Services)
+# def get_calc_const():
+#     users = User.objects.select_related().filter(is_staff=False)
+#     rate = Services.get_const_payments(1)
 
-    for user in users:
-        data = []
-        total = 0
-        for el in rate:
-            element = dict()
-            element["service"] = el.name
-            element["unit"] = el.unit
-            element["rate"] = el.rate
+#     for user in users:
+#         data = []
+#         total = 0
+#         for el in rate:
+#             element = dict()
+#             element["service"] = el.name
+#             element["unit"] = el.unit
+#             element["rate"] = el.rate
 
-            if el.unit == "м2":
-                element["accured"] = el.rate * user.appartament.sq_appart
-            elif el.unit == "чел":
-                element["accured"] = el.rate * user.appartament.num_owner
-            else:
-                element["accured"] = el.rate
+#             if el.unit == "м2":
+#                 element["accured"] = el.rate * user.appartament.sq_appart
+#             elif el.unit == "чел":
+#                 element["accured"] = el.rate * user.appartament.num_owner
+#             else:
+#                 element["accured"] = el.rate
 
-            element["standart"] = ""
-            element["volume"] = ""
-            element["coefficient"] = el.factor if el.factor >= 0 else ""
-            element["subsidies"] = ""
-            element["privileges"] = ""
-            element["recalculations"] = ""
-            element["total"] = element["accured"]
-            total += element["total"]
+#             element["standart"] = ""
+#             element["volume"] = ""
+#             element["coefficient"] = el.factor if el.factor >= 0 else ""
+#             element["subsidies"] = ""
+#             element["privileges"] = ""
+#             element["recalculations"] = ""
+#             element["total"] = element["accured"]
+#             total += element["total"]
 
-            data.append(element)
-        user_id = User.objects.get(id=user.id)
-        record = ConstantPayments(user=user_id, data=json.dumps(data, ensure_ascii=False, default=str), total=decimal.Decimal(total))
-        record.save()
-    return data
-
-
-# Расчет ПЕРЕМЕННЫХ платежей (по сигналу)
-#TODO Какой сигнал? 30 число? или же после внесения счетчиков?
-def get_calc_variable():
-    users = User.objects.select_related()
-    curr = CurrentCounter.objects.get(id=1)
-    hist = HistoryCounter.get_last_val(1)[0]
-    rate = Services.get_varybose_payments(1)
-    subs = Subsidies.objects.select_related()
-    priv = Privileges.objects.select_related()
-    recl = Recalculations.objects.get_last_val(1)[0]
-
-    for user in users:
-        user_id = User.objects.get(id=user.id)
-        prof = UserProfile.objects.get(id=user_id)
-        # Канализация (водоотведение)
-        sewage = 0
-
-        for el in rate:
-            standart = el.standart
-            #TODO поиск регуляркой - день, ночь без учета регистра
-            if re.search(r'холодная', el.name.lower()):
-            # if el.name == "Холодная вода (индивидуальное потребление)":
-                accured = el.rate * (curr.col_water - hist.hist_col_water)
-                sewage += accured
-            elif re.search(r'горячая', el.name.lower()):
-            # elif el.name == "Горячая вода (индивидуальное потребление)":
-                accured = el.rate * (curr.hot_water - hist.hist_hot_water)
-                sewage += accured
-            #TODO Электирчество кончилось... Кина не будет
-            # if el.name == "Электроэнергия (день)" and prof.type_electric_meter == 2:
-            #     accured = el.rate * (curr.electric_day - hist.hist_electric_day)
-            # elif el.name == "Электроэнергия (ночь)" and prof.type_electric_meter == 2:
-            #     accured = el.rate * (curr.electric_night - hist.hist_electric_night)
-            # elif el.name == "Электроэнергия" and prof.type_electric_meter == 1:
-            #     accured = el.rate * curr.electric_single
-            coefficient = el.factor if el.factor > 0 else 1
-            subsidies = get_sale(el.name, subs)
-            privileges = get_sale(el.name, priv)
-
-            total = (accured * coefficient) * decimal.Decimal(1 - (subsidies + privileges) / 100) - recl
-
-            record = VariablePayments(
-                user=user_id,
-                # TODO Попробуем данный тип представления даты
-                period=datetime.datetime.today().strftime("%Y/%m/%d"),
-                service=el.name,
-                unit=el.unit,
-                standart=standart,
-                volume=(curr.hot_water - hist.hot_water) if (curr.hot_water - hist.hot_water) > 0 else 0,
-                rate=el.rate,
-                accured=accured,
-                coefficient=coefficient,
-                subsidies=subsidies,
-                privileges=privileges,
-                recalculations=recl,
-                total=total,
-            )
-            record.save()
+#             data.append(element)
+#         user_id = User.objects.get(id=user.id)
+#         record = ConstantPayments(user=user_id, data=json.dumps(data, ensure_ascii=False, default=str), total=decimal.Decimal(total))
+#         record.save()
+#     return data
 
 
-# Возваращает субсидию или льготу при наличии
-def get_sale(name, arr):
-    for el in arr:
-        if el.service.name == name:
-            return el.sale
-        else:
-            return 0
+# # Расчет ПЕРЕМЕННЫХ платежей (по сигналу)
+# #TODO Какой сигнал? 30 число? или же после внесения счетчиков?
+# def get_calc_variable():
+#     users = User.objects.select_related()
+#     curr = CurrentCounter.objects.get(id=1)
+#     hist = HistoryCounter.get_last_val(1)[0]
+#     rate = Services.get_varybose_payments(1)
+#     subs = Subsidies.objects.select_related()
+#     priv = Privileges.objects.select_related()
+#     recl = Recalculations.objects.get_last_val(1)[0]
+
+#     for user in users:
+#         user_id = User.objects.get(id=user.id)
+#         prof = UserProfile.objects.get(id=user_id)
+#         # Канализация (водоотведение)
+#         sewage = 0
+
+#         for el in rate:
+#             standart = el.standart
+#             #TODO поиск регуляркой - день, ночь без учета регистра
+#             if re.search(r'холодная', el.name.lower()):
+#             # if el.name == "Холодная вода (индивидуальное потребление)":
+#                 accured = el.rate * (curr.col_water - hist.hist_col_water)
+#                 sewage += accured
+#             elif re.search(r'горячая', el.name.lower()):
+#             # elif el.name == "Горячая вода (индивидуальное потребление)":
+#                 accured = el.rate * (curr.hot_water - hist.hist_hot_water)
+#                 sewage += accured
+#             #TODO Электирчество кончилось... Кина не будет
+#             # if el.name == "Электроэнергия (день)" and prof.type_electric_meter == 2:
+#             #     accured = el.rate * (curr.electric_day - hist.hist_electric_day)
+#             # elif el.name == "Электроэнергия (ночь)" and prof.type_electric_meter == 2:
+#             #     accured = el.rate * (curr.electric_night - hist.hist_electric_night)
+#             # elif el.name == "Электроэнергия" and prof.type_electric_meter == 1:
+#             #     accured = el.rate * curr.electric_single
+#             coefficient = el.factor if el.factor > 0 else 1
+#             subsidies = get_sale(el.name, subs)
+#             privileges = get_sale(el.name, priv)
+
+#             total = (accured * coefficient) * decimal.Decimal(1 - (subsidies + privileges) / 100) - recl
+
+#             record = VariablePayments(
+#                 user=user_id,
+#                 # TODO Попробуем данный тип представления даты
+#                 period=datetime.datetime.today().strftime("%Y/%m/%d"),
+#                 service=el.name,
+#                 unit=el.unit,
+#                 standart=standart,
+#                 volume=(curr.hot_water - hist.hot_water) if (curr.hot_water - hist.hot_water) > 0 else 0,
+#                 rate=el.rate,
+#                 accured=accured,
+#                 coefficient=coefficient,
+#                 subsidies=subsidies,
+#                 privileges=privileges,
+#                 recalculations=recl,
+#                 total=total,
+#             )
+#             record.save()
+
+
+# # Возваращает субсидию или льготу при наличии
+# def get_sale(name, arr):
+#     for el in arr:
+#         if el.service.name == name:
+#             return el.sale
+#         else:
+#             return 0
