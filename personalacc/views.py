@@ -93,7 +93,6 @@ class UserPageCreate(LoginRequiredMixin, CreateView):
 
     def post(self, request, *args, **kwargs):
         if self.request.is_ajax and self.request.method == "POST":
-
             if self.request.POST.get("form_type") == "counterForm":
                 form = self.form_class(self.request.POST)
         

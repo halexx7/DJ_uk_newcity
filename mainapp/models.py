@@ -257,7 +257,7 @@ class HouseHistory(models.Model):
 
 
 class Standart(models.Model):
-    period = models.DateField(verbose_name="Период", auto_now_add=True)
+    period = models.DateField(verbose_name="Создан", default=datetime.datetime.now().replace(day=1))
     house = models.ForeignKey(House, verbose_name="Дом", null=True, on_delete=SET_NULL)
     col_water = models.PositiveIntegerField(verbose_name="Хол.вода", null=True)
     hot_water = models.PositiveIntegerField(verbose_name="Гор.вода", null=True)
@@ -391,7 +391,7 @@ class CurrentCounter(models.Model):
 # История показания счетчиков (индивидуальные)
 class HistoryCounter(models.Model):
     user = models.ForeignKey(User, verbose_name="Пользователь", null=True, on_delete=SET_NULL)
-    period = models.DateField(verbose_name="Период")
+    period = models.DateField(verbose_name="Создан", default=datetime.datetime.now().replace(day=1))
     col_water = models.PositiveIntegerField(verbose_name="Гор.вода", null=True)
     hot_water = models.PositiveIntegerField(verbose_name="Хол.вода", null=True)
     electric_day = models.PositiveIntegerField(verbose_name="Электр.день", null=True, blank=True)
@@ -440,7 +440,7 @@ class ConstantPayments(models.Model):
 # Переменные платежи (зависящие от счетчиков)
 class VariablePayments(models.Model):
     user = models.ForeignKey(User, verbose_name="Пользователь", on_delete=CASCADE)
-    period = models.DateField(verbose_name="Период")
+    period = models.DateField(verbose_name="Создан", default=datetime.datetime.now().replace(day=1))
     service = models.CharField(verbose_name="Услуга", max_length=128)
     unit = models.CharField(verbose_name="Ед.измерения", max_length=32)
     rate = models.DecimalField(verbose_name="Тариф", max_digits=7, decimal_places=3, default=0)
@@ -462,6 +462,32 @@ class VariablePayments(models.Model):
     @staticmethod
     def get_items(user):
         return VariablePayments.objects.filter(user=user)
+
+    def delete(self):
+        self.is_active = False
+        self.save()
+
+
+# Перерасчеты
+class Recalculations(models.Model):
+    user = models.ForeignKey(User, verbose_name="Пользователь", null=True, on_delete=SET_NULL)
+    period = models.DateField(verbose_name="Создан", default=datetime.datetime.now().replace(day=1))
+    service = models.ForeignKey(Services, verbose_name="Услуга", null=True, on_delete=SET_NULL)
+    recalc = models.DecimalField(verbose_name="Сумма", max_digits=7, decimal_places=2, default=0)
+    desc = models.TextField(verbose_name="Описание", blank=True, null=True)
+
+    created = models.DateTimeField(verbose_name="Создан", auto_now_add=True)
+    updated = models.DateTimeField(verbose_name="Обновлен", auto_now=True)
+
+    class Meta:
+        ordering = ("-period",)
+        verbose_name = "Перерасчет"
+        verbose_name_plural = "Перерасчеты"
+
+    # Перерасчет, когда вносится?
+    @staticmethod
+    def get_last_val(user):
+        return Recalculations.objects.filter(user=user)[0:1]
 
     def delete(self):
         self.is_active = False
@@ -527,7 +553,7 @@ class Privileges(models.Model):
 # Начисления (Текущие)
 class Profit(models.Model):
     user = models.ForeignKey(User, verbose_name="Пользователь", null=True, on_delete=SET_NULL)
-    period = models.DateField(verbose_name="Период")
+    period = models.DateField(verbose_name="Создан", default=datetime.datetime.now().replace(day=1))
     amount_profit = models.DecimalField(verbose_name="Сумма", max_digits=7, decimal_places=2)
     variable = JSONField(verbose_name="variable")
 
@@ -577,7 +603,7 @@ class MainBook(models.Model):
     DIRECTION_TRAVEL = ((DEBIT, "Дебет"), (CREDIT, "Кредит"))
 
     user = models.ForeignKey(User, verbose_name="Пользователь", null=True, on_delete=SET_NULL)
-    period = models.DateField(verbose_name="Период", auto_now_add=True)
+    period = models.DateField(verbose_name="Создан", default=datetime.datetime.now().replace(day=1))
     direction = models.CharField(verbose_name="Направление", max_length=1, choices=DIRECTION_TRAVEL)
     amount_profit = models.DecimalField(verbose_name="Сумма", max_digits=7, decimal_places=2)
 
@@ -600,32 +626,6 @@ class MainBook(models.Model):
         """ Возвращает все списания на счет """
         return MainBook.objects.filter(user = user).filter(direction = 'C')
 
-
-    def delete(self):
-        self.is_active = False
-        self.save()
-
-
-# Перерасчеты
-class Recalculations(models.Model):
-    user = models.ForeignKey(User, verbose_name="Пользователь", null=True, on_delete=SET_NULL)
-    period = models.DateField(verbose_name="Создан", default=datetime.datetime.now().replace(day=1))
-    service = models.ForeignKey(Services, verbose_name="Услуга", null=True, on_delete=SET_NULL)
-    recalc = models.DecimalField(verbose_name="Сумма", max_digits=7, decimal_places=2, default=0)
-    desc = models.TextField(verbose_name="Описание", blank=True, null=True)
-
-    created = models.DateTimeField(verbose_name="Создан", auto_now_add=True)
-    updated = models.DateTimeField(verbose_name="Обновлен", auto_now=True)
-
-    class Meta:
-        ordering = ("-period",)
-        verbose_name = "Перерасчет"
-        verbose_name_plural = "Перерасчеты"
-
-    # Перерасчет, когда вносится?
-    @staticmethod
-    def get_last_val(user):
-        return Recalculations.objects.filter(user=user)[0:1]
 
     def delete(self):
         self.is_active = False

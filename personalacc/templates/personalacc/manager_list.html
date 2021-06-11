@@ -249,10 +249,9 @@
                             <tr>
                                 <th scope="col">#</th>
                                 <th scope="col">Период</th>
-                                <th scope="col">Лицевой счет</th>
-                                <th scope="col">ФИО</th>
-                                <th scope="col">Долг/переплата</th>
-                                <th scope="col">редактировать</th>
+                                <th scope="col">(Лицевой счет) - ФИО</th>
+                                <th scope="col">Долг(+)/переплата(-)</th>
+                                <th scope="col">Описание</th>
                             </tr>
                         </thead>
 
@@ -261,9 +260,9 @@
                             <tr>
                                 <td>{{ el.id }}</td>
                                 <td>{{ el.period|date:"m - Y" }}</td>
-                                <td>{{ el.user.personal_account }}</td>
                                 <td>{{ el.user }}</td>
                                 <td>{{ el.recalc}}</td>
+                                <td>{{ el.desc}}</td>
                             </tr>
                         </tbody>
                         {% endfor %}
