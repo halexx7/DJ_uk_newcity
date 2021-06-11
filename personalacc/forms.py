@@ -20,20 +20,20 @@ class CurrentCounterForm(forms.ModelForm):
         exclude = ("period", "electric_day", "electric_night", "electric_single", "created", "updated")
 
 
-class HomeCurrentCounterForm(forms.ModelForm, MultipleForm):
+class HomeCurrentCounterForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         for field_name, field in self.fields.items():
             field.widget.attrs["class"] = "form-control"
         self.helper = FormHelper()
-        # self.helper.form_show_labels = False
+        self.helper.form_show_labels = False
 
     class Meta:
         model = HouseCurrent
-        exclude = ("period", "created", "updated")
+        exclude = ("electric_day", "electric_night", "period", "created", "updated")
 
 
-class HomeHistoryCounterForm(forms.ModelForm, MultipleForm):
+class HomeHistoryCounterForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         for field_name, field in self.fields.items():
@@ -46,7 +46,7 @@ class HomeHistoryCounterForm(forms.ModelForm, MultipleForm):
         exclude = ("period", "created", "updated")
 
 
-class RecalculationsForm(forms.ModelForm, MultipleForm):
+class RecalculationsForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(RecalculationsForm, self).__init__(*args, **kwargs)
         for field_name, field in self.fields.items():
@@ -58,7 +58,7 @@ class RecalculationsForm(forms.ModelForm, MultipleForm):
         exclude = ("desc", "created", "updated")
 
 
-class SubsidiesForm(forms.ModelForm, MultipleForm):
+class SubsidiesForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         for field_name, field in self.fields.items():
@@ -70,7 +70,7 @@ class SubsidiesForm(forms.ModelForm, MultipleForm):
         exclude = ("desc", "created", "updated")
 
 
-class PrivilegesForm(forms.ModelForm, MultipleForm):
+class PrivilegesForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         for field_name, field in self.fields.items():

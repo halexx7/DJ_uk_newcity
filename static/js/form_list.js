@@ -31,19 +31,35 @@ jQuery(document).ready(function(){
         }
     });
 
-    //Ловим событие формы 1
-    $('#houseCounterBtn').on('click', function (e) {
+    // Выводим сообщение в соответствующий Alert bootstrap
+    function displayCounterAlert(say, typeAlert, time){
+        $('#successAlert').remove();
+            $('form input[name="col_water"], form input[name="hot_water"]').val('');
+            $('#counterBtn').before(`<div class="flex-fill  alert  alert-${typeAlert}  mt-3  mb-5" id="successAlert"><p>${say}</p></div>`);
+            setTimeout(function(){
+                $('#successAlert').remove();
+            }, time);
+    };
+
+    //Ловим событие формы currentCount
+    $('#currentCountBtn').on('click', function (e) {
         e.preventDefault();
-        var mForm = $('#houseCounterForm').serialize();
+        var mForm = $('#currentCountForm').serialize();
         console.log(mForm);
         $.ajax({
             type : 'POST',
             data: mForm,
-            success: function (e) {
-        	    console.log('hello');
+            success: function (data) {
+                say = `Данные успешно приняты!`;
+                time = 15000;
+                typeAlert = `success`;
+                displayCounterAlert(say, typeAlert, time);
             },
-            error: function (e) {
-                console.log('world');
+            error: function (data) {
+                say = `Что-то пошло не так! Попробуйте чуть позже!`;
+                time = 15000;
+                typeAlert = `danger`;
+                displayCounterAlert(say, typeAlert, time);
             }
         });
     });
@@ -64,16 +80,6 @@ jQuery(document).ready(function(){
             }
         });
     });
-
-    // Выводим сообщение в соответствующий Alert bootstrap
-    function displayCounterAlert(say, typeAlert, time){
-        $('#successAlert').remove();
-            $('form input[name="col_water"], form input[name="hot_water"]').val('');
-            $('#counterBtn').before(`<div class="flex-fill  alert  alert-${typeAlert}  mt-3  mb-5" id="successAlert"><p>${say}</p></div>`);
-            setTimeout(function(){
-                $('#successAlert').remove();
-            }, time);
-    };
 
     // USER_LIST
     //Ловим событие формы COUNTERFORM

@@ -128,11 +128,12 @@ class UserPageCreate(LoginRequiredMixin, CreateView):
 class ManagerPageCreate(LoginRequiredMixin, CreateView):
     form_class = HomeCurrentCounterForm
     form_classes = {
-        "currentCount": HomeCurrentCounterForm,
-        "historyCount": HomeHistoryCounterForm,
-        "recalculations": RecalculationsForm,
-        "subsidies": SubsidiesForm,
-        "privilege": PrivilegesForm}
+        "house_count_form": HomeCurrentCounterForm,
+        "house_history_form": HomeHistoryCounterForm,
+        "recalculations_form": RecalculationsForm,
+        "subsidies_form": SubsidiesForm,
+        "privilege_form": PrivilegesForm
+        }
     template_name = "personalacc/manager_list.html"
     success_url = reverse_lazy("person:manager")
 
@@ -155,46 +156,73 @@ class ManagerPageCreate(LoginRequiredMixin, CreateView):
         context["title"] = "Менеджер | ООО Новый город"
         return context
 
+
     def post(self, *args, **kwargs):
+        handle = {
+            "house_count_form": self.house_count_process,
+            "house_history_form": self.house_history_process,
+            "recalculations_form": self.recalculations_process,
+            "subsidies_form": self.subsidies_process,
+            "privilege_form": self.privilege_process
+        }
         if self.request.is_ajax and self.request.method == "POST":
-            form_class = self.request.POST.get("form_type")
+            type_form = self.request.POST.get("form_type")
 
-            if self.request.POST.get("form_type") == "houseCounterForm":
-                form = self.form_class(self.request.POST)
-            elif self.request.POST.get("form_type") == "recalcForm":
-                form = self.second_form_class(self.request.POST)
-
-            if form.is_valid():
-                post = self.request.POST
-                house = post.get("house")
-                period = datetime.datetime.now().date().replace(day=1)
-                #TODO для проверки работы скрипта
-                # period = datetime.datetime.now().date().replace(day=1, month=7)
-                update_values = {
-                    "col_water": post.get("col_water"),
-                    "hot_water": post.get("hot_water"),
-                    #TODO электричество пока отменяется
-                    # "electric_day": post.get("electric_day"),
-                    # "electric_night": post.get("electric_night"),
-                }
-                obj, created = HouseCurrent.objects.update_or_create(
-                    house_id=house, period=period, defaults=update_values
-                )
-                # При создании новой записи удаляем старую
-                if created:
-                    previous_month = (period - datetime.timedelta(days=1)).replace(day=1)
-                    previous_value = HouseCurrent.objects.filter(house_id=house, period=previous_month)
-                    previous_value.delete()
-                ser_instance = serializers.serialize(
-                    "json",
-                    [
-                        obj,
-                    ],
-                )
-                return JsonResponse({"instance": ser_instance}, status=200)
-            else:
-                return JsonResponse({"error": form.errors}, status=400)
+            for cls, el in self.form_classes.items():
+                if type_form == cls:
+                    form = el(self.request.POST)
+                    if form.is_valid():
+                        func = handle[cls]
+                        ser_instance = func(self, form)
+                        return JsonResponse({"instance": ser_instance}, status=200)
+                    else:
+                        return JsonResponse({"error": form.errors}, status=400)
+                    
+            # form = self.form_classes[form_class]
+            # if self.request.POST.get("form_type") == "houseCounterForm":
+            #     form = self.form_class(self.request.POST)
+            # elif self.request.POST.get("form_type") == "recalcForm":
+            #     form = self.second_form_class(self.request.POST)
+            
         return JsonResponse({"error": ""}, status=400)
+    
+
+    def house_count_process(self, form, *args, **kwargs):
+        post = self.request.POST
+        house = post.get("house")
+        period = datetime.datetime.now().date().replace(day=1)
+        #TODO для проверки работы скрипта
+        # period = datetime.datetime.now().date().replace(day=1, month=7)
+        update_values = {
+            "col_water": post.get("col_water"),
+            "hot_water": post.get("hot_water"),
+            #TODO электричество пока отменяется
+            # "electric_day": post.get("electric_day"),
+            # "electric_night": post.get("electric_night"),
+        }
+        obj, created = HouseCurrent.objects.update_or_create(
+            house_id=house, period=period, defaults=update_values
+        )
+        # При создании новой записи удаляем старую
+        if created:
+            previous_month = (period - datetime.timedelta(days=1)).replace(day=1)
+            previous_value = HouseCurrent.objects.filter(house_id=house, period=previous_month)
+            previous_value.delete()
+        ser_instance = serializers.serialize("json", [obj,],)
+        return ser_instance
+    
+    def house_history_process(self, form, *args, **kwargs):
+        pass
+
+    def recalculations_process(self, form, *args, **kwargs):
+        pass
+
+    def subsidies_process(self, form, *args, **kwargs):
+        pass
+
+    def privilege_process(self, form, *args, **kwargs):
+        pass
+        
 
 
 # При удалении ловим и сохраняем объект ДОМОВЫЕ ПОКАЗАНИЯ
