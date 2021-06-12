@@ -326,21 +326,20 @@
                                         <thead class="thead-light">
                                             <tr>
                                                 <th scope="col">#</th>
-                                                <th scope="col">Лицевой счет</th>
                                                 <th scope="col">ФИО</th>
                                                 <th scope="col">Название</th>
                                                 <th scope="col">Льгота, %</th>
-                                                <th scope="col">редактировать</th>
+                                                <th scope="col">Описание</th>
                                             </tr>
                                         </thead>
                                         {% for el in house_privileges %}
                                         <tbody>
                                             <tr>
                                                 <td>{{ el.id }}</td>
-                                                <td>{{ el.user.personal_account }}</td>
                                                 <td>{{ el.user }}</td>
                                                 <td>{{ el.service }}</td>
                                                 <td>{{ el.sale }}</td>
+                                                <td>{{ el.desc }}</td>
                                             </tr>
                                         </tbody>
                                         {% endfor %}
@@ -383,7 +382,6 @@
                                         <thead class="thead-light">
                                             <tr>
                                                 <th scope="col">#</th>
-                                                <th scope="col">Лицевой счет</th>
                                                 <th scope="col">ФИО</th>
                                                 <th scope="col">Название</th>
                                                 <th scope="col">Субсидия, %</th>
@@ -394,10 +392,10 @@
                                         <tbody>
                                             <tr>
                                                 <td>{{ el.id }}</td>
-                                                <td>{{ el.user.personal_account }}</td>
                                                 <td>{{ el.user }}</td>
                                                 <td>{{ el.service }}</td>
                                                 <td>{{ el.sale }}</td>
+                                                <td>{{ el.desc }}</td>
                                             </tr>
                                         </tbody>
                                         {% endfor %}                                        

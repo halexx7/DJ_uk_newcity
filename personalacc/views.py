@@ -155,6 +155,8 @@ class ManagerPageCreate(LoginRequiredMixin, CreateView):
     def post(self, *args, **kwargs):
         post = self.request.POST
         user = self.request.POST.get("user")
+        #TODO для проверки работы скрипта
+        # period = datetime.datetime.now().date().replace(day=1, month=7)
         period = datetime.datetime.now().date().replace(day=1)
         handle = {
             "house_count_form": self.house_count_process,
@@ -164,7 +166,6 @@ class ManagerPageCreate(LoginRequiredMixin, CreateView):
             }
         if self.request.is_ajax and self.request.method == "POST":
             type_form = post.get("form_type")
-
             for cls, el in self.form_classes.items():
                 if type_form == cls:
                     form = el(post)
@@ -179,8 +180,6 @@ class ManagerPageCreate(LoginRequiredMixin, CreateView):
 
     def house_count_process(self, *args, **kwargs):
         house = kwargs['post'].get("house")
-        #TODO для проверки работы скрипта
-        # period = datetime.datetime.now().date().replace(day=1, month=9)
         update_values = {
             "col_water": kwargs['post'].get("col_water"),
             "hot_water": kwargs['post'].get("hot_water"),
@@ -210,27 +209,24 @@ class ManagerPageCreate(LoginRequiredMixin, CreateView):
         ser_instance = serializers.serialize("json", [obj,],)
         return ser_instance
       
-    def privilege_process(self, form, post, *args, **kwargs):
+    def privilege_process(self, *args, **kwargs):
         update_values = {
             "sale": kwargs['post'].get("sale"),
             "desc": kwargs['post'].get('desc')
         }
-        obj, created = Recalculations.objects.update_or_create(
-            user_id=kwargs['user'], period=kwargs['period'], defaults=update_values
+        obj, created = Privileges.objects.update_or_create(
+            user_id=kwargs['user'], service_id=kwargs['post'].get("service"), defaults=update_values
         )
         ser_instance = serializers.serialize("json", [obj,],)
         return ser_instance
 
-    def subsidies_process(self, form, post, *args, **kwargs):
-        post = self.request.POST
-        user = post.get("user")
-        period = datetime.datetime.now().date().replace(day=1)
+    def subsidies_process(self, *args, **kwargs):
         update_values = {
-            "recalc": post.get("recalc"),
-            "desc": post.get('desc')
+            "sale": kwargs['post'].get("sale"),
+            "desc": kwargs['post'].get('desc')
         }
-        obj, created = Recalculations.objects.update_or_create(
-            user_id=user, period=period, defaults=update_values
+        obj, created = Subsidies.objects.update_or_create(
+            user_id=kwargs['user'], service_id=kwargs['post'].get("service"), defaults=update_values
         )
         ser_instance = serializers.serialize("json", [obj,],)
         return ser_instance
