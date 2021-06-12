@@ -86,16 +86,15 @@ class UserPageCreate(LoginRequiredMixin, CreateView):
         kwargs['initial'] = {'user': self.request.user.id}
         return kwargs
     
-
     def get_queryset(self):
         qs = super().get_queryset()
         return qs.get(pk=self.request.user.id)
 
-
     def post(self, request, *args, **kwargs):
         if self.request.is_ajax and self.request.method == "POST":
             if self.request.POST.get("form_type") == "counterForm":
-                form = self.form_class(self.request.POST)
+                data = self.get_form_kwargs()
+                form = self.form_class(self.request.POST, initial=data['initial'])
         
             if form.is_valid():
                 post = self.request.POST
@@ -231,8 +230,6 @@ class ManagerPageCreate(LoginRequiredMixin, CreateView):
         ser_instance = serializers.serialize("json", [obj,],)
         return ser_instance
 
-
-        
 
 class HouseHistoryListView(LoginRequiredMixin, ListView):
     model = HouseHistory

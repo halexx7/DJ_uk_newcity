@@ -10,19 +10,18 @@ class MultipleForm(forms.Form):
     action = forms.CharField(max_length=60, widget=forms.HiddenInput())
 
 class CurrentCounterForm(forms.ModelForm):
+    class Meta:
+        model = CurrentCounter
+        exclude = ("period", "electric_day", "electric_night", "electric_single", "created", "updated")
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         # self.fields['user'].queryset = User.objects.filter(id=kwargs['initial']['user'])
-        test = self.initial.get('user')
-        self.fields['user'].queryset = User.objects.filter(id=self.initial.get('user'))
+        self.fields['user'].queryset = User.objects.filter(id=kwargs['initial']['user'])
         for field_name, field in self.fields.items():
             field.widget.attrs["class"] = "form-control"
         self.helper = FormHelper()
         self.helper.form_show_labels = False
-
-    class Meta:
-        model = CurrentCounter
-        exclude = ("period", "electric_day", "electric_night", "electric_single", "created", "updated")
 
 
 class HomeCurrentCounterForm(forms.ModelForm):
