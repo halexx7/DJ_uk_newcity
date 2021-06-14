@@ -156,6 +156,34 @@ class UK(models.Model):
         verbose_name = "Управляющая компания"
         verbose_name_plural = "006 Управляющие компании"
 
+    @staticmethod
+    def get_item(uk):
+        return House.objects.get(id=uk)
+
+    @staticmethod
+    def get_full_name(uk):
+        uk = UK.objects.get(id=uk)
+        name = {
+            "name": uk.name,
+            "address": f'{uk.street}, д.{uk.num_building}',
+            "phone": f'тел.{uk.phone}',
+            "web": uk.web_addr
+        }
+        return name
+
+    @staticmethod
+    def get_requisites(uk):
+        uk = UK.objects.get(id=uk)
+        requis = {
+            "inn": uk.inn,
+            "check_acc": uk.ps,
+            "bik": uk.bik,
+            "corr_acc": uk.ks,
+            "bank": uk.bank,
+        }
+        return requis
+
+
     def __str__(self):
         return self.name
 
@@ -186,6 +214,10 @@ class House(models.Model):
     def __str__(self):
         return f"ул.{self.street.street}, д.{self.number}, к.{self.add_number}"
 
+    @staticmethod
+    def get_item(house):
+        return House.objects.filter(id=house)[0:1]
+
     def delete(self):
         self.is_active = False
         self.save()
@@ -212,7 +244,6 @@ class HouseCurrent(models.Model):
         return f"Период - {self.period}, ул.{self.house.street.street}, Дом №{self.house.number}, к.{self.house.add_number}"
 
     @staticmethod
-    # Вместо User - Appartaments?
     def get_item(user):
         return HouseCurrent.objects.filter(user=user)
 
@@ -248,8 +279,8 @@ class HouseHistory(models.Model):
         return HouseHistory.objects.filter(user=user)
 
     @staticmethod
-    def get_last_val(user):
-        return HistoryCounter.objects.filter(user=user)[0:1]
+    def get_last_val(house):
+        return HouseHistory.objects.filter(house=house)[0:1]
 
     def delete(self):
         self.is_active = False
@@ -259,10 +290,10 @@ class HouseHistory(models.Model):
 class Standart(models.Model):
     period = models.DateField(verbose_name="Создан", default=datetime.datetime.now().replace(day=1))
     house = models.ForeignKey(House, verbose_name="Дом", null=True, on_delete=SET_NULL)
-    col_water = models.PositiveIntegerField(verbose_name="Хол.вода", null=True)
-    hot_water = models.PositiveIntegerField(verbose_name="Гор.вода", null=True)
-    electric_day = models.PositiveIntegerField(verbose_name="Электр.день", null=True)
-    electric_night = models.PositiveIntegerField(verbose_name="Электр.ночь", null=True)
+    col_water = models.DecimalField(verbose_name="Норматив ХВС", max_digits=6, decimal_places=2)
+    hot_water = models.DecimalField(verbose_name="Норматив ХГС", max_digits=6, decimal_places=2)
+    electric_day = models.DecimalField(verbose_name="Норматив ЭЛ.День", max_digits=6, decimal_places=2, null=True, default=None)
+    electric_night = models.DecimalField(verbose_name="Нориматив ЭЛ.Ночь", max_digits=6, decimal_places=2, null=True, default=None)
 
     created = models.DateTimeField(verbose_name="Создан", auto_now_add=True)
     updated = models.DateTimeField(verbose_name="Обновлен", auto_now=True)
@@ -273,10 +304,11 @@ class Standart(models.Model):
         verbose_name_plural = "Нормативы"
 
     def __str__(self):
-        return f"Период {self.period} - ул.{self.house.street.street}, д.{self.number}"
+        return f"Период {self.period} - ул.{self.house.street.street}, д.{self.house.number}"
 
-    def get_last_val(self):
-        return Standart.objects.filter(house=self.house)[0:1]
+    @staticmethod
+    def get_last_val(house):
+        return Standart.objects.filter(house=house)[0:1]
 
     def delete(self):
         self.is_active = False
@@ -354,6 +386,10 @@ class Appartament(models.Model):
     def __str__(self):
         return f"ул.{self.house.street.street}, д.{self.house.number}, кв.{self.number}, комн.{self.add_number}"
 
+    @staticmethod
+    def get_item(user):
+        return Appartament.objects.filter(user=user)
+
     def delete(self):
         self.is_active = False
         self.save()
@@ -377,6 +413,7 @@ class CurrentCounter(models.Model):
     updated = models.DateTimeField(verbose_name="Обновлен", auto_now=True)
 
     class Meta:
+        ordering = ("-period",)
         verbose_name = "Индивид. счетчик (текущий)"
         verbose_name_plural = "Индивид. счетчики (текущие)"
 
@@ -384,8 +421,8 @@ class CurrentCounter(models.Model):
         return f"ул.{self.street.street}, д.{self.number}, кв.{self.number}"
 
     @staticmethod
-    def get_item(user):
-        return CurrentCounter.objects.filter(user=user)
+    def get_last_val(user):
+        return CurrentCounter.objects.filter(user=user)[0:1]
 
 
 # История показания счетчиков (индивидуальные)
@@ -409,59 +446,6 @@ class HistoryCounter(models.Model):
     @staticmethod
     def get_last_val(user):
         return HistoryCounter.objects.filter(user=user)[0:1]
-
-    def delete(self):
-        self.is_active = False
-        self.save()
-
-
-# Постоянные платежи (расчет по формуле = const*rate или = const)
-class ConstantPayments(models.Model):
-    user = models.ForeignKey(User, verbose_name="Пользователь", on_delete=CASCADE)
-    data = JSONField(verbose_name="data")
-    total = models.DecimalField(verbose_name="Сумма", max_digits=8, decimal_places=3)
-
-    created = models.DateTimeField(verbose_name="Создан", auto_now_add=True)
-    updated = models.DateTimeField(verbose_name="Обновлен", auto_now=True)
-
-    class Meta:
-        verbose_name = "Платеж (постоянные)"
-        verbose_name_plural = "Платежи (постоянные)"
-
-    @staticmethod
-    def get_item(user):
-        return ConstantPayments.objects.filter(user=user)
-
-    def delete(self):
-        self.is_active = False
-        self.save()
-
-
-# Переменные платежи (зависящие от счетчиков)
-class VariablePayments(models.Model):
-    user = models.ForeignKey(User, verbose_name="Пользователь", on_delete=CASCADE)
-    period = models.DateField(verbose_name="Создан", default=datetime.datetime.now().replace(day=1))
-    service = models.CharField(verbose_name="Услуга", max_length=128)
-    unit = models.CharField(verbose_name="Ед.измерения", max_length=32)
-    rate = models.DecimalField(verbose_name="Тариф", max_digits=7, decimal_places=3, default=0)
-    accured = models.DecimalField(verbose_name="Начислено", max_digits=7, decimal_places=3, default=0)
-    volume = models.DecimalField(verbose_name="Объем", max_digits=7, decimal_places=2, default=0)
-    coefficient = models.DecimalField(verbose_name="Коэфициент", max_digits=3, decimal_places=2, default=1)
-    subsidies = models.DecimalField(verbose_name="Субсидии", max_digits=6, decimal_places=2, default=0)
-    privileges = models.DecimalField(verbose_name="Льготы", max_digits=6, decimal_places=2, default=0)
-    recalculations = models.DecimalField(verbose_name="Перерасчет", max_digits=6, decimal_places=2, default=0)
-    total = models.DecimalField(verbose_name="Итого", max_digits=7, decimal_places=2, default=0)
-
-    created = models.DateTimeField(verbose_name="Создан", auto_now_add=True)
-    updated = models.DateTimeField(verbose_name="Обновлен", auto_now=True)
-
-    class Meta:
-        verbose_name = "Платеж (перепенные)"
-        verbose_name_plural = "Платежи (переменные)"
-
-    @staticmethod
-    def get_items(user):
-        return VariablePayments.objects.filter(user=user)
 
     def delete(self):
         self.is_active = False
@@ -550,12 +534,85 @@ class Privileges(models.Model):
         self.save()
 
 
-# Начисления (Текущие)
+# Постоянные платежи (расчет по формуле = const*rate или = const)
+class ConstantPayments(models.Model):
+    user = models.ForeignKey(User, verbose_name="Пользователь", on_delete=CASCADE)
+    data = JSONField(verbose_name="data")
+    total = models.DecimalField(verbose_name="Сумма", max_digits=8, decimal_places=3)
+    pre_total = models.DecimalField(verbose_name="Сумма", max_digits=8, decimal_places=3)
+
+    created = models.DateTimeField(verbose_name="Создан", auto_now_add=True)
+    updated = models.DateTimeField(verbose_name="Обновлен", auto_now=True)
+
+    class Meta:
+        verbose_name = "Платеж (постоянные)"
+        verbose_name_plural = "Платежи (постоянные)"
+
+    @staticmethod
+    def get_item(user):
+        return ConstantPayments.objects.filter(user=user)
+
+    def delete(self):
+        self.is_active = False
+        self.save()
+
+
+# Переменные платежи (зависящие от счетчиков)
+class VariablePayments(models.Model):
+    user = models.ForeignKey(User, verbose_name="Пользователь", on_delete=CASCADE)
+    period = models.DateField(verbose_name="Создан", default=datetime.datetime.now().replace(day=1))
+    data = JSONField(verbose_name="data")
+    total = models.DecimalField(verbose_name="Итого", max_digits=7, decimal_places=2, default=0)
+    pre_total = models.DecimalField(verbose_name="Итого", max_digits=7, decimal_places=2, default=0)
+
+    created = models.DateTimeField(verbose_name="Создан", auto_now_add=True)
+    updated = models.DateTimeField(verbose_name="Обновлен", auto_now=True)
+
+    class Meta:
+        ordering = ("-period",)
+        verbose_name = "Платеж (перепенные)"
+        verbose_name_plural = "Платежи (переменные)"
+
+    @staticmethod
+    def get_items(user):
+        return VariablePayments.objects.filter(user=user)
+
+    @staticmethod
+    def get_last_val(user):
+        return VariablePayments.objects.filter(user=user)[0:1]
+
+    def delete(self):
+        self.is_active = False
+        self.save()
+
+
+# Данные для шапки платежки
+class HeaderData(models.Model):
+    user = models.ForeignKey(User, verbose_name="Пользователь", null=True, on_delete=SET_NULL)
+    data = JSONField(verbose_name="Данные")
+
+    created = models.DateTimeField(verbose_name="Создан", auto_now_add=True)
+    updated = models.DateTimeField(verbose_name="Обновлен", auto_now=True)
+
+    class Meta:
+        verbose_name = "Начисление"
+        verbose_name_plural = "Начисления"
+
+    @staticmethod
+    def get_items(user):
+        return HeaderData.objects.filter(user=user)
+
+    def delete(self):
+        self.is_active = False
+        self.save()
+
+
+# Начисления (Плетежка)
 class Profit(models.Model):
     user = models.ForeignKey(User, verbose_name="Пользователь", null=True, on_delete=SET_NULL)
     period = models.DateField(verbose_name="Создан", default=datetime.datetime.now().replace(day=1))
-    amount_profit = models.DecimalField(verbose_name="Сумма", max_digits=7, decimal_places=2)
-    variable = JSONField(verbose_name="variable")
+    data = JSONField(verbose_name="Данные")
+    amount = models.DecimalField(verbose_name="Сумма", max_digits=7, decimal_places=2)
 
     created = models.DateTimeField(verbose_name="Создан", auto_now_add=True)
     updated = models.DateTimeField(verbose_name="Обновлен", auto_now=True)
@@ -600,12 +657,12 @@ class MainBook(models.Model):
     DEBIT = "D"
     CREDIT = "C"
 
-    DIRECTION_TRAVEL = ((DEBIT, "Дебет"), (CREDIT, "Кредит"))
+    DIRECTION_TRAVEL = ((DEBIT, "Оплата"), (CREDIT, "Начисление"))
 
     user = models.ForeignKey(User, verbose_name="Пользователь", null=True, on_delete=SET_NULL)
     period = models.DateField(verbose_name="Создан", default=datetime.datetime.now().replace(day=1))
     direction = models.CharField(verbose_name="Направление", max_length=1, choices=DIRECTION_TRAVEL)
-    amount_profit = models.DecimalField(verbose_name="Сумма", max_digits=7, decimal_places=2)
+    amount = models.DecimalField(verbose_name="Сумма", max_digits=7, decimal_places=2)
 
     created = models.DateTimeField(verbose_name="Создан", auto_now_add=True)
     updated = models.DateTimeField(verbose_name="Обновлен", auto_now=True)
@@ -615,17 +672,23 @@ class MainBook(models.Model):
         verbose_name = "Главная книга"
         verbose_name_plural = "Главная книга"
 
-
     @staticmethod
-    def get_all_income(user):
-        """ Возвращает все поступления на счет """
+    def get_user_debit(user):
+        """ Возвращает все поступления на счет конкретного жильца"""
         return MainBook.objects.filter(user = user).filter(direction = 'D')
     
-
-    def get_all_income(user):
-        """ Возвращает все списания на счет """
+    @staticmethod
+    def get_user_credit(user):
+        """ Возвращает все списания co счета конкретного жильца"""
         return MainBook.objects.filter(user = user).filter(direction = 'C')
 
+    def get_all_debit():
+        """ Возвращает все поступления на счет ВСЕ"""
+        return MainBook.objects.filter(direction = 'D')
+    
+    def get_all_credit():
+        """ Возвращает все списания co счета ВСЕ"""
+        return MainBook.objects.filter(direction = 'C')
 
     def delete(self):
         self.is_active = False
@@ -655,6 +718,23 @@ class PersonalAccountStatus(models.Model):
         self.save()
 
 
+# При изменении текущих домовых показаний перещитываем норматив
+@receiver(post_save, sender=HouseCurrent)
+def calculation_of_standart_to_house_current(sender, instance, **kwargs):
+    house = instance.house_id
+    period = instance.period
+    hist = HouseHistory.get_last_val(house)[0]
+    sq = House.get_item(house)[0].sq_home
+    upd_val = {
+        "col_water": ((int(instance.col_water) - int(hist.col_water))/sq),
+        "hot_water": ((int(instance.hot_water) - int(hist.hot_water))/sq),
+        #TODO электричество пока отменяется
+        # "electric_day": instance.electric_day,
+        # "electric_night": instance.electric_night,
+    }
+    obj, created = Standart.objects.update_or_create(house_id=house, period=period, defaults=upd_val)
+
+
 # При удалении ловим и сохраняем объект ДОМОВЫЕ ПОКАЗАНИЯ
 @receiver(pre_delete, sender=HouseCurrent)
 def copy_arhive_current_to_history_house(sender, instance, **kwargs):
@@ -668,7 +748,6 @@ def copy_arhive_current_to_history_house(sender, instance, **kwargs):
         # "electric_night": instance.electric_night,
     }
     obj, created = HouseHistory.objects.update_or_create(house_id=house, period=period, defaults=upd_val)
-    print('DONE!!!!')
 
 
 # При удалении ловим и сохраняем объект ИНДИВИДУАЛЬНЫЕ ПОКАЗАНИЯ

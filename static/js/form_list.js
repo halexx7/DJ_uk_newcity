@@ -135,6 +135,29 @@ jQuery(document).ready(function(){
         });
     });
 
+    //Ловим событие формы PAYMENTS
+    $('#paymentsBtn').on('click', function (e) {
+        e.preventDefault();
+        var mForm = $('#payments_form').serialize();
+        console.log(mForm);
+        $.ajax({
+            type : 'POST',
+            data: mForm,
+            success: function (data) {
+                say = `Данные успешно приняты!`;
+                time = 15000;
+                typeAlert = `success`;
+                displayCounterAlert(say, typeAlert, time, e.target.id);
+            },
+            error: function (data) {
+                say = `Что-то пошло не так! Попробуйте чуть позже!`;
+                time = 15000;
+                typeAlert = `danger`;
+                displayCounterAlert(say, typeAlert, time, e.target.id);
+            }
+        });
+    });
+
 
 
     // USER_LIST

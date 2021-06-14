@@ -3,7 +3,7 @@ from crispy_forms.helper import FormHelper
 from django import forms
 
 from authnapp.forms import BootstrapStylesMixins
-from mainapp.models import CurrentCounter, HouseCurrent, HouseHistory, Privileges, Recalculations, Services, Subsidies
+from mainapp.models import CurrentCounter, HouseCurrent, HouseHistory, MainBook, Payment, Privileges, Recalculations, Services, Subsidies
 
 class MultipleForm(forms.Form):
     """Добавляем клас Мульти формности, идентификация форм будет по скрытому полю action"""
@@ -89,6 +89,20 @@ class PrivilegesForm(BootstrapStylesMixins, forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['service'].queryset = Services.objects.filter(const=False)
+        self.fields['user'].queryset = User.objects.filter(is_staff=False)
+        self.helper = FormHelper()
+        self.helper.form_show_labels = False
+
+
+class PaymentsForm(BootstrapStylesMixins, forms.ModelForm):
+    field_name = ["user", "period", "direction", "amount"]
+    class Meta:
+        model = MainBook
+        exclude = ("created", "updated")
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['direction'].queryset = MainBook.objects.filter(direction="D")
         self.fields['user'].queryset = User.objects.filter(is_staff=False)
         self.helper = FormHelper()
         self.helper.form_show_labels = False

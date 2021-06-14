@@ -45,6 +45,10 @@
                     <a class="nav-link" id="privileges-tab" data-toggle="tab" href="#privileges" role="tab"
                         aria-controls="privileges" aria-selected="false">Субсидии и льготы</a>
                 </li>
+                <li class="nav-item" role="presentation">
+                    <a class="nav-link" id="payments-tab" data-toggle="tab" href="#payments" role="tab"
+                        aria-controls="payments" aria-selected="false">Оплаты</a>
+                </li>
             </ul>
 
             <!-- Tabs-CONTENT -->
@@ -407,6 +411,60 @@
                     </div><!-- ./row -->
                 </div>
 
+                <!-- Tab-PAYMENTS -->
+                <div class="tab-pane  fade" id="payments" role="tabpanel" aria-labelledby="payments-tab">
+
+                    <div class="wrapper__form-recalc">
+                        <h4 class="mb-4">Внести оплату</h4>
+                        
+                        <form class="ml-3  mb-5" id="payments_form" name="payments_form">
+                            {% csrf_token %}
+                            <input type="hidden" name="form_type" value="payments_form">
+                            <div class="row  d-flex  flex-column">
+                                <div class="mb-3">
+                                    <label for="formGroupExampleInput">Лицевой счет</label>
+                                    {{ payments_form.user|as_crispy_field }}
+                                </div>
+                                <div class="mb-3">
+                                    <label for="formGroupExampleInput">Период</label>
+                                    {{ payments_form.period|as_crispy_field }}
+                                </div>
+                                <div class="mb-3">
+                                    <label for="formGroupExampleInput2">Направление</label>
+                                    {{ payments_form.direction|as_crispy_field }}
+                                </div>
+                                <div class="">
+                                    <label for="formGroupExampleInput2">Сумма</label>
+                                    {{ payments_form.amount|as_crispy_field }}
+                                </div>
+                            </div>
+                            <button action="{% url 'person:user' %}" type="button" class="btn  btn-primary  my-2" id="paymentsBtn">Внести</button>
+                        </form>
+                    </div>
+
+                    <h4 class="pt-2  mb-4">История оплат</h4>
+                    <table class="table">
+                        <thead class="thead-light">
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">Период</th>
+                                <th scope="col">(Лицевой счет) - ФИО</th>
+                                <th scope="col">Сумма</th>
+                            </tr>
+                        </thead>
+
+                        {% for el in house_pay_debit %}
+                        <tbody>
+                            <tr>
+                                <td>{{ el.id }}</td>
+                                <td>{{ el.period|date:"m - Y" }}</td>
+                                <td>{{ el.user }}</td>
+                                <td>{{ el.amount }}</td>
+                            </tr>
+                        </tbody>
+                        {% endfor %}
+                    </table>
+                </div>
             </div>
         </div>
     </div>

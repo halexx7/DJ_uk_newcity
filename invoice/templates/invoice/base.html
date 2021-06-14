@@ -13,7 +13,7 @@
     </title>
 
     {% block css %}
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'css/style_invoice.css' %}">
     {% endblock css %}
 
 </head>
@@ -30,19 +30,10 @@
 
     
     <script>
-
-        const current = {{ curr }}[0].fields;
-        const history = {{ hist }}[0].fields;
-        const user = {{ user }}[0].fields;
-        const constant = JSON.parse({{ const }}[0].fields.data);
-        const variable = {{ variable }};
-        const appartaments = {{ appartaments }}[0].fields;
-        const house = {{ house }}[0].fields;
-        const city = {{ city }}[0].fields;
-        const street = {{ street }}[0].fields;
-        const uk = {{ uk }}[0].fields;
-
-        
+        const period = {{ variable }}[0].fields.period;
+        const header = JSON.parse({{ header }}[0].fields.data);
+        const constant = JSON.parse({{ constant }}[0].fields.data);
+        const variable = JSON.parse({{ variable }}[0].fields.data);
     </script>
 
     <!-- jQuery -->

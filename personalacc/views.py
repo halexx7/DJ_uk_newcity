@@ -16,6 +16,8 @@ from authnapp.forms import UserEditForm, UserLoginForm, UserProfileEditForm, Use
 from authnapp.models import User
 from mainapp.models import (
     CurrentCounter,
+    MainBook,
+    Payment,
     UK,
     Appartament,
     HistoryCounter,
@@ -32,7 +34,8 @@ from personalacc.forms import (
     HomeHistoryCounterForm, 
     RecalculationsForm, 
     SubsidiesForm,
-    PrivilegesForm
+    PrivilegesForm,
+    PaymentsForm
     )
 
 
@@ -75,6 +78,7 @@ class UserPageCreate(LoginRequiredMixin, CreateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["profiles"] = UserProfile.objects.get(user=self.request.user)
+        context["payments"] = MainBook.objects.filter(direction="C")
         context["appartament"] = Appartament.objects.filter(user=self.request.user)
         context["history"] = HistoryCounter.get_last_val(self.request.user)
         context["title"] = "Пользователь | ООО Новый город"
@@ -131,7 +135,8 @@ class ManagerPageCreate(LoginRequiredMixin, CreateView):
         "house_history_form": HomeHistoryCounterForm,
         "recalculations_form": RecalculationsForm,
         "privilege_form": PrivilegesForm,
-        "subsidies_form": SubsidiesForm
+        "subsidies_form": SubsidiesForm,
+        "payments_form": PaymentsForm
         }
     template_name = "personalacc/manager_list.html"
     success_url = reverse_lazy("person:manager")
@@ -147,9 +152,15 @@ class ManagerPageCreate(LoginRequiredMixin, CreateView):
         context["house_rec"] = Recalculations.objects.all()
         context["house_privileges"] = Privileges.objects.all()
         context["house_subsidies"] = Subsidies.objects.all()
+        context["house_pay_debit"] = MainBook.get_all_debit()
         context["title"] = "Менеджер | ООО Новый город"
         return context
 
+    def get_form_kwargs(self, *args, **kwargs):
+        kwargs = super().get_form_kwargs(*args, **kwargs)
+        #Заполняем форму начальными данными
+        kwargs['initial'] = {'direction': "D"}
+        return kwargs
 
     def post(self, *args, **kwargs):
         post = self.request.POST
@@ -161,7 +172,8 @@ class ManagerPageCreate(LoginRequiredMixin, CreateView):
             "house_count_form": self.house_count_process,
             "recalculations_form": self.recalculations_process,
             "privilege_form": self.privilege_process,
-            "subsidies_form": self.subsidies_process
+            "subsidies_form": self.subsidies_process,
+            "payments_form": self.payments_process
             }
         if self.request.is_ajax and self.request.method == "POST":
             type_form = post.get("form_type")
@@ -175,7 +187,6 @@ class ManagerPageCreate(LoginRequiredMixin, CreateView):
                     else:
                         return JsonResponse({"error": form.errors}, status=400)
         return JsonResponse({"error": ""}, status=400)
-    
 
     def house_count_process(self, *args, **kwargs):
         house = kwargs['post'].get("house")
@@ -226,6 +237,17 @@ class ManagerPageCreate(LoginRequiredMixin, CreateView):
         }
         obj, created = Subsidies.objects.update_or_create(
             user_id=kwargs['user'], service_id=kwargs['post'].get("service"), defaults=update_values
+        )
+        ser_instance = serializers.serialize("json", [obj,],)
+        return ser_instance
+
+    def payments_process(self, *args, **kwargs):
+        update_values = {
+            "direction": kwargs['post'].get("direction"),
+            "amount": kwargs['post'].get("amount")
+        }
+        obj, created = MainBook.objects.update_or_create(
+            user_id=kwargs["user"], period=kwargs["period"], defaults=update_values
         )
         ser_instance = serializers.serialize("json", [obj,],)
         return ser_instance
