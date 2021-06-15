@@ -1,19 +1,12 @@
-import datetime
-
-from django import forms
 from django.conf import settings
 from django.contrib import auth
-from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.mail import send_mail
 from django.db import transaction
-from django.forms.formsets import formset_factory
 from django.forms.models import BaseInlineFormSet, inlineformset_factory
-from django.http import JsonResponse
 from django.shortcuts import HttpResponseRedirect, get_object_or_404, render
 from django.urls import reverse, reverse_lazy
 from django.views.generic import CreateView, DeleteView, ListView, UpdateView
-from django.views.generic.detail import DetailView
 
 from authnapp.forms import (
     AppartamentEditForm,
@@ -25,7 +18,6 @@ from authnapp.forms import (
     UserRegisterForm,
 )
 from authnapp.models import User
-from mainapp.models import Appartament, UserProfile
 
 
 def login(request):

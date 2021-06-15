@@ -3,42 +3,24 @@ import decimal
 import json
 import re
 
-from django.conf import settings
-from django.contrib.postgres import fields
-from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.core.serializers import serialize
-from django.db import models
-from django.db.models.signals import post_save
-from django.shortcuts import get_object_or_404, render
 from django.utils.safestring import mark_safe
 from django.views.generic import CreateView, DeleteView, ListView, UpdateView
-from django.views.generic.detail import DetailView
 
 from authnapp.models import User
 from mainapp.models import (
     HeaderData,
-    MainBook,
     UK,
     Appartament,
-    City,
     ConstantPayments,
     CurrentCounter,
     HistoryCounter,
-    House,
-    HouseCurrent,
-    HouseHistory,
-    Metrics,
-    Payment,
     PersonalAccountStatus,
     Privileges,
-    Profit,
     Recalculations,
     Services,
-    ServicesCategory,
     Standart,
-    Street,
     Subsidies,
-    UserProfile,
     VariablePayments,
 )
 
@@ -51,7 +33,6 @@ class InvoiceViews(ListView):
     model = User
     context_object_name = "user"
     template_name = "invoice/invoice.html"
-    queryset = mark_safe(serialize("json", User.objects.filter(id = 1)))
 
     def get_queryset(self):
         return User.objects.filter(pk = self.request.user.id)
@@ -188,6 +169,7 @@ def get_calc_service(el, curr, sq_appa, subs, priv, recl):
     element["service"] = el.name
     element["unit"] = el.unit
     element["standart"] = 0
+    element["rate"] = el.rate
     if re.search(r'холодная', el.name.lower()):
         element["volume"] = curr["volume_col"]
         water = True
@@ -208,7 +190,6 @@ def get_calc_service(el, curr, sq_appa, subs, priv, recl):
     #     accured = el.rate * (curr.electric_night - hist.hist_electric_night)
     # elif el.name == "Электроэнергия" and prof.type_electric_meter == 1:
     #     accured = el.rate * curr.electric_single
-    element["rate"] = el.rate
     element["coefficient"] = el.factor if el.factor > 0 else 1
     element["pre_total"] = (element["accured"] * element["coefficient"])
     element["subsidies"] = element["pre_total"] * decimal.Decimal(get_sale(el.name, subs)/ 100)

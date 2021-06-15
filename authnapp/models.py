@@ -20,23 +20,17 @@ class User(AbstractBaseUser, PermissionsMixin):
     is_staff = models.BooleanField(
         default=False, verbose_name="Менеджер", help_text="Обозначает, что этот пользователь - Администратор"
     )
-
     personal_account = models.CharField(
         max_length=128, help_text="Введите номер лицевого счета: 7777777", verbose_name="Лицевой счет", unique=True
     )
-
     password = models.CharField(verbose_name="Пароль", max_length=128)
-
     name = models.CharField(verbose_name="ФИО", max_length=128, null=True, blank=True, help_text="Иванов Иван Иванович")
-
     email = models.EmailField(
         verbose_name="Email", unique=True, null=True, blank=True, help_text="E-mail в формате - user@example.com"
     )
-
     phone = models.CharField(
         verbose_name="Телефон", max_length=11, null=True, blank=True, help_text="Номер телефона в формате - 79823212334"
     )
-
     is_active = models.BooleanField(verbose_name="Активный", default=True)
     is_superuser = models.BooleanField(
         default=False,

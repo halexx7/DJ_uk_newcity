@@ -39,35 +39,6 @@ from personalacc.forms import (
     )
 
 
-# @login_required
-def user(request):
-    return render(request, "personalacc/user_acc.html")
-
-
-# @login_required
-def manager(request):
-    return render(request, "personalacc/manager_acc.html")
-
-
-class AjaxableResponseMixin(object):
-    def form_valid(self, form):
-        response = super().form_valid(form)
-        if self.request.method == "POST" and self.request.is_ajax():
-            data = {
-                "pk": self.object.pk,
-            }
-            return JsonResponse(data)
-        else:
-            return response
-
-    def form_invalid(self, form):
-        response = super().form_invalid(form)
-        if self.request.is_ajax():
-            return JsonResponse(form.errors, status=400)
-        else:
-            return response
-
-
 class UserPageCreate(LoginRequiredMixin, CreateView):
     model = User
     form_class = CurrentCounterForm
@@ -251,8 +222,3 @@ class HouseHistoryListView(LoginRequiredMixin, ListView):
     model = HouseHistory
     context_object_name = "history"
     template_name = "personalacc/house_history_list.html"
-
-
-class ThanksListView(LoginRequiredMixin, ListView):
-    model = User
-    template_name = "personalacc/thanks.html"

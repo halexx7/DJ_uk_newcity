@@ -743,12 +743,15 @@ class MainBook(models.Model):
     @receiver(post_save, sender=VariablePayments)
     def procc_accrual_mainbook(sender, instance, **kwargs):
         user = instance.user
-        variable = VariablePayments.get_last_val(user=user)[0]
-        period = variable.period
         const_total = ConstantPayments.objects.get(user=user)
-        varia_total = VariablePayments.objects.filter(period=period).get(user=user)
-        upd_val = {"amount": (const_total.total + varia_total.total)}
-        obj, created = MainBook.objects.update_or_create(user=user, period=period, direction="C", defaults=upd_val)
+        try:
+            variable = VariablePayments.get_last_val(user=user)[0]
+            period = variable.period
+            varia_total = VariablePayments.objects.filter(period=period).get(user=user)
+            upd_val = {"amount": (const_total.total + varia_total.total)}
+            obj, created = MainBook.objects.update_or_create(user=user, period=period, direction="C", defaults=upd_val)
+        except:
+            pass
 
 
 # Текущее состояние счета
