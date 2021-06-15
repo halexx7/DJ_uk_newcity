@@ -28,7 +28,7 @@
             </div>
         </form>
         <div class="new_category_form--back_back">
-            <a class="form-control  btn  btn-outline-secondary mt-3" href="{% url 'directory:list' %}" role="button">к списку городов</a>
+            <a class="form-control  btn  btn-outline-secondary mt-3" onclick="javascript:history.back(); return false;" role="button">к списку городов</a>
         </div>
     </div>
 {% endblock content %}

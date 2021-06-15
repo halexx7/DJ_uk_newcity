@@ -14,7 +14,7 @@
 
                 <div class="form-group  d-flex  justify-content-around  mt-5">
                     <input class="btn  btn-danger" type="submit" value="удалить">
-                    <a class="btn  btn-success" role="button" href="{% url 'directory:house' object.street.pk %}">отмена</a>
+                    <a class="btn  btn-success" role="button" onclick="javascript:history.back(); return false;">отмена</a>
                 </div>
             </form>
         </div>

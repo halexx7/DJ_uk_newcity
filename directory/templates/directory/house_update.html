@@ -61,7 +61,7 @@
             </div>
         </form>
         <div class="form-action">
-            <a class="form-control  btn  btn-outline-secondary mt-3" href="{% url 'directory:list' %}" role="button">на главную</a>
+            <a class="form-control  btn  btn-outline-secondary mt-3" onclick="javascript:history.back(); return false;" role="button">назад</a>
         </div>
     </div>
 {% endblock content %}

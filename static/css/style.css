@@ -62,7 +62,10 @@ ul, ol {
 }
 
 .container {
-    width: 1140px;
+    width: 100%;
+    max-width: 1230px;
+    margin: 0 auto;
+    padding: 0 15px;
 }
 
 
@@ -199,10 +202,11 @@ ul, ol {
 
 .services__form {
     width: 100%;
+    margin: 0 auto;
 }
 
 .directory__form {
-    min-width: 400px;
+    max-width: 600px;
 }
 
 .form_is-active {

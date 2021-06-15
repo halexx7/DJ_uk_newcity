@@ -9,138 +9,128 @@
 {% endblock menu %}
 
 {% block content %}
+    <div class="manager__directory-tab">
+        <div class="row">
+            <div class="col-4">
+                <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist"
+                    aria-orientation="vertical">
+                    <a class="nav-link active" id="v-pills-city-tab" data-toggle="pill"
+                        href="#v-pills-city" role="tab" aria-controls="v-pills-city"
+                        aria-selected="true">Города, улицы, дома</a>
+                    <a class="nav-link" id="v-pills-resident-tab" data-toggle="pill"
+                        href="#v-pills-resident" role="tab" aria-controls="v-pills-resident"
+                        aria-selected="false">Жильцы</a>
+                    <a class="nav-link" id="v-pills-rate-tab" data-toggle="pill"
+                        href="#v-pills-rate" role="tab" aria-controls="v-pills-rate"
+                        aria-selected="false">Тарифы</a>
+                </div>
+            </div>
 
-<section class="edit  mt-5">
-    <div class="d-flex  justify-content-center">
-        <div class="directory__item">
+            <div class="col-8">
+                <div class="tab-content" id="v-pills-tabContent">
 
-            <h4 class="mb-3">Справочники</h4>
-                    <div class="manager__directory-tab">
-                        <div class="row">
-                            <div class="col-4">
-                                <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist"
-                                    aria-orientation="vertical">
-                                    <a class="nav-link active" id="v-pills-city-tab" data-toggle="pill"
-                                        href="#v-pills-city" role="tab" aria-controls="v-pills-city"
-                                        aria-selected="true">Города, улицы, дома</a>
-                                    <a class="nav-link" id="v-pills-resident-tab" data-toggle="pill"
-                                        href="#v-pills-resident" role="tab" aria-controls="v-pills-resident"
-                                        aria-selected="false">Жильцы</a>
-                                    <a class="nav-link" id="v-pills-rate-tab" data-toggle="pill"
-                                        href="#v-pills-rate" role="tab" aria-controls="v-pills-rate"
-                                        aria-selected="false">Тарифы</a>
-                                </div>
-                            </div>
+                    <!-- Link-CITY -->
+                    <div class="manager-tab__city  tab-pane  fade show active" id="v-pills-city"
+                        role="tabpanel" aria-labelledby="v-pills-home-tab">
 
-                            <div class="col-8">
-                                <div class="tab-content" id="v-pills-tabContent">
+                        <a class="btn  btn-outline-primary  new__category  btn-sm  mb-5" href="{% url 'directory:city_create' %}" role="button">новый город</a>
 
-                                    <!-- Link-CITY -->
-                                    <div class="manager-tab__city  tab-pane  fade show active" id="v-pills-city"
-                                        role="tabpanel" aria-labelledby="v-pills-home-tab">
+                        <h4>Города</h4>
+                        <table class="table">
+                            <thead class="thead-light">
+                                <tr>
+                                    <th scope="col">ID</th>
+                                    <th scope="col">Город</th>
+                                    <th scope="col">Список</th>
+                                    <th scope="col">редактировать</th>
+                                    <th scope="col">удалить</th>
+                                </tr>
+                            </thead>
+                            {% for city in city %}
+                            <tbody>
+                                <tr>
+                                    <th scope="row">{{ city.id }}</th>
+                                    <td>{{ city.city }}</td>
+                                    <td class="text-center"><a type="button" class="btn btn-outline-primary btn-sm" role="button" href="{% url 'directory:streets' city.pk %}">Улицы</a></td>
+                                    <td class="text-center"><a type="button" class="btn btn-outline-warning btn-sm" role="button" href="{% url 'directory:city_update' city.pk %}">Редактировать</a></td>
+                                    <td class="text-center"><a class="text-danger text-decoration-none" href="{% url 'directory:city_delete' city.pk %}">удалить</a></td>
+                                </tr>
+                            </tbody>
+                            {% endfor %}
+                        </table>
+                    </div><!-- ./manager-tab__city -->
 
-                                        <a class="btn  btn-outline-primary  new__category  btn-sm  mb-5" href="{% url 'directory:city_create' %}" role="button">новый город</a>
+                    <!-- Link-RESIDENT -->
+                    <div class="manager-tab__resident  tab-pane fade" id="v-pills-resident"
+                        role="tabpanel" aria-labelledby="v-pills-resident-tab">
 
-                                        <h4>Города</h4>
-                                        <table class="table">
-                                            <thead class="thead-light">
-                                                <tr>
-                                                    <th scope="col">ID</th>
-                                                    <th scope="col">Город</th>
-                                                    <th scope="col">Список</th>
-                                                    <th scope="col">редактировать</th>
-                                                    <th scope="col">удалить</th>
-                                                </tr>
-                                            </thead>
-                                            {% for city in city %}
-                                            <tbody>
-                                                <tr>
-                                                    <th scope="row">{{ city.id }}</th>
-                                                    <td>{{ city.city }}</td>
-                                                    <td class="text-center"><a type="button" class="btn btn-outline-primary btn-sm" role="button" href="{% url 'directory:streets' city.pk %}">Улицы</a></td>
-                                                    <td class="text-center"><a type="button" class="btn btn-outline-warning btn-sm" role="button" href="{% url 'directory:city_update' city.pk %}">Редактировать</a></td>
-                                                    <td class="text-center"><a class="text-danger text-decoration-none" href="{% url 'directory:city_delete' city.pk %}">удалить</a></td>
-                                                </tr>
-                                            </tbody>
-                                            {% endfor %}
-                                        </table>
-                                    </div><!-- ./manager-tab__city -->
-
-                                    <!-- Link-RESIDENT -->
-                                    <div class="manager-tab__resident  tab-pane fade" id="v-pills-resident"
-                                        role="tabpanel" aria-labelledby="v-pills-resident-tab">
-
-                                        <div class='d-flex  justify-content-between  pb-5'>
-                                            <a href="{% url 'directory:residents_create' %}" class="btn btn-outline-primary btn-sm" role="button">Добавить жильца</a>
-                                            <a href="{% url 'directory:residents' %}" class="btn btn-outline-primary btn-sm" role="button">Все жильцы</a>
-                                        </div>
+                        <div class='d-flex  justify-content-between  pb-5'>
+                            <a href="{% url 'directory:residents_create' %}" class="btn btn-outline-primary btn-sm" role="button">Добавить жильца</a>
+                            <a href="{% url 'directory:residents' %}" class="btn btn-outline-primary btn-sm" role="button">Все жильцы</a>
+                        </div>
 
 
-                                        <h4>Жильцы</h4>
-                                        <table class="table">
-                                            <thead class="thead-light">
-                                                <tr>
-                                                    <th scope="col">#</th>
-                                                    <th scope="col">Лицевой счет</th>
-                                                    <th scope="col">ФИО</th>
-                                                    <th scope="col">редактировать</th>
-                                                </tr>
-                                            </thead>
-                                            {% for resident in residents %}
-                                                <tbody>
-                                                    <tr>
-                                                        <th scope="row">{{ resident.id }}</th>
-                                                        <td>{{ resident.personal_account }}</td>
-                                                        <td>{{ resident.name }}</td>
-                                                        <td><a href="#" class="text-decoration-none">редактировать</a>
-                                                        </td>
-                                                    </tr>
-                                                </tbody>
-                                            {% endfor %}
-                                        </table>
-                                    </div><!-- ./manager-tab__object -->
+                        <h4>Жильцы</h4>
+                        <table class="table">
+                            <thead class="thead-light">
+                                <tr>
+                                    <th scope="col">#</th>
+                                    <th scope="col">Лицевой счет</th>
+                                    <th scope="col">ФИО</th>
+                                    <th scope="col">редактировать</th>
+                                </tr>
+                            </thead>
+                            {% for resident in residents %}
+                                <tbody>
+                                    <tr>
+                                        <th scope="row">{{ resident.id }}</th>
+                                        <td>{{ resident.personal_account }}</td>
+                                        <td>{{ resident.name }}</td>
+                                        <td><a href="#" class="text-decoration-none">редактировать</a>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            {% endfor %}
+                        </table>
+                    </div><!-- ./manager-tab__object -->
 
-                                    <!-- Link-RATE -->
-                                    <div class="tab-pane fade" id="v-pills-rate" role="tabpanel"
-                                        aria-labelledby="v-pills-rate-tab">
+                    <!-- Link-RATE -->
+                    <div class="tab-pane fade" id="v-pills-rate" role="tabpanel"
+                        aria-labelledby="v-pills-rate-tab">
 
-                                        <a class="btn  btn-outline-primary  new__category  btn-sm " href="{% url 'directory:category_create' %}" role="button">новая категория</a>
+                        <a class="btn  btn-outline-primary  new__category  btn-sm " href="{% url 'directory:category_create' %}" role="button">новая категория</a>
 
-                                        <h4 class="mb-3  mt-5">Категории тарифов</h4>
+                        <h4 class="mb-3  mt-5">Категории тарифов</h4>
 
-                                        <table class="table">
-                                            <thead class="thead-light">
-                                                <tr>
-                                                    <th scope="col">#</th>
-                                                    <th scope="col">Наименование</th>
-                                                    <th scope="col">Список</th>
-                                                    <th scope="col">Редактировать</th>
-                                                    <th scope="col">Удалить</th>
-                                                </tr>
-                                            </thead>
+                        <table class="table">
+                            <thead class="thead-light">
+                                <tr>
+                                    <th scope="col">#</th>
+                                    <th scope="col">Наименование</th>
+                                    <th scope="col">Список</th>
+                                    <th scope="col">Редактировать</th>
+                                    <th scope="col">Удалить</th>
+                                </tr>
+                            </thead>
 
-                                            {% for category in categories %}
-                                                <tbody>
-                                                    <tr class="{% if not category.is_active %}not_active{% endif %}">
-                                                        <th scope="row">{{ category.id }}</th>
-                                                        <td>{{ category.name }}</td>
-                                                        <td class="text-center"><a type="button" class="btn btn-outline-primary btn-sm" role="button" href="{% url 'directory:services' category.pk %}">Тарифы категории</a></td>
-                                                        <td class="text-center"><a type="button" class="btn btn-outline-warning btn-sm" role="button" href="{% url 'directory:category_update' category.pk %}">Редактировать</a></td>
-                                                        <td class="text-center"><a class="text-danger text-decoration-none" href="{% url 'directory:category_delete' category.pk %}">удалить</a></td>
-                                                    </tr>
-                                                </tbody>
-                                            {% endfor %}
+                            {% for category in categories %}
+                                <tbody>
+                                    <tr class="{% if not category.is_active %}not_active{% endif %}">
+                                        <th scope="row">{{ category.id }}</th>
+                                        <td>{{ category.name }}</td>
+                                        <td class="text-center"><a type="button" class="btn btn-outline-primary btn-sm" role="button" href="{% url 'directory:services' category.pk %}">Тарифы категории</a></td>
+                                        <td class="text-center"><a type="button" class="btn btn-outline-warning btn-sm" role="button" href="{% url 'directory:category_update' category.pk %}">Редактировать</a></td>
+                                        <td class="text-center"><a class="text-danger text-decoration-none" href="{% url 'directory:category_delete' category.pk %}">удалить</a></td>
+                                    </tr>
+                                </tbody>
+                            {% endfor %}
 
-                                        </table>
+                        </table>
 
-                                    </div>
-                                </div>
-                            </div>
+                    </div>
+                </div>
+            </div>
 
-                        </div><!-- ./row -->
-                    </div><!-- ./manager__directory-tab -->
-
-        </div>
-    </div>
-</section>
+        </div><!-- ./row -->
+    </div><!-- ./manager__directory-tab -->
 {% endblock %}
