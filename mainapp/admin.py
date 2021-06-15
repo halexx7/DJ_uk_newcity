@@ -3,10 +3,31 @@ from django.db import models
 from django.db.models.base import ModelState
 from authnapp.models import User
 
+from authnapp.models import User
+from mainapp.models import (
+    UK,
+    Appartament,
+    City,
+    ConstantPayments,
+    CurrentCounter,
+    HistoryCounter,
+    House,
+    HouseCurrent,
+    HouseHistory,
+    Metrics,
+    Payment,
+    Privileges,
+    Profit,
+    Recalculations,
+    Services,
+    ServicesCategory,
+    Standart,
+    Street,
+    Subsidies,
+    UserProfile,
+    VariablePayments,
+)
 
-from mainapp.models import ServicesCategory, Services, Metrics, City, Street, UK, House 
-from mainapp.models import HouseCurrent, HouseHistory, Appartament, UserProfile, CurrentCounter, HistoryCounter
-from mainapp.models import ConstantPayments, VariablePayments, Subsidies, Privileges, Profit, Payment, Recalculations, Standart
 
 class ServicesInline(admin.TabularInline):
     model = Services
@@ -18,16 +39,29 @@ class ServicesInline(admin.TabularInline):
 
 
 class ServiceCategoryAdmin(admin.ModelAdmin):
-    list_display = ('name', 'updated')
-    search_fields = ['name',]
-    list_filter = ('created','updated',)
-    inlines = [ServicesInline,]
+    list_display = ("name", "updated")
+    search_fields = [
+        "name",
+    ]
+    list_filter = (
+        "created",
+        "updated",
+    )
+    inlines = [
+        ServicesInline,
+    ]
 
 
 class ServiceAdmin(admin.ModelAdmin):
-    list_display = ('name', 'category', 'updated')
-    search_fields = ['name',]
-    list_filter = ('category', 'created','updated',)
+    list_display = ("name", "category", "updated")
+    search_fields = [
+        "name",
+    ]
+    list_filter = (
+        "category",
+        "created",
+        "updated",
+    )
 
 
 class StreetInline(admin.TabularInline):
@@ -40,10 +74,17 @@ class StreetInline(admin.TabularInline):
 
 
 class CityAdmin(admin.ModelAdmin):
-    list_display = ('city','updated')
-    search_fields = ['city',]
-    list_filter = ('created','updated',)
-    inlines = [StreetInline,]
+    list_display = ("city", "updated")
+    search_fields = [
+        "city",
+    ]
+    list_filter = (
+        "created",
+        "updated",
+    )
+    inlines = [
+        StreetInline,
+    ]
 
 
 class AppartamentInline(admin.TabularInline):
@@ -62,7 +103,8 @@ class HouseCurrentInline(admin.TabularInline):
         """Hook for customizing the number of extra inline forms."""
         self.extra = 0
         return self.extra
-  
+
+
 class HouseHistoryInline(admin.TabularInline):
     model = HouseHistory
 
@@ -73,9 +115,14 @@ class HouseHistoryInline(admin.TabularInline):
 
 
 class HouseAdmin(admin.ModelAdmin):
-    list_display = ('city', 'street', 'number', 'updated')
-    search_fields = ['city', 'street', 'number']
-    list_filter = ('city', 'street', 'created','updated',)
+    list_display = ("city", "street", "number", "updated")
+    search_fields = ["city", "street", "number"]
+    list_filter = (
+        "city",
+        "street",
+        "created",
+        "updated",
+    )
     inlines = [HouseCurrentInline, AppartamentInline, HouseHistoryInline]
 
 
@@ -96,6 +143,7 @@ class PrivilegesInline(admin.TabularInline):
         """Hook for customizing the number of extra inline forms."""
         self.extra = 0
         return self.extra
+
 
 class CurrentCounterInline(admin.TabularInline):
     model = CurrentCounter
@@ -129,7 +177,6 @@ class UserProfilesAdmin(admin.ModelAdmin):
     # search_fields = ['city', 'street', 'number']
     # list_filter = ('city', 'street', 'created','updated',)
     inlines = [SubsidiesInline, PrivilegesInline, RecalculationsInline, CurrentCounterInline, HistoryCounterInline]
-
 
 
 admin.site.register(ServicesCategory)

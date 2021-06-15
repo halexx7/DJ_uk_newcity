@@ -7,14 +7,14 @@
 
 {% block content %}
     <div class="directory__form">
-        <p class="category_delete--text">Уверены, что хотите удалить <strong>квартиру № {{ object.number }} (ул.{{ object.house.street }}, д.{{ object.house }})</strong>?</p> 
+        <p class="category_delete--text">Уверены, что хотите удалить <strong>квартиру № {{ object.number }} ({{ object.house }})</strong>?</p> 
         <div class="category__form">
-            <form action="{% url 'directory:house_delete' object.pk %}" method="post">
+            <form action="{% url 'directory:appartaments_delete' object.pk %}" method="post">
                 {% csrf_token %}
 
                 <div class="form-group  d-flex  justify-content-around  mt-5">
                     <input class="btn  btn-danger" type="submit" value="удалить">
-                    <a class="btn  btn-success" role="button" href="{% url 'directory:appartaments' object.street.pk %}">отмена</a>
+                    <a class="btn  btn-success" role="button" onclick="javascript:history.back(); return false;">отмена</a>
                 </div>
             </form>
         </div>

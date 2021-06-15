@@ -45,6 +45,10 @@
                     <a class="nav-link" id="privileges-tab" data-toggle="tab" href="#privileges" role="tab"
                         aria-controls="privileges" aria-selected="false">Субсидии и льготы</a>
                 </li>
+                <li class="nav-item" role="presentation">
+                    <a class="nav-link" id="payments-tab" data-toggle="tab" href="#payments" role="tab"
+                        aria-controls="payments" aria-selected="false">Оплаты</a>
+                </li>
             </ul>
 
             <!-- Tabs-CONTENT -->
@@ -111,58 +115,71 @@
                 <!-- Tab-COUNTERS -->
                 <div class="tab-pane  fade" id="counters" role="tabpanel" aria-labelledby="counters-tab">
                     <h4 class="mb-3">Введите показания счетчиков в поля</h4>
-                    <ul class="mb-4">
-                        <li><span class="text-700">Счетчик ГВС</span> (горячая вода), укажите целое число до запятой
-                        </li>
-                        <li><span class="text-700">Счетчик ХВС</span> (холодная вода), укажите целое число до
-                            запятой</li>
-                        <li><span class="text-700">Электроэнергия день</span> (горячая вода), укажите целое число до
-                            запятой</li>
-                        <li><span class="text-700">Электроэнергия ночь</span> (горячая вода), укажите целое число до
-                            запятой</li>
-                        <li>Нажать кнопку <span class="text-700">СОХРАНИТЬ</span></li>
-                    </ul>
-                    <p class="text-danger  text-700  pb-5">ВНИМАНИЕ! Показания вносятся в период с 20 по 26 число
-                        каждого
-                        месяца!</p>
+                    <div class="alert alert-warning" role="alert">
+                        <ul class="">
+                            <li><span class="text-700">Счетчик ГВС</span> (горячая вода), укажите целое число до запятой
+                            </li>
+                            <li><span class="text-700">Счетчик ХВС</span> (холодная вода), укажите целое число до
+                                запятой</li>
+                                
+                            {% comment 'Электричество отменяется, заказчик сказал пока не нужно'%}
+                            <li><span class="text-700">Электроэнергия день</span> (горячая вода), укажите целое число до
+                                запятой</li>
+                            <li><span class="text-700">Электроэнергия ночь</span> (горячая вода), укажите целое число до
+                                запятой</li>
+                            {% endcomment %}
+                                    
+                            <li>Нажать кнопку <span class="text-700">СОХРАНИТЬ</span></li>
+                        </ul>
+                    </div>
 
-                    <h4 class="mt-2">Таблица для заполнения</h4>
-                    <form id="houseCounterForm" method="POST" name="houseCounterForm">
-                        {% csrf_token %}
-                        <input type="hidden" name="form_type" value="houseCounterForm">
-                        <div class="form-row">{{ form.house|as_crispy_field }}</div>
-
-                        <div class="user-area__table">
-                            <table class="user-area__table  table">
-                                <thead>
-                                    <tr>
-                                        <th scope="col"></th>
-                                        <th class="text-center" scope="col">Показания</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <th scope="row">Горячая вода:</th>
-                                        <td class="text-center" id='houseHotWater'>{{ form.hot_water|as_crispy_field }}</td>
-                                    </tr>
-                                    <tr>
-                                        <th scope="row">Холодная вода:</th>
-                                        <td class="text-center">{{ form.col_water|as_crispy_field }}</td>
-                                    </tr>
-                                    <tr>
-                                        <th scope="row">Электроэнергия день:</th>
-                                        <td class="text-center">{{ form.electric_day|as_crispy_field }}</td>
-                                    </tr>
-                                    <tr>
-                                        <th scope="row">Электроэнергия ночь:</th>
-                                        <td class="text-center">{{ form.electric_night|as_crispy_field }}</td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                    {% now "d" as today %}
+                    {% if "01" < today and today < "31" %}
+                        <h4 class="mt-2  mb-5">Таблица для заполнения</h4>
+                        <form id="house_count_form" method="POST" name="house_count_form">
+                            {% csrf_token %}
+                            <input type="hidden" name="form_type" value="house_count_form">
+                            <div class="d-flex  justify-content-start">
+                                <p class="text-700">Дом:</p>
+                                <div class="form-row  ml-4">{{ house_count_form.house|as_crispy_field }}</div>
+                            </div>
+                            <div class="user-area__table">
+                                <table class="user-area__table  table">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col"></th>
+                                            <th class="text-center" scope="col">Показания</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <th scope="row">Горячая вода:</th>
+                                            <td class="text-center" id='houseHotWater'>{{ house_count_form.hot_water|as_crispy_field }}</td>
+                                        </tr>
+                                        <tr>
+                                            <th scope="row">Холодная вода:</th>
+                                            <td class="text-center">{{ house_count_form.col_water|as_crispy_field }}</td>
+                                        </tr>
+                                        {% comment 'Электричество пока отменяется'%}
+                                            <tr>
+                                                <th scope="row">Электроэнергия день:</th>
+                                                <td class="text-center">{{ house_count_form.electric_day|as_crispy_field }}</td>
+                                            </tr>
+                                            <tr>
+                                                <th scope="row">Электроэнергия ночь:</th>
+                                                <td class="text-center">{{ currentCount.electric_night|as_crispy_field }}</td>
+                                            </tr>
+                                        {% endcomment %}
+                                    </tbody>
+                                </table>
+                            </div>
+                            <button action="{% url 'person:user' %}" type="button" class="btn  btn-primary  my-2" id="currentCountBtn">Сохранить</button>
+                        </form>
+                    {% else %}
+                        <div class="alert alert-danger" role="alert">
+                            ВНИМАНИЕ! Показания принимаются с 20 по 26 число каждого месяца!
                         </div>
-                        <button action="{% url 'person:user' %}" type="button" class="btn  btn-primary  my-2" id="houseCounterBtn">Сохранить</button>
-                    </form>
-
+                    {% endif %}
 
                     <div class="my-5">
                         <div class="row  mt-5  mb-3  d-flex justify-content-between">
@@ -178,8 +195,6 @@
                                         <th scope="col">Адрес</th>
                                         <th scope="col">ХВС</th>
                                         <th scope="col">ХГС</th>
-                                        <th scope="col">Эл.день</th>
-                                        <th scope="col">Эл.ночь</th>
                                     </tr>
                                 </thead>
 
@@ -191,8 +206,6 @@
                                         <td class="text-left">{{ el.house }}</td>
                                         <td>{{ el.col_water }}</td>
                                         <td>{{ el.hot_water }}</td>
-                                        <td>{{ el.electric_day }}</td>
-                                        <td>{{ el.electric_night }}</td>
                                     </tr>
                                 </tbody>
                                 {% endfor %}
@@ -207,17 +220,26 @@
 
                     <div class="wrapper__form-recalc">
                         <h4 class="mb-4">Внести перерасчет</h4>
-                        <form class="mb-5" id="recalcForm" name="recalcForm">
+                        
+                        <form class="ml-3  mb-5" id="recalculations_form" name="recalculations_form">
                             {% csrf_token %}
-                            <input type="hidden" name="form_type" value="recalcForm">
-                            <div class="row">
-                                <div class="col-md-3  mb-3">
+                            <input type="hidden" name="form_type" value="recalculations_form">
+                            <div class="row  d-flex  flex-column">
+                                <div class="mb-3">
                                     <label for="formGroupExampleInput">Лицевой счет</label>
-                                    {{ form2.user|as_crispy_field }}
+                                    {{ recalculations_form.user|as_crispy_field }}
                                 </div>
-                                <div class="col-md-3">
+                                <div class="mb-3">
+                                    <label for="formGroupExampleInput">Услуга:</label>
+                                    {{ recalculations_form.service|as_crispy_field }}
+                                </div>
+                                <div class="mb-3">
                                     <label for="formGroupExampleInput2">Сумма</label>
-                                    {{ form2.recalc|as_crispy_field }}
+                                    {{ recalculations_form.recalc|as_crispy_field }}
+                                </div>
+                                <div class="">
+                                    <label for="formGroupExampleInput2">Описание</label>
+                                    {{ recalculations_form.desc|as_crispy_field }}
                                 </div>
                             </div>
                             <button action="{% url 'person:user' %}" type="button" class="btn  btn-primary  my-2" id="recalcBtn">Внести</button>
@@ -231,45 +253,25 @@
                             <tr>
                                 <th scope="col">#</th>
                                 <th scope="col">Период</th>
-                                <th scope="col">Лицевой счет</th>
-                                <th scope="col">ФИО</th>
-                                <th scope="col">Адрес</th>
-                                <th scope="col">Долг/переплата</th>
-                                <th scope="col">редактировать</th>
+                                <th scope="col">(Лицевой счет) - ФИО</th>
+                                <th scope="col">Услуга</th>
+                                <th scope="col">Долг(+)/переплата(-)</th>
+                                <th scope="col">Описание</th>
                             </tr>
                         </thead>
+
+                        {% for el in house_rec %}
                         <tbody>
                             <tr>
-                                <th scope="row">1</th>
-                                <td>Январь 2021</td>
-                                <td>123456</td>
-                                <td>Иванов Иван Иванович</td>
-                                <td>ул.Советская, д.10, кв.7</td>
-                                <td class="text-danger  text-700  text-center">4200 руб.</td>
-                                <td><a href="#" class="text-decoration-none">редактировать</a>
-                                </td>
-                            </tr>
-                            <tr>
-                                <th scope="row">1</th>
-                                <td>февраль 2021</td>
-                                <td>123459</td>
-                                <td>Сидоров Александр Александрович</td>
-                                <td>ул.Советская, д.10, кв.6</td>
-                                <td class="text-danger  text-700  text-center">4200 руб.</td>
-                                <td><a href="#" class="text-decoration-none">редактировать</a>
-                                </td>
-                            </tr>
-                            <tr>
-                                <th scope="row">1</th>
-                                <td>Март 2021</td>
-                                <td>123445</td>
-                                <td>Петров Евлампий Аристархович</td>
-                                <td>ул.Советская, д.10, кв.13</td>
-                                <td class="text-danger  text-700  text-center">4200 руб.</td>
-                                <td><a href="#" class="text-decoration-none">редактировать</a>
-                                </td>
+                                <td>{{ el.id }}</td>
+                                <td>{{ el.period|date:"m - Y" }}</td>
+                                <td>{{ el.user }}</td>
+                                <td>{{ el.service }}</td>
+                                <td>{{ el.recalc}}</td>
+                                <td>{{ el.desc}}</td>
                             </tr>
                         </tbody>
+                        {% endfor %}
                     </table>
                 </div>
 
@@ -297,135 +299,110 @@
 
                                     <h4 class="mb-4">Добваить льготу</h4>
                                     <div class="manager-privileges__form">
-                                        <form class="">
-                                            <div class="form-group  mb-3">
-                                                <label for="exampleFormControlInput1">Лицевой счет</label>
-                                                <input type="email" class="form-control" id="exampleFormControlInput1"
-                                                    placeholder="123456">
+                                        
+                                    <form class="ml-3  mb-5" id="privilege_form" name="privilege_form">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="form_type" value="privilege_form">
+                                        <div class="row  d-flex  flex-column">
+                                            <div class="mb-3">
+                                                <label for="formGroupExampleInput">Лицевой счет</label>
+                                                {{ privilege_form.user|as_crispy_field }}
                                             </div>
-                                            <div class="form-group  mb-3">
-                                                <label for="exampleFormControlSelect1">Тариф</label>
-                                                <select class="form-control" id="exampleFormControlSelect1">
-                                                    <option selected>Выберите из списка</option>
-                                                    <option>Холодная вода</option>
-                                                    <option>Горячая вода</option>
-                                                    <option>Электроэнергия</option>
-                                                </select>
+                                            <div class="mb-3">
+                                                <label for="formGroupExampleInput">Услуга</label>
+                                                {{ privilege_form.service|as_crispy_field }}
                                             </div>
-                                            <div class="form-group  mb-3">
-                                                <label for="exampleFormControlInput1">Скидка, %</label>
-                                                <input type="email" class="form-control" id="exampleFormControlInput2"
-                                                    placeholder="10">
+                                            <div class="mb-3">
+                                                <label for="formGroupExampleInput2">Скидка, %</label>
+                                                {{ privilege_form.sale|as_crispy_field }}
                                             </div>
-                                        </form>
+                                            <div class="">
+                                                <label for="formGroupExampleInput2">Описание</label>
+                                                {{ privilege_form.desc|as_crispy_field }}
+                                            </div>
+                                        </div>
+                                        <button action="{% url 'person:user' %}" type="button" class="btn  btn-primary  my-2" id="privilegeBtn">Внести</button>
+                                    </form>
                                     </div>
                                     
-                                    <button type="button" class="btn btn-primary  mt-2 mb-5">Добавить</button>
-
                                     <h4  class="pt-4  mb-4">Действующие льготы</h4>
                                     <table class="table  mb-5">
                                         <thead class="thead-light">
                                             <tr>
                                                 <th scope="col">#</th>
-                                                <th scope="col">Лицевой счет</th>
                                                 <th scope="col">ФИО</th>
-                                                <th scope="col">Адрес</th>
                                                 <th scope="col">Название</th>
                                                 <th scope="col">Льгота, %</th>
-                                                <th scope="col">редактировать</th>
+                                                <th scope="col">Описание</th>
                                             </tr>
                                         </thead>
+                                        {% for el in house_privileges %}
                                         <tbody>
                                             <tr>
-                                                <th scope="row">1</th>
-                                                <td>123456</td>
-                                                <td>Иванов Иван Иванович</td>
-                                                <td>ул.Советская, д.10, кв.7</td>
-                                                <td class="text-center">Холодная вода</td>
-                                                <td class="text-700  text-center">20</td>
-                                                <td><a href="#" class="text-decoration-none">редактировать</a>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <th scope="row">2</th>
-                                                <td>123457</td>
-                                                <td>Сидоров Александр Александрович</td>
-                                                <td>ул.Советская, д.13, кв.8</td>
-                                                <td class="text-center">Горячая вода</td>
-                                                <td class="text-700  text-center">10</td>
-                                                <td><a href="#" class="text-decoration-none">редактировать</a>
-                                                </td>
+                                                <td>{{ el.id }}</td>
+                                                <td>{{ el.user }}</td>
+                                                <td>{{ el.service }}</td>
+                                                <td>{{ el.sale }}</td>
+                                                <td>{{ el.desc }}</td>
                                             </tr>
                                         </tbody>
+                                        {% endfor %}
                                     </table>
                                 </div>
 
-                                <!-- Link-GRANT -->
+                                <!-- Link-SUBSIDIES -->
                                 <div class="tab-pane fade" id="v-pills-grant" role="tabpanel"
                                     aria-labelledby="v-pills-grant-tab">
 
                                     <h4 class="mb-4">Добваить субсидию</h4>
                                     <div class="manager-privileges__form">
-                                        <form>
-                                            <div class="form-group  mb-3">
-                                                <label for="exampleFormControlInput1">Лицевой счет</label>
-                                                <input type="email" class="form-control" id="exampleFormControlInput3"
-                                                    placeholder="123456">
+                                        <form class="ml-3  mb-5" id="subsidies_form" name="subsidies_form">
+                                            {% csrf_token %}
+                                            <input type="hidden" name="form_type" value="subsidies_form">
+                                            <div class="row  d-flex  flex-column">
+                                                <div class="mb-3">
+                                                    <label for="formGroupExampleInput">Лицевой счет</label>
+                                                    {{ subsidies_form.user|as_crispy_field }}
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label for="formGroupExampleInput">Услуга</label>
+                                                    {{ subsidies_form.service|as_crispy_field }}
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label for="formGroupExampleInput2">Скидка, %</label>
+                                                    {{ subsidies_form.sale|as_crispy_field }}
+                                                </div>
+                                                <div class="">
+                                                    <label for="formGroupExampleInput2">Описание</label>
+                                                    {{ subsidies_form.desc|as_crispy_field }}
+                                                </div>
                                             </div>
-                                            <div class="form-group  mb-3">
-                                                <label for="exampleFormControlSelect1">Тариф</label>
-                                                <select class="form-control" id="exampleFormControlSelect2">
-                                                    <option selected>Выберите из списка</option>
-                                                    <option>Холодная вода</option>
-                                                    <option>Горячая вода</option>
-                                                    <option>Электроэнергия</option>
-                                                </select>
-                                            </div>
-                                            <div class="form-group  mb-3">
-                                                <label for="exampleFormControlInput1">Скидка, %</label>
-                                                <input type="email" class="form-control" id="exampleFormControlInput4"
-                                                    placeholder="10">
-                                            </div>
+                                            <button action="{% url 'person:user' %}" type="button" class="btn  btn-primary  my-2" id="subsidiesBtn">Внести</button>
                                         </form>
                                     </div>
-                                    <button type="button" class="btn btn-primary  mt-2 mb-5">Добавить</button>
-
 
                                     <h4  class="pt-4  mb-4">Действующие субсидии</h4>
                                     <table class="table  mb-5">
                                         <thead class="thead-light">
                                             <tr>
                                                 <th scope="col">#</th>
-                                                <th scope="col">Лицевой счет</th>
                                                 <th scope="col">ФИО</th>
-                                                <th scope="col">Адрес</th>
                                                 <th scope="col">Название</th>
                                                 <th scope="col">Субсидия, %</th>
                                                 <th scope="col">Редактировать</th>
                                             </tr>
                                         </thead>
+                                        {% for el in house_privileges %}
                                         <tbody>
                                             <tr>
-                                                <th scope="row">1</th>
-                                                <td>123456</td>
-                                                <td>Иванов Иван Иванович</td>
-                                                <td>ул.Советская, д.10, кв.7</td>
-                                                <td class="text-center">Холодная вода</td>
-                                                <td class="text-700  text-center">20</td>
-                                                <td><a href="#" class="text-decoration-none">редактировать</a>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <th scope="row">2</th>
-                                                <td>123457</td>
-                                                <td>Сидоров Александр Александрович</td>
-                                                <td>ул.Советская, д.13, кв.8</td>
-                                                <td class="text-center">Горячая вода</td>
-                                                <td class="text-700  text-center">10</td>
-                                                <td><a href="#" class="text-decoration-none">редактировать</a>
-                                                </td>
+                                                <td>{{ el.id }}</td>
+                                                <td>{{ el.user }}</td>
+                                                <td>{{ el.service }}</td>
+                                                <td>{{ el.sale }}</td>
+                                                <td>{{ el.desc }}</td>
                                             </tr>
                                         </tbody>
+                                        {% endfor %}                                        
                                     </table>
                                 </div>
                             </div>
@@ -434,6 +411,60 @@
                     </div><!-- ./row -->
                 </div>
 
+                <!-- Tab-PAYMENTS -->
+                <div class="tab-pane  fade" id="payments" role="tabpanel" aria-labelledby="payments-tab">
+
+                    <div class="wrapper__form-recalc">
+                        <h4 class="mb-4">Внести оплату</h4>
+                        
+                        <form class="ml-3  mb-5" id="payments_form" name="payments_form">
+                            {% csrf_token %}
+                            <input type="hidden" name="form_type" value="payments_form">
+                            <div class="row  d-flex  flex-column">
+                                <div class="mb-3">
+                                    <label for="formGroupExampleInput">Лицевой счет</label>
+                                    {{ payments_form.user|as_crispy_field }}
+                                </div>
+                                <div class="mb-3">
+                                    <label for="formGroupExampleInput">Период</label>
+                                    {{ payments_form.period|as_crispy_field }}
+                                </div>
+                                <div class="mb-3">
+                                    <label for="formGroupExampleInput2">Направление</label>
+                                    {{ payments_form.direction|as_crispy_field }}
+                                </div>
+                                <div class="">
+                                    <label for="formGroupExampleInput2">Сумма</label>
+                                    {{ payments_form.amount|as_crispy_field }}
+                                </div>
+                            </div>
+                            <button action="{% url 'person:user' %}" type="button" class="btn  btn-primary  my-2" id="paymentsBtn">Внести</button>
+                        </form>
+                    </div>
+
+                    <h4 class="pt-2  mb-4">История оплат</h4>
+                    <table class="table">
+                        <thead class="thead-light">
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">Период</th>
+                                <th scope="col">(Лицевой счет) - ФИО</th>
+                                <th scope="col">Сумма</th>
+                            </tr>
+                        </thead>
+
+                        {% for el in house_pay_debit %}
+                        <tbody>
+                            <tr>
+                                <td>{{ el.id }}</td>
+                                <td>{{ el.period|date:"m - Y" }}</td>
+                                <td>{{ el.user }}</td>
+                                <td>{{ el.amount }}</td>
+                            </tr>
+                        </tbody>
+                        {% endfor %}
+                    </table>
+                </div>
             </div>
         </div>
     </div>

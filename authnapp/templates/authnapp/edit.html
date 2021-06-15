@@ -20,7 +20,6 @@
                 {% if next_page %}
                     <input type="hidden" name="next_page" value="{{ next_page }}">
                 {% endif %}
-                <!-- {% crispy form %} -->
                 {% for field in form %}
                     <div class="form-group">
                         {{ field.label }}
@@ -33,22 +32,23 @@
                         </div>
                     {% endif %}
                 {% endfor %}
+                {% if not user.is_staff and not user.is_superuser %}
                 <table class="table">
-
-                        {{ appartament_form.management_form }}
-                        {{ appartament_form.non_form_errors }}
-                        
-                            <table>
-                                {% for form in appartament_form %}
-                                <tr><td><ul class="list-inline">{{ form.as_ul }}</ul></td></tr>
-                                    {% if form.errors %}
-                                        <div class="alert  alert-danger">
-                                            {{ form.errors }}
-                                        </div>
-                                    {% endif %}
-                                {% endfor %}
-                            </table>
+                    {{ profile_form.management_form }}
+                    {{ profile_form.non_form_errors }}
+                    
+                        {% for form in profile_form %}
+                        <div class="list-inline">
+                            {{ form.as_p }}
+                        </div>
+                            {% if form.errors %}
+                                <div class="alert  alert-danger">
+                                    {{ form.errors }}
+                                </div>
+                            {% endif %}
+                        {% endfor %}
                 </table>
+                {% endif %}
                 <br>
 
                 <div class="change_pass  pb-5">
@@ -70,7 +70,7 @@
 
 {% block js %}
 <script>
-    $('#div_id_password').hide();
+    $('#id_password').parent().hide();
     $('#id_personal_account').hide();
     $('#id_personal_account').before('<p style="font-weight: bold;">{{ user.personal_account }}</p>');
 </script>

@@ -1,0 +1,53 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>
+        {% block title %}
+        {{ title|capfirst }}
+        {% endblock title %}
+    </title>
+
+    {% block css %}
+    <!-- Bootstrap CSS -->
+    <!-- <link rel="stylesheet" type="text/css" href="{% static 'css/bootstrap.min.css' %}"> -->
+
+    <!-- Main CSS -->
+    <link rel="stylesheet" href="{% static 'css/style_invoice.css' %}">
+    {% endblock css %}
+
+</head>
+
+<body>
+
+    {% block content %}
+    {% endblock content %}  
+    
+
+    {% block js %}
+    <script id="hello-data" type="application/json">{{ appartaments }}</script>
+    <script>
+        const period = {{ variable }}[0].fields.period;
+        const header = JSON.parse({{ header }}[0].fields.data);
+        const constant = JSON.parse({{ constant }}[0].fields.data);
+        const variable = JSON.parse({{ variable }}[0].fields.data);
+        const status = JSON.parse({{ status }}[0].fields.amount);
+    </script>
+
+    <!-- jQuery -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <!-- jsPDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.5.3/jspdf.min.js"></script>
+    <!-- html2canvas -->
+    <script src="{% static 'js/html2canvas.js' %}"></script>
+    <!-- Javascript -->
+    <script src="{% static 'js/invoice.js' %}"></script>
+    {% endblock js %}  
+
+</body>
+
+</html>

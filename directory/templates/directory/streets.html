@@ -8,40 +8,38 @@
 {% endblock menu %}
 
 {% block content %}
-    <div class="my-5">
-        <div class="row  mt-5  mb-3  d-flex justify-content-between">
-            <h4 class="col">Улицы города <span class="text-700">{{ city.city }}</span></h4>
-            <div class="form-group">
-                <a href="{% url 'directory:street_create' city.pk %}" class="btn btn-outline-primary btn-sm" role="button">Добавить улицу</a>
-                <a href="{% url 'directory:list' %}" class="btn  btn-outline-secondary btn-sm" role="button">Назад</a>
-            </div>
-            
+    <div class="row  mt-5  mb-3  d-flex justify-content-between">
+        <h4 class="col">Улицы города <span class="text-700">{{ city.city }}</span></h4>
+        <div class="form-group">
+            <a href="{% url 'directory:street_create' city.pk %}" class="btn btn-outline-primary btn-sm" role="button">Добавить улицу</a>
+            <a class="btn  btn-outline-secondary btn-sm" role="button" onclick="javascript:history.back(); return false;">Назад</a>
         </div>
-        <div class="manager-area__counters-history  mb-5">
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th scope="col">ID</th>
-                        <th class="text-left" scope="col">Наименование</th>
-                        <th scope="col">Дома</th>
-                        <th scope="col">Редактировать</th>
-                        <th scope="col">удалиь</th>
-                    </tr>
-                </thead>
-    
-                {% for street in streets %}
-                <tbody>
-                    <tr>
-                        <td>{{ street.id }}</td>
-                        <td class="text-left">ул.{{ street.street }}</td>
-                        <td><a href="{% url 'directory:house' street.pk %}" type="button" class="btn btn-outline-primary btn-sm" role="button">Дома</td>
-                        <td><a href="{% url 'directory:street_update' street.pk %}" type="button" class="btn btn-outline-warning btn-sm" role="button">Редактировать</a></td>
-                        <td><a href="{% url 'directory:street_delete' street.pk %}" class="text-danger text-decoration-none">удалить</a></td>
-                    </tr>
-                </tbody>
-                {% endfor %}
-    
-            </table> 
-        </div>
+        
+    </div>
+    <div class="manager-area__counters-history  mb-5">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">ID</th>
+                    <th class="text-left" scope="col">Наименование</th>
+                    <th scope="col">Дома</th>
+                    <th scope="col">Редактировать</th>
+                    <th scope="col">удалиь</th>
+                </tr>
+            </thead>
+
+            {% for street in streets %}
+            <tbody>
+                <tr>
+                    <td>{{ street.id }}</td>
+                    <td class="text-left">ул.{{ street.street }}</td>
+                    <td><a href="{% url 'directory:house' street.pk %}" type="button" class="btn btn-outline-primary btn-sm" role="button">Дома</td>
+                    <td><a href="{% url 'directory:street_update' street.pk %}" type="button" class="btn btn-outline-warning btn-sm" role="button">Редактировать</a></td>
+                    <td><a href="{% url 'directory:street_delete' street.pk %}" class="text-danger text-decoration-none">удалить</a></td>
+                </tr>
+            </tbody>
+            {% endfor %}
+
+        </table> 
     </div>
 {% endblock %}

@@ -13,51 +13,55 @@
             {% csrf_token %}
             {% crispy form %}
 
+            
+            {% comment "Вывод formset квартир в доме" %}
             <h4 class="pt-5  mb-3  text-700">Квартиры</h4>
             <table class="table table-bordered">
                 {{ appartament_form.management_form }}
                 {{ appartament_form.non_form_errors }}
 
-                {% for form in appartament_form.forms %}
-                    {% if forloop.first %}
-                        <thead class="thead-light">
-                            <tr>
-                                {% for field in form.visible_fields %}
-                                    <th class="{% cycle 'td1' 'td2' 'td3' 'td4' 'td5' 'td6' %}">
-                                        {{ field.label|capfirst }}
-                                    </th>
-                                {% endfor %}
-                            </tr>
-                        </thead>
-                    {% endif %}
-                    <tr class="formset_row">
-                        {% for field in form.visible_fields %}
-                            <td class="{% cycle 'td1' 'td2' 'td3' 'td4' 'td5' 'td6' %}">
-                                {% if forloop.first %}
-                                    {% for hidden in form.hidden_fields %}
-                                        {{ hidden }}
+                    {% for form in appartament_form.forms %}
+                        {% if forloop.first %}
+                            <thead class="thead-light">
+                                <tr>
+                                    {% for field in form.visible_fields %}
+                                        <th class="{% cycle 'td1' 'td2' 'td3' 'td4' 'td5' 'td6' %}">
+                                            {{ field.label|capfirst }}
+                                        </th>
                                     {% endfor %}
-                                {% endif %}
-                                {{ field.errors.as_ul }}
-                                {% if field.name != 'price' %}
-                                    {{ field }}
-                                {% else %}
-                                    {% if field.value %}
-                                        <span class="orderitems-{{ forloop.parentloop.counter0 }}-price">{{ field.value }}</span> руб
+                                </tr>
+                            </thead>
+                        {% endif %}
+                        <tr class="formset_row">
+                            {% for field in form.visible_fields %}
+                                <td class="{% cycle 'td1' 'td2' 'td3' 'td4' 'td5' 'td6' %}">
+                                    {% if forloop.first %}
+                                        {% for hidden in form.hidden_fields %}
+                                            {{ hidden }}
+                                        {% endfor %}
                                     {% endif %}
-                                {% endif %}
-                            </td>
-                        {% endfor %}
-                    </tr>
-                {% endfor %}
+                                    {{ field.errors.as_ul }}
+                                    {% if field.name != 'price' %}
+                                        {{ field }}
+                                    {% else %}
+                                        {% if field.value %}
+                                            <span class="orderitems-{{ forloop.parentloop.counter0 }}-price">{{ field.value }}</span> руб
+                                        {% endif %}
+                                    {% endif %}
+                                </td>
+                            {% endfor %}
+                        </tr>
+                    {% endfor %}
             </table>
+            {% endcomment %}
+
             
             <div class="form-action">
                 <input type="submit" name="submit" value="сохранить" class="form-control btn btn-success" id="submit-save">
             </div>
         </form>
         <div class="form-action">
-            <a class="form-control  btn  btn-outline-secondary mt-3" href="{% url 'directory:list' %}" role="button">на главную</a>
+            <a class="form-control  btn  btn-outline-secondary mt-3" onclick="javascript:history.back(); return false;" role="button">назад</a>
         </div>
     </div>
 {% endblock content %}

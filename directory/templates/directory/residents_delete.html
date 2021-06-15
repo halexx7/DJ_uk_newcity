@@ -1,0 +1,22 @@
+{% extends 'directory/base.html' %}
+{% load staticfiles %}
+
+{% block menu %}
+    {% include 'directory/includes/inc_menu.html' %}
+{% endblock menu %}
+
+{% block content %}
+    <div class="directory__form">
+        <p class="category_delete--text">Уверены, что хотите удалить <strong>жильца {{ object.name }} ({{ object.personal_account }})</strong>?</p> 
+        <div class="category__form">
+            <form action="{% url 'directory:residents_delete' object.pk %}" method="post">
+                {% csrf_token %}
+
+                <div class="form-group  d-flex  justify-content-around  mt-5">
+                    <input class="btn  btn-danger" type="submit" value="удалить">
+                    <a class="btn  btn-success" role="button" onclick="javascript:history.back(); return false;">отмена</a>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock %}

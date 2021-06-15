@@ -11,6 +11,7 @@ urlpatterns = [
     path("auth/", include("authnapp.urls", namespace="auth")),
     path("person/", include("personalacc.urls", namespace="person")),
     path("directory/", include("directory.urls", namespace="directory")),
+    path("invoice/", include("invoice.urls", namespace="invoice")),
     path("admin/", admin.site.urls, name="admin"),
 ]
 

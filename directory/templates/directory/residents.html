@@ -1,0 +1,49 @@
+{% extends 'directory/base.html' %}
+{% load staticfiles %}
+
+{% load crispy_forms_tags %}
+
+{% block menu %}
+    {% include 'directory/includes/inc_menu.html' %}
+{% endblock menu %}
+
+{% block content %}
+    <div class="row  mt-5  mb-3  d-flex justify-content-between">
+        <h4 class="col">Жильцы: </span></h4>
+        <div class="form-group">
+            <a href="{% url 'directory:residents_create' %}" class="btn btn-outline-primary btn-sm" role="button">Добавить жильца</a>
+            <a class="btn  btn-outline-secondary btn-sm" onclick="javascript:history.back(); return false;" role="button">Назад</a>
+        </div>
+        
+    </div>
+    <div class="manager-area__counters-history  mb-5">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">ID</th>
+                    <th class="text-left" scope="col">Лицевой счет</th>
+                    <th class="text-left" scope="col">ФИО</th>
+                    <th scope="col">Почта</th>
+                    <th scope="col">Телефон</th>
+                    <th scope="col">Редактировать</th>
+                    <th scope="col">Удалить</th>
+                    <!-- TODO отображать дебиторку -->
+                </tr>
+            </thead>
+            {% for item in residents %}
+            <tbody>
+                <tr>
+                    <td>{{ item.id }}</td>
+                    <td class="text-left">{{ item.personal_account }}</td>
+                    <td class="text-left">{{ item.name }}</td>
+                    <td class="text-left">{{ item.email }}</td>
+                    <td class="text-left">{{ item.phone }}</td>
+                    <td><a href="{% url 'directory:residents_update' item.pk %}" type="button" class="btn btn-outline-warning btn-sm" role="button">Редактировать</a></td>
+                    <td><a href="{% url 'directory:residents_delete' item.pk %}" class="text-danger text-decoration-none">удалить</a></td>
+                </tr>
+            </tbody>
+            {% endfor %}
+
+        </table> 
+    </div>
+{% endblock %}
