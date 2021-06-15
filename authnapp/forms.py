@@ -2,15 +2,6 @@ import hashlib
 import random
 
 from django import forms
-<<<<<<< HEAD
-from django.contrib.auth.forms import AuthenticationForm, PasswordChangeForm, UserChangeForm, UserCreationForm
-from django.contrib.auth.forms import PasswordResetForm, SetPasswordForm
-from django.contrib.auth.models import Group
-from django.forms import fields
-from django.forms import models
-
-from mainapp.models import Appartament, UserProfile
-=======
 from django.contrib.auth.forms import (
     AuthenticationForm,
     PasswordChangeForm,
@@ -25,38 +16,22 @@ from django.forms.models import BaseInlineFormSet, inlineformset_factory
 
 from mainapp.models import Appartament, UserProfile
 
->>>>>>> invoice
 from .models import User
 
-from django.forms.models import BaseInlineFormSet, inlineformset_factory
- 
+
 class BootstrapStylesMixins:
     field_name = None
 
-<<<<<<< HEAD
-=======
-class BootstrapStylesMixins:
-    field_name = None
-
->>>>>>> invoice
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
         if self.field_name:
             for fieldname in self.field_name:
-<<<<<<< HEAD
-                self.fields[fieldname].widget.attrs = {'class': 'form-control'}
-                if fieldname == 'is_active':
-                    self.fields[fieldname].widget.attrs = {'class': 'form_is-active'}
-        else:
-            raise ValueError('The field_name should be set')
-=======
                 self.fields[fieldname].widget.attrs = {"class": "form-control"}
                 if fieldname == "is_active" or fieldname == "const":
                     self.fields[fieldname].widget.attrs = {"class": "form_is-active"}
         else:
             raise ValueError("The field_name should be set")
->>>>>>> invoice
 
 
 class UserLoginForm(BootstrapStylesMixins, AuthenticationForm):
@@ -94,13 +69,6 @@ class AppartamentEditForm(BootstrapStylesMixins, forms.ModelForm):
 
 
 class UserProfileEditForm(BootstrapStylesMixins, forms.ModelForm):
-<<<<<<< HEAD
-    field_name = ["gender", "type_electric_meter"]
-
-    class Meta:
-        model = UserProfile
-        fields = ("gender", "type_electric_meter")
-=======
     field_name = ["gender"]
 
     class Meta:
@@ -115,7 +83,6 @@ ProfileFormset = inlineformset_factory(
     extra=1,
     can_delete=False,
 )
->>>>>>> invoice
 
 
 class UserRegisterForm(UserCreationForm):
@@ -125,10 +92,6 @@ class UserRegisterForm(UserCreationForm):
             field.widget.attrs["class"] = "form-control"
             field.help_text = ""
 
-<<<<<<< HEAD
-
-=======
->>>>>>> invoice
     def save(self):
         user = super(UserRegisterForm, self).save()
 
@@ -146,19 +109,11 @@ class UserRegisterForm(UserCreationForm):
 
 
 class AppartamentForm(BootstrapStylesMixins, forms.ModelForm):
-<<<<<<< HEAD
-    field_name = ["house", "number", "add_number",]
-
-    class Meta:
-        model = Appartament
-        fields = ("house", "number", "add_number",)
-=======
     field_name = ["house", "number", "add_number"]
 
     class Meta:
         model = Appartament
         fields = ("house", "number", "add_number")
->>>>>>> invoice
 
 
 AppartamentFormset = inlineformset_factory(
@@ -167,8 +122,4 @@ AppartamentFormset = inlineformset_factory(
     form=AppartamentForm,
     extra=1,
     can_delete=False,
-<<<<<<< HEAD
 )
-=======
-)
->>>>>>> invoice

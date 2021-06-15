@@ -5,40 +5,28 @@ function convertDate(item) {
     switch(date.getMonth()){
         case 0:
             return(` Январь ${date.getFullYear()} `);
-            break;
         case 1:
             return(` Февраль ${date.getFullYear()} `);
-            break;
         case 2:
             return(` Март ${date.getFullYear()} `);
-            break;
         case 3:
             return(` Апрель ${date.getFullYear()} `);
-            break;
         case 4:
             return(` Май ${date.getFullYear()} `);
-            break;
         case 5:
             return(` Июнь ${date.getFullYear()} `);
-            break;
         case 6:
             return(` Июль ${date.getFullYear()} `);
-            break;
         case 7:
             return(` Август ${date.getFullYear()} `);
-            break;
         case 8:
             return(` Сентябрь ${date.getFullYear()} `);
-            break;
         case 9:
             return(` Октябрь ${date.getFullYear()} `);
-            break;
         case 10:
             return(` Ноябрь ${date.getFullYear()} `);
-            break;
         case 11:
             return(` Декабрь ${date.getFullYear()} `);
-            break;
     }
 }
 
