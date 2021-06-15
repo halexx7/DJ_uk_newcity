@@ -156,12 +156,6 @@ class ManagerPageCreate(LoginRequiredMixin, CreateView):
         context["title"] = "Менеджер | ООО Новый город"
         return context
 
-    def get_form_kwargs(self, *args, **kwargs):
-        kwargs = super().get_form_kwargs(*args, **kwargs)
-        #Заполняем форму начальными данными
-        kwargs['initial'] = {'direction': "D"}
-        return kwargs
-
     def post(self, *args, **kwargs):
         post = self.request.POST
         user = self.request.POST.get("user")

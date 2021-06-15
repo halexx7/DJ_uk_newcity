@@ -73,7 +73,7 @@ $('.header__bottom > table').append(
 
 $('.header__bottom > table').append(
     `<tr class="text__center">
-        <td>5480,86</td>
+        <td id="subHeaderStatus">0.00</td>
         <td id="subHeaderPre">5601,08</td>
         <td id="subHeaderRecalc">-313,66</td>
         <td id="subHeaderSubsid">414,56</td>
@@ -82,7 +82,6 @@ $('.header__bottom > table').append(
         <td id='subHeaderTotal'></td>
     </tr>`
 );
-
 
 // добавим Таблицу расчетов что - за что
 $('.body__content').append('<table></table>');
@@ -103,7 +102,6 @@ $('.body__content > table').append(
         <th>Итого<br>за расчетный<br>период</th>
     </tr>`
 );
-
 
 // Пройдем циклом по всем элементам массива и сгенерируем строки таблицы
 function drawingTable (object) {
@@ -145,6 +143,8 @@ let total_variable = drawingTable(variable);
 let total = Number();
 total = (total_const[0] + total_variable[0]).toFixed(2);
 totalPre = (total_const[1] + total_variable[1]).toFixed(2);
+
+$('#subHeaderStatus').text((status).toFixed(2));
 $('#headerTotal').text(total);
 $('#subHeaderTotal').text(total);
 $('#subHeaderPre').text(totalPre);
@@ -161,7 +161,7 @@ $('#invoice-print').on('click', (function(){
     print();
 }));
 
-//Слушаем кнопку Созранить PDF
+//Слушаем кнопку Сохранить PDF
 $('#invoice-pdf').on('click', (function() {
     //Сохраняем в ПДФ
     var pdf = new jsPDF('p', 'pt', 'a4');

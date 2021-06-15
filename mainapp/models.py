@@ -286,6 +286,20 @@ class HouseHistory(models.Model):
         self.is_active = False
         self.save()
 
+    # При удалении ловим и сохраняем объект ДОМОВЫЕ ПОКАЗАНИЯ
+    @receiver(pre_delete, sender=HouseCurrent)
+    def copy_arhive_current_to_history_house(sender, instance, **kwargs):
+        house = instance.house_id
+        period = instance.period
+        upd_val = {
+            "col_water": instance.col_water,
+            "hot_water": instance.hot_water,
+            #TODO электричество пока отменяется
+            # "electric_day": instance.electric_day,
+            # "electric_night": instance.electric_night,
+        }
+        obj, created = HouseHistory.objects.update_or_create(house_id=house, period=period, defaults=upd_val)
+
 
 class Standart(models.Model):
     period = models.DateField(verbose_name="Создан", default=datetime.datetime.now().replace(day=1))
@@ -313,6 +327,22 @@ class Standart(models.Model):
     def delete(self):
         self.is_active = False
         self.save()
+
+    # При изменении текущих домовых показаний перещитываем норматив
+    @receiver(post_save, sender=HouseCurrent)
+    def calculation_of_standart_to_house_current(sender, instance, **kwargs):
+        house = instance.house_id
+        period = instance.period
+        hist = HouseHistory.get_last_val(house)[0]
+        sq = House.get_item(house)[0].sq_home
+        upd_val = {
+            "col_water": ((int(instance.col_water) - int(hist.col_water))/sq),
+            "hot_water": ((int(instance.hot_water) - int(hist.hot_water))/sq),
+            #TODO электричество пока отменяется
+            # "electric_day": instance.electric_day,
+            # "electric_night": instance.electric_night,
+        }
+        obj, created = Standart.objects.update_or_create(house_id=house, period=period, defaults=upd_val)
 
 
 class UserProfile(models.Model):
@@ -450,6 +480,20 @@ class HistoryCounter(models.Model):
     def delete(self):
         self.is_active = False
         self.save()
+
+    # При удалении ловим и сохраняем объект ИНДИВИДУАЛЬНЫЕ ПОКАЗАНИЯ
+    @receiver(pre_delete, sender=CurrentCounter)
+    def copy_arhive_current_to_history(sender, instance, **kwargs):
+        user = instance.user
+        period = instance.period
+        upd_val = {
+            "col_water": instance.col_water,
+            "hot_water": instance.hot_water,
+            #TODO электричество пока отменяется
+            # "electric_day": instance.electric_day,
+            # "electric_night": instance.electric_night,
+        }
+        obj, created = HistoryCounter.objects.update_or_create(user=user, period=period, defaults=upd_val)
 
 
 # Перерасчеты
@@ -694,6 +738,18 @@ class MainBook(models.Model):
         self.is_active = False
         self.save()
 
+    # При изменении константных или переменных расчетов, обновляем сумму начислений
+    @receiver(post_save, sender=ConstantPayments)
+    @receiver(post_save, sender=VariablePayments)
+    def procc_accrual_mainbook(sender, instance, **kwargs):
+        user = instance.user
+        variable = VariablePayments.get_last_val(user=user)[0]
+        period = variable.period
+        const_total = ConstantPayments.objects.get(user=user)
+        varia_total = VariablePayments.objects.filter(period=period).get(user=user)
+        upd_val = {"amount": (const_total.total + varia_total.total)}
+        obj, created = MainBook.objects.update_or_create(user=user, period=period, direction="C", defaults=upd_val)
+
 
 # Текущее состояние счета
 class PersonalAccountStatus(models.Model):
@@ -704,62 +760,35 @@ class PersonalAccountStatus(models.Model):
     updated = models.DateTimeField(verbose_name="Обновлен", auto_now=True)
 
     class Meta:
-        ordering = ("-updated",)
+        ordering = ("amount",)
         verbose_name = "Состояние счета"
         verbose_name_plural = "Состояния счетов"
 
     # Перерасчет, когда вносится?
     @staticmethod
     def get_item(user):
-        return CurrentCounter.objects.filter(user=user)
+        return PersonalAccountStatus.objects.filter(user=user)
 
     def delete(self):
         self.is_active = False
         self.save()
 
-
-# При изменении текущих домовых показаний перещитываем норматив
-@receiver(post_save, sender=HouseCurrent)
-def calculation_of_standart_to_house_current(sender, instance, **kwargs):
-    house = instance.house_id
-    period = instance.period
-    hist = HouseHistory.get_last_val(house)[0]
-    sq = House.get_item(house)[0].sq_home
-    upd_val = {
-        "col_water": ((int(instance.col_water) - int(hist.col_water))/sq),
-        "hot_water": ((int(instance.hot_water) - int(hist.hot_water))/sq),
-        #TODO электричество пока отменяется
-        # "electric_day": instance.electric_day,
-        # "electric_night": instance.electric_night,
-    }
-    obj, created = Standart.objects.update_or_create(house_id=house, period=period, defaults=upd_val)
+    @receiver(post_save, sender=MainBook)
+    def get_update_data(sender, instance, **kwargs):
+        user = instance.user
+        debit = MainBook.get_user_debit(user=user)
+        credit = MainBook.get_user_credit(user=user)
+        debit_sum = sum(abs(d.amount )for d in debit)
+        credit_sum = sum(abs(c.amount) for c in credit)
+        upd_val = {
+            "amount": (credit_sum - debit_sum),
+        }
+        obj, created = PersonalAccountStatus.objects.update_or_create(user=user, defaults=upd_val)
 
 
-# При удалении ловим и сохраняем объект ДОМОВЫЕ ПОКАЗАНИЯ
-@receiver(pre_delete, sender=HouseCurrent)
-def copy_arhive_current_to_history_house(sender, instance, **kwargs):
-    house = instance.house_id
-    period = instance.period
-    upd_val = {
-        "col_water": instance.col_water,
-        "hot_water": instance.hot_water,
-        #TODO электричество пока отменяется
-        # "electric_day": instance.electric_day,
-        # "electric_night": instance.electric_night,
-    }
-    obj, created = HouseHistory.objects.update_or_create(house_id=house, period=period, defaults=upd_val)
 
 
-# При удалении ловим и сохраняем объект ИНДИВИДУАЛЬНЫЕ ПОКАЗАНИЯ
-@receiver(pre_delete, sender=CurrentCounter)
-def copy_arhive_current_to_history(sender, instance, **kwargs):
-    user = instance.user
-    period = instance.period
-    upd_val = {
-        "col_water": instance.col_water,
-        "hot_water": instance.hot_water,
-        #TODO электричество пока отменяется
-        # "electric_day": instance.electric_day,
-        # "electric_night": instance.electric_night,
-    }
-    obj, created = HistoryCounter.objects.update_or_create(user=user, period=period, defaults=upd_val)
+
+
+
+

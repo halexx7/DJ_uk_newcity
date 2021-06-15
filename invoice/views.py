@@ -8,6 +8,7 @@ from django.contrib.postgres import fields
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.core.serializers import serialize
 from django.db import models
+from django.db.models.signals import post_save
 from django.shortcuts import get_object_or_404, render
 from django.utils.safestring import mark_safe
 from django.views.generic import CreateView, DeleteView, ListView, UpdateView
@@ -16,6 +17,7 @@ from django.views.generic.detail import DetailView
 from authnapp.models import User
 from mainapp.models import (
     HeaderData,
+    MainBook,
     UK,
     Appartament,
     City,
@@ -61,6 +63,7 @@ class InvoiceViews(ListView):
         context["header"] = mark_safe(serialize("json", HeaderData.objects.filter(user=user)))
         context["constant"] = mark_safe(serialize("json", ConstantPayments.objects.filter(user=user)))
         context["variable"] = mark_safe(serialize("json", VariablePayments.get_last_val(user.id)))
+        context["status"] = mark_safe(serialize("json", PersonalAccountStatus.get_item(user)))
         return context
 
     def wrapper(self):
@@ -116,7 +119,6 @@ def get_calc_const():
             user=user_id, defaults=update_values
         )
     return (data, total)
-
 
 # Расчет ПЕРЕМЕННЫХ платежей (по сигналу)
 #TODO Какой сигнал? 30 число? или же после внесения счетчиков?
@@ -179,7 +181,6 @@ def get_calc_variable():
         )
     return (data, total, pre_total)
 
-
 # Делает расчет всех полей по Услуге
 def get_calc_service(el, curr, sq_appa, subs, priv, recl):
     element = dict()
@@ -216,7 +217,6 @@ def get_calc_service(el, curr, sq_appa, subs, priv, recl):
     element["total"] = (element["accured"] * element["coefficient"]) - (element["subsidies"] + element["privileges"]) + element["recalculation"]
     return (element)
 
-
 # Готовит данные для шапки (персональные, реквизиты)
 #TODO повесить сигналы на модели чтоб данные при изменении обновлялись
 def get_head_data():
@@ -250,7 +250,6 @@ def get_sale(name, arr):
         else:
             return 0
     return 0
-
 
 # Возваращает перерасчет при наличии или 0
 def get_recl(name, arr):

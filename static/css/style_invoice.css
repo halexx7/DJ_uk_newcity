@@ -21,7 +21,7 @@ p {
 }
 
 .container {
-    width: 710px;
+    width: 650px;
     padding: 0;
     margin: 0 auto;
 }
@@ -88,6 +88,29 @@ p {
 
 .pad__table {
     padding: 2px;
+}
+
+.button {
+    background-color: #868483;
+    border: none;
+    color: white;
+    box-shadow: -2px 4px 8px #868483;
+
+    padding: 5px 10px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+    }
+
+.button:hover {
+    background-color: #686665;
+}
+
+.button:active {
+    box-shadow: none;
 }
 
 /* То что не печатаем помечаем .no-print */
