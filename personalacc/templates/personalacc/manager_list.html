@@ -246,7 +246,10 @@
                         </form>
                     </div>
 
-                    <h4 class="pt-2  mb-4">История перерасчетов</h4>
+                    <div class="row  mt-5  mb-3  d-flex justify-content-between">
+                        <h4 class="pt-2  mb-4">Последние перерасчеты</h4>
+                        <a href="{% url 'personalacc:recalc_history' %}" class="col  text-right  text-decoration-none">История перерасчетов</a>
+                    </div>
 
                     <table class="table">
                         <thead class="thead-light">

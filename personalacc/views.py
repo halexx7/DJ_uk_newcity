@@ -222,3 +222,9 @@ class HouseHistoryListView(LoginRequiredMixin, ListView):
     model = HouseHistory
     context_object_name = "history"
     template_name = "personalacc/house_history_list.html"
+
+
+class RecalcHistoryListView(LoginRequiredMixin, ListView):
+    model = Recalculations
+    context_object_name = "recalc"
+    template_name = "personalacc/recalc_history_list.html"
