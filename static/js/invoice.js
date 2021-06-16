@@ -132,10 +132,11 @@ let total = Number();
 total = (total_const[0] + total_variable[0]).toFixed(2);
 totalPre = (total_const[1] + total_variable[1]).toFixed(2);
 
-$('#subHeaderStatus').text((status).toFixed(2));
-$('#headerTotal').text(total);
-$('#subHeaderTotal').text(total);
+$('#headerTotal').text((status).toFixed(2));
+
 $('#subHeaderPre').text(totalPre);
+$('#subHeaderStatus').text((status).toFixed(2));
+$('#subHeaderTotal').text((status).toFixed(2));
 $('.body__content > table').append(
     `<tr class="table__bold">
         <td colspan="10" style="font-weight: bold;">Итого за расчетный период: </td>
