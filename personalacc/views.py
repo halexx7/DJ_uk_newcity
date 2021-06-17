@@ -18,6 +18,7 @@ from mainapp.models import (
     CurrentCounter,
     MainBook,
     Payment,
+    PersonalAccountStatus,
     UK,
     Appartament,
     HistoryCounter,
@@ -222,3 +223,21 @@ class HouseHistoryListView(LoginRequiredMixin, ListView):
     model = HouseHistory
     context_object_name = "history"
     template_name = "personalacc/house_history_list.html"
+
+
+class RecalcHistoryListView(LoginRequiredMixin, ListView):
+    model = Recalculations
+    context_object_name = "recalc"
+    template_name = "personalacc/recalc_history_list.html"
+
+
+class AccountsReceivableListView(LoginRequiredMixin, ListView):
+    # model = PersonalAccountStatus
+    template_name = "personalacc/accounts_receivable.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["appartament"] = Appartament.objects.get(user=self.request.user)
+        context["receivable"] = PersonalAccountStatus.objects.select_related(amount__lt=0)
+        context["title"] = "Пользователь | ООО Новый город"
+        return context
