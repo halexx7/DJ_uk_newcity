@@ -45,6 +45,8 @@ $('.header__center').append(
      <p> Лицевой счет: <span class="text__sum">${header.personal_account}  </span> сумма к оплате: <span class="text__sum" id="headerTotal"> </span> р.</p>`
 );
 
+
+// Добавляет таблицу с итогами
 $('.header__bottom').append('<table style="width: 606px;"></table>');
 
 $('.header__bottom > table').append(
@@ -74,7 +76,7 @@ $('.header__bottom > table').append(
 // добавим Таблицу расчетов что - за что
 $('.body__content').append('<table></table>');
 
-// добавим шапку
+// Шапка таблицы расчетов
 $('.body__content > table').append(
     `<tr>
         <th>Виды услуг</th>
@@ -96,7 +98,7 @@ function drawingTable (object) {
     let total = Number(), totalPre = Number(), totalSubs = Number(), totalPrivi = Number(), totalRecal = Number();
     object.forEach(function (item, i, arr) {
         total += Number(item.total)
-        totalPre += Number(item.pre_total);
+        totalPre += Number(item.pre_total);ы
         totalSubs += Number(item.subsidies);
         totalPrivi += Number(item.privileges);
         totalRecal += Number(item.recalculation);

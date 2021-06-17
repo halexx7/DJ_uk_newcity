@@ -10,4 +10,5 @@ urlpatterns = [
     re_path(r"^manager/$", personalacc.ManagerPageCreate.as_view(), name="manager"),
     re_path(r"^manager/house_history/$", personalacc.HouseHistoryListView.as_view(), name="house_history"),
     re_path(r"^manager/recalc_history/$", personalacc.RecalcHistoryListView.as_view(), name="recalc_history"),
+    re_path(r"^manager/receivable/$", personalacc.AccountsReceivableListView.as_view(), name="receivable"),
 ]

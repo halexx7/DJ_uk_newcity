@@ -232,12 +232,12 @@ class RecalcHistoryListView(LoginRequiredMixin, ListView):
 
 
 class AccountsReceivableListView(LoginRequiredMixin, ListView):
-    # model = PersonalAccountStatus
+    model = PersonalAccountStatus
+    context_object_name = "receivable"
     template_name = "personalacc/accounts_receivable.html"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["appartament"] = Appartament.objects.get(user=self.request.user)
-        context["receivable"] = PersonalAccountStatus.objects.select_related(amount__lt=0)
-        context["title"] = "Пользователь | ООО Новый город"
+        context["title"] = "Дебиторская задолжность | ООО Новый город"
+        context["appartament"] = Appartament.objects.all()
         return context
