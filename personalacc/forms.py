@@ -1,3 +1,4 @@
+from django.forms import widgets
 from authnapp.models import User
 from crispy_forms.helper import FormHelper
 from django import forms
@@ -64,6 +65,9 @@ class RecalculationsForm(forms.ModelForm):
     class Meta:
         model = Recalculations
         exclude = ("period", "created", "updated")
+        widgets = {
+            'user': forms.TextInput(attrs={'cols': 80, 'rows': 20})
+        }
 
 
 class SubsidiesForm(forms.ModelForm):

@@ -241,3 +241,15 @@ class AccountsReceivableListView(LoginRequiredMixin, ListView):
         context["title"] = "Дебиторская задолжность | ООО Новый город"
         context["appartament"] = Appartament.objects.all()
         return context
+
+
+def autocomplete_users(request):
+    if request.is_ajax():
+        queryset = User.objects.filter(name__startswith=request.GET.get('search', None))
+        list = []        
+        for i in queryset:
+            list.append(i.name)
+        data = {
+            'list': list,
+        }
+        return JsonResponse(data)

@@ -158,7 +158,24 @@ jQuery(document).ready(function(){
         });
     });
 
-
+    // Autocomplete USERS
+    $("#id_user").on('keyup', function(){
+        var value = $(this).val();
+        $.ajax({
+            url: "auto_users",
+            data: {
+                'search': value 
+            },
+            dataType: 'json',
+            success: function (data) {
+                list = data.list;
+                $("#id_user").autocomplete({
+                source: list,
+                minLength: 3 
+                });       
+            }
+        });        
+    });
 
     // USER_LIST
     //Ловим событие формы COUNTERFORM
