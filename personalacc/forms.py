@@ -2,6 +2,7 @@ from django.forms import widgets
 from authnapp.models import User
 from crispy_forms.helper import FormHelper
 from django import forms
+from dal import autocomplete
 
 from authnapp.forms import BootstrapStylesMixins
 from mainapp.models import CurrentCounter, HouseCurrent, HouseHistory, MainBook, Payment, Privileges, Recalculations, Services, Subsidies
@@ -53,10 +54,9 @@ class HomeHistoryCounterForm(forms.ModelForm):
 
 class RecalculationsForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
-        super(RecalculationsForm, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         #Отправляем фильтрованные данные в форму
         self.fields['service'].queryset = Services.objects.filter(const=False)
-        self.fields['user'].queryset = User.objects.filter(is_staff=False)
         for field_name, field in self.fields.items():
             field.widget.attrs["class"] = "form-control"
         self.helper = FormHelper()
@@ -66,7 +66,14 @@ class RecalculationsForm(forms.ModelForm):
         model = Recalculations
         exclude = ("period", "created", "updated")
         widgets = {
-            'user': forms.TextInput(attrs={'cols': 80, 'rows': 20})
+            "user": autocomplete.ModelSelect2(
+                url="dal_user/",
+                attrs={
+                    "class": "form-control",
+                    "data-pleaceholder": "Начните набирать имя жильца...",
+                    "data-minimum-input-length": 3,
+                },
+            )
         }
 
 

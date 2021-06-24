@@ -1,18 +1,14 @@
 import datetime
 import json
 from typing import KeysView
+from dal import autocomplete
 
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core import serializers
-from django.db.models.signals import pre_delete
-from django.dispatch import receiver
 from django.http import JsonResponse
-from django.shortcuts import HttpResponseRedirect, get_object_or_404, render
 from django.urls import reverse, reverse_lazy
 from django.views.generic import CreateView, DeleteView, ListView, UpdateView
-from django.views.generic.detail import DetailView
 
-from authnapp.forms import UserEditForm, UserLoginForm, UserProfileEditForm, UserRegisterForm
 from authnapp.models import User
 from mainapp.models import (
     CurrentCounter,
@@ -243,13 +239,14 @@ class AccountsReceivableListView(LoginRequiredMixin, ListView):
         return context
 
 
-def autocomplete_users(request):
-    if request.is_ajax():
-        queryset = User.objects.filter(name__startswith=request.GET.get('search', None))
-        list = []        
-        for i in queryset:
-            list.append(i.name)
-        data = {
-            'list': list,
-        }
-        return JsonResponse(data)
+class UserAutocomplete(autocomplete.Select2QuerySetView):
+    def get_queryset(self):
+        # Don't forget to filter out results depending on the visitor!
+        if not self.request.user.is_authenticated:
+            return User.objects.none()
+
+        qs = User.objects.filter(is_staff=False)
+
+        if self.q:
+            qs = qs.filter(name__istartswith=self.q)
+        return qs
