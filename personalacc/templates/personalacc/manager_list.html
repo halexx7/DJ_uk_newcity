@@ -402,7 +402,7 @@
                                                 <th scope="col">ФИО</th>
                                                 <th scope="col">Название</th>
                                                 <th scope="col">Субсидия, %</th>
-                                                <th scope="col">Редактировать</th>
+                                                <th scope="col">Описание</th>
                                             </tr>
                                         </thead>
                                         {% for el in house_privileges %}
@@ -489,7 +489,9 @@
 {% block footer %}
 
 {{ recalculations_form.media }}
-<!-- {{ form.media }} -->
+{{ payments_form.media }}
+{{ privilege_form.media }}
+{{ subsidies_form.media }}
 
 <script>
 (function($) {
@@ -510,7 +512,5 @@
         newTable.slideDown()
     });
 })($)
-$('.select2-selection__arrow').hide();
 </script>
-
 {% endblock footer %}

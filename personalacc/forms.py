@@ -11,6 +11,7 @@ class MultipleForm(forms.Form):
     """Добавляем клас Мульти формности, идентификация форм будет по скрытому полю action"""
     action = forms.CharField(max_length=60, widget=forms.HiddenInput())
 
+
 class CurrentCounterForm(forms.ModelForm):
     class Meta:
         model = CurrentCounter
@@ -79,9 +80,6 @@ class RecalculationsForm(forms.ModelForm):
 
 class SubsidiesForm(forms.ModelForm):
     field_name = ["user", "service", "sale", "desc"]
-    class Meta:
-            model = Subsidies
-            exclude = ("created", "updated")
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -89,13 +87,24 @@ class SubsidiesForm(forms.ModelForm):
         self.fields['user'].queryset = User.objects.filter(is_staff=False)
         self.helper = FormHelper()
         self.helper.form_show_labels = False
+
+    class Meta:
+        model = Subsidies
+        exclude = ("created", "updated")
+        widgets = {
+        "user": autocomplete.ModelSelect2(
+            url="dal_user/",
+            attrs={
+                "class": "form-control",
+                "data-pleaceholder": "Начните набирать имя жильца...",
+                "data-minimum-input-length": 3,
+                },
+            )
+        }
 
 
 class PrivilegesForm(BootstrapStylesMixins, forms.ModelForm):
     field_name = ["user", "service", "sale", "desc"]
-    class Meta:
-        model = Privileges
-        exclude = ("is_active", "created", "updated")
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -104,19 +113,43 @@ class PrivilegesForm(BootstrapStylesMixins, forms.ModelForm):
         self.helper = FormHelper()
         self.helper.form_show_labels = False
 
+    class Meta:
+        model = Privileges
+        exclude = ("is_active", "created", "updated")
+        widgets = {
+            "user": autocomplete.ModelSelect2(
+                url="dal_user/",
+                attrs={
+                    "class": "form-control",
+                    "data-pleaceholder": "Начните набирать имя жильца...",
+                    "data-minimum-input-length": 3,
+                },
+            )
+        }
+
 
 class PaymentsForm(BootstrapStylesMixins, forms.ModelForm):
     field_name = ["user", "period", "direction", "amount"]
-    class Meta:
-        model = MainBook
-        exclude = ("created", "updated")
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['direction'].queryset = MainBook.objects.filter(direction="D")
-        self.fields['user'].queryset = User.objects.filter(is_staff=False)
+        self.fields['direction'].queryset = MainBook.objects.all().filter(direction="D")
         self.helper = FormHelper()
         self.helper.form_show_labels = False
+
+    class Meta:
+        model = MainBook
+        exclude = ("created", "updated")
+        widgets = {
+            "user": autocomplete.ModelSelect2(
+                url="dal_user/",
+                attrs={
+                    "class": "form-control",
+                    "data-pleaceholder": "Начните набирать имя жильца...",
+                    "data-minimum-input-length": 3,
+                },
+            )
+        }
 
 
     
