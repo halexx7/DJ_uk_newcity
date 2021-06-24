@@ -47,7 +47,6 @@ jQuery(document).ready(function(){
     $('#currentCountBtn').on('click', function (e) {
         e.preventDefault();
         var mForm = $('#house_count_form').serialize();
-        console.log(mForm);
         $.ajax({
             type : 'POST',
             data: mForm,
@@ -70,7 +69,6 @@ jQuery(document).ready(function(){
     $('#recalcBtn').on('click', function (e) {
         e.preventDefault();
         var mForm = $('#recalculations_form').serialize();
-        console.log(mForm);
         $.ajax({
             type : 'POST',
             data: mForm,
@@ -93,7 +91,6 @@ jQuery(document).ready(function(){
     $('#privilegeBtn').on('click', function (e) {
         e.preventDefault();
         var mForm = $('#privilege_form').serialize();
-        console.log(mForm);
         $.ajax({
             type : 'POST',
             data: mForm,
@@ -116,7 +113,6 @@ jQuery(document).ready(function(){
     $('#subsidiesBtn').on('click', function (e) {
         e.preventDefault();
         var mForm = $('#subsidies_form').serialize();
-        console.log(mForm);
         $.ajax({
             type : 'POST',
             data: mForm,
@@ -158,6 +154,23 @@ jQuery(document).ready(function(){
         });
     });
 
+    // Select2
+    $(document).ready(function () {
+        $('#id_user').select2({
+            ajax: {
+                // url: "{% url 'select2_user' %}",
+                dataType: 'json',
+                processResults: function (data) {
+                    return {
+                        results: $.map(data, function (item) {
+                            return {id: item.id, text: item.name};
+                        })
+                    };
+                }
+            },
+            minimumInputLength: 1
+        });
+    });
 
 
     // USER_LIST

@@ -52,10 +52,10 @@ class HomeHistoryCounterForm(forms.ModelForm):
 
 class RecalculationsForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
-        super(RecalculationsForm, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         #Отправляем фильтрованные данные в форму
         self.fields['service'].queryset = Services.objects.filter(const=False)
-        self.fields['user'].queryset = User.objects.filter(is_staff=False)
+        self.fields['user'].queryset = User.objects.none()
         for field_name, field in self.fields.items():
             field.widget.attrs["class"] = "form-control"
         self.helper = FormHelper()

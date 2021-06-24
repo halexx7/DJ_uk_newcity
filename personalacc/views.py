@@ -6,7 +6,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core import serializers
 from django.db.models.signals import pre_delete
 from django.dispatch import receiver
-from django.http import JsonResponse
+from django.http import JsonResponse, request
 from django.shortcuts import HttpResponseRedirect, get_object_or_404, render
 from django.urls import reverse, reverse_lazy
 from django.views.generic import CreateView, DeleteView, ListView, UpdateView
@@ -153,6 +153,16 @@ class ManagerPageCreate(LoginRequiredMixin, CreateView):
                     else:
                         return JsonResponse({"error": form.errors}, status=400)
         return JsonResponse({"error": ""}, status=400)
+    
+    def get(self, request, *args, **kwargs):
+        if self.request.is_ajax and self.request.method == "GET":
+            if request.GET:
+                term = request.GET.get("term")
+                user = User.objects.all().filter(name__icontains=term)
+                response_content = list(user.values())
+                return JsonResponse(response_content, safe=False)
+        return super().get(request, *args, **kwargs)
+
 
     def house_count_process(self, *args, **kwargs):
         house = kwargs['post'].get("house")
@@ -209,15 +219,15 @@ class ManagerPageCreate(LoginRequiredMixin, CreateView):
 
     def payments_process(self, *args, **kwargs):
         update_values = {
-            "direction": kwargs['post'].get("direction"),
-            "amount": kwargs['post'].get("amount")
+            "direction": kwargs["post"].get("direction"),
+            "amount": kwargs["post"].get("amount")
         }
         obj, created = MainBook.objects.update_or_create(
             user_id=kwargs["user"], period=kwargs["period"], defaults=update_values
         )
         ser_instance = serializers.serialize("json", [obj,],)
         return ser_instance
-
+    
 
 class HouseHistoryListView(LoginRequiredMixin, ListView):
     model = HouseHistory
