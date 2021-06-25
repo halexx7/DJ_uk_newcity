@@ -102,7 +102,6 @@ class SubsidiesForm(forms.ModelForm):
 
 
 class PrivilegesForm(forms.ModelForm):
-
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['service'].queryset = Services.objects.filter(const=False)
@@ -126,7 +125,6 @@ class PrivilegesForm(forms.ModelForm):
 
 
 class PaymentsForm(forms.ModelForm):
-
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['direction'].queryset = MainBook.objects.all().filter(direction="D")

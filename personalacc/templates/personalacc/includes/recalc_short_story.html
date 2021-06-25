@@ -1,0 +1,25 @@
+<table class="table">
+    <thead class="thead-light">
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Период</th>
+            <th scope="col">(Лицевой счет) - ФИО</th>
+            <th scope="col">Услуга</th>
+            <th scope="col">Долг(+)/переплата(-)</th>
+            <th scope="col">Описание</th>
+        </tr>
+    </thead>
+    
+    {% for el in house_rec %}
+    <tbody>
+        <tr>
+            <td>{{ el.id }}</td>
+            <td>{{ el.period|date:"m - Y" }}</td>
+            <td>{{ el.user }}</td>
+            <td>{{ el.service }}</td>
+            <td>{{ el.recalc}}</td>
+            <td>{{ el.desc}}</td>
+        </tr>
+    </tbody>
+    {% endfor %}
+</table>

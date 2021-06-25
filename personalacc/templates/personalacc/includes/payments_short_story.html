@@ -1,0 +1,10 @@
+{% for el in house_pay_debit %}
+<tbody>
+    <tr>
+        <td>{{ el.id }}</td>
+        <td>{{ el.period|date:"m - Y" }}</td>
+        <td>{{ el.user }}</td>
+        <td>{{ el.amount }}</td>
+    </tr>
+</tbody>
+{% endfor %}

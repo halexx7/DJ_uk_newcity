@@ -1,0 +1,11 @@
+{% for el in house_privileges %}
+<tbody>
+    <tr>
+        <td>{{ el.id }}</td>
+        <td>{{ el.user }}</td>
+        <td>{{ el.service }}</td>
+        <td>{{ el.sale }}</td>
+        <td>{{ el.desc }}</td>
+    </tr>
+</tbody>
+{% endfor %}

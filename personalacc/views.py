@@ -1,11 +1,10 @@
 import datetime
-import json
-from typing import KeysView
 from dal import autocomplete
 
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.template.loader import render_to_string
 from django.core import serializers
-from django.http import JsonResponse
+from django.http import JsonResponse, request
 from django.urls import reverse, reverse_lazy
 from django.views.generic import CreateView, DeleteView, ListView, UpdateView
 
@@ -178,8 +177,10 @@ class ManagerPageCreate(LoginRequiredMixin, CreateView):
         obj, created = Recalculations.objects.update_or_create(
             user_id=kwargs['user'], period=kwargs['period'], service_id=kwargs['post'].get("service"), defaults=update_values
         )
-        ser_instance = serializers.serialize("json", [obj,],)
-        return ser_instance
+        instance = Recalculations.objects.all()[:5]
+        content = {"house_rec": instance}
+        result = render_to_string("personalacc/includes/recalc_short_story.html", content)
+        return result
       
     def privilege_process(self, *args, **kwargs):
         update_values = {

@@ -520,7 +520,7 @@ class Recalculations(models.Model):
     updated = models.DateTimeField(verbose_name="Обновлен", auto_now=True)
 
     class Meta:
-        ordering = ("-period",)
+        ordering = ("-updated",)
         verbose_name = "Перерасчет"
         verbose_name_plural = "Перерасчеты"
 

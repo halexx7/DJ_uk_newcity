@@ -249,37 +249,13 @@
                             <button action="{% url 'person:user' %}" type="button" class="btn  btn-primary  my-2" id="recalcBtn">Внести</button>
                         </form>
                     </div>
-
                     <div class="row  mt-5  mb-3  d-flex justify-content-between">
                         <h4 class="pt-2  mb-4">Последние перерасчеты</h4>
                         <a href="{% url 'personalacc:recalc_history' %}" class="col  text-right  text-decoration-none">История перерасчетов</a>
                     </div>
-
-                    <table class="table">
-                        <thead class="thead-light">
-                            <tr>
-                                <th scope="col">#</th>
-                                <th scope="col">Период</th>
-                                <th scope="col">(Лицевой счет) - ФИО</th>
-                                <th scope="col">Услуга</th>
-                                <th scope="col">Долг(+)/переплата(-)</th>
-                                <th scope="col">Описание</th>
-                            </tr>
-                        </thead>
-
-                        {% for el in house_rec %}
-                        <tbody>
-                            <tr>
-                                <td>{{ el.id }}</td>
-                                <td>{{ el.period|date:"m - Y" }}</td>
-                                <td>{{ el.user }}</td>
-                                <td>{{ el.service }}</td>
-                                <td>{{ el.recalc}}</td>
-                                <td>{{ el.desc}}</td>
-                            </tr>
-                        </tbody>
-                        {% endfor %}
-                    </table>
+                    <div class="recalc_list">
+                        {% include 'personalacc/includes/recalc_short_story.html' %}
+                    </div>
                 </div>
 
                 <!-- Tab-PRIVILEGES -->
@@ -346,17 +322,7 @@
                                                 <th scope="col">Описание</th>
                                             </tr>
                                         </thead>
-                                        {% for el in house_privileges %}
-                                        <tbody>
-                                            <tr>
-                                                <td>{{ el.id }}</td>
-                                                <td>{{ el.user }}</td>
-                                                <td>{{ el.service }}</td>
-                                                <td>{{ el.sale }}</td>
-                                                <td>{{ el.desc }}</td>
-                                            </tr>
-                                        </tbody>
-                                        {% endfor %}
+                                        {% include 'personalacc/includes/privileges_short_story.html' %}
                                     </table>
                                 </div>
 
@@ -405,17 +371,7 @@
                                                 <th scope="col">Описание</th>
                                             </tr>
                                         </thead>
-                                        {% for el in house_privileges %}
-                                        <tbody>
-                                            <tr>
-                                                <td>{{ el.id }}</td>
-                                                <td>{{ el.user }}</td>
-                                                <td>{{ el.service }}</td>
-                                                <td>{{ el.sale }}</td>
-                                                <td>{{ el.desc }}</td>
-                                            </tr>
-                                        </tbody>
-                                        {% endfor %}                                        
+                                        {% include 'personalacc/includes/subsidies_short_story.html' %}                                    
                                     </table>
                                 </div>
                             </div>
@@ -466,17 +422,7 @@
                                 <th scope="col">Сумма</th>
                             </tr>
                         </thead>
-
-                        {% for el in house_pay_debit %}
-                        <tbody>
-                            <tr>
-                                <td>{{ el.id }}</td>
-                                <td>{{ el.period|date:"m - Y" }}</td>
-                                <td>{{ el.user }}</td>
-                                <td>{{ el.amount }}</td>
-                            </tr>
-                        </tbody>
-                        {% endfor %}
+                        {% include 'personalacc/includes/payments_short_story.html' %}  
                     </table>
                 </div>
             </div>
@@ -493,24 +439,4 @@
 {{ privilege_form.media }}
 {{ subsidies_form.media }}
 
-<script>
-(function($) {
-    $('#add-form').click(function() {
-        var index = $('#id_inline_test_models-TOTAL_FORMS').val()
-        var newTable = $('#id_inline_test_models-__prefix__-DELETE').parents('table').clone()
-        newTable.find(':input').each(function() {
-            for (attr of ['name', 'id'])
-                $(this).attr(
-                    attr,
-                    $(this).attr(attr).replace('__prefix__', index)
-                )
-        })
-        newTable.insertBefore($(this))
-        $('#id_inline_test_models-TOTAL_FORMS').val(
-            parseInt($('#id_inline_test_models-TOTAL_FORMS').val()) + 1
-        )
-        newTable.slideDown()
-    });
-})($)
-</script>
 {% endblock footer %}

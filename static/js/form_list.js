@@ -47,7 +47,6 @@ jQuery(document).ready(function(){
     $('#currentCountBtn').on('click', function (e) {
         e.preventDefault();
         var mForm = $('#house_count_form').serialize();
-        console.log(mForm);
         $.ajax({
             type : 'POST',
             data: mForm,
@@ -70,7 +69,6 @@ jQuery(document).ready(function(){
     $('#recalcBtn').on('click', function (e) {
         e.preventDefault();
         var mForm = $('#recalculations_form').serialize();
-        console.log(mForm);
         $.ajax({
             type : 'POST',
             data: mForm,
@@ -79,6 +77,7 @@ jQuery(document).ready(function(){
                 time = 15000;
                 typeAlert = `success`;
                 displayCounterAlert(say, typeAlert, time, e.target.id);
+                $('.recalc_list').html(data.instance);
             },
             error: function (data) {
                 say = `Что-то пошло не так! Попробуйте чуть позже!`;
@@ -89,11 +88,11 @@ jQuery(document).ready(function(){
         });
     });
 
+
     //Ловим событие формы PRIVILEGE
     $('#privilegeBtn').on('click', function (e) {
         e.preventDefault();
         var mForm = $('#privilege_form').serialize();
-        console.log(mForm);
         $.ajax({
             type : 'POST',
             data: mForm,
@@ -116,7 +115,6 @@ jQuery(document).ready(function(){
     $('#subsidiesBtn').on('click', function (e) {
         e.preventDefault();
         var mForm = $('#subsidies_form').serialize();
-        console.log(mForm);
         $.ajax({
             type : 'POST',
             data: mForm,
@@ -139,7 +137,6 @@ jQuery(document).ready(function(){
     $('#paymentsBtn').on('click', function (e) {
         e.preventDefault();
         var mForm = $('#payments_form').serialize();
-        console.log(mForm);
         $.ajax({
             type : 'POST',
             data: mForm,
