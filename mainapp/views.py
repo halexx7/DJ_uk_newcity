@@ -27,6 +27,17 @@ class ContactList(LoginRequiredMixin, ListView):
         return context
 
 
+class NewstList(LoginRequiredMixin, ListView):
+    model = PostNews
+    template_name = "mainapp/news.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["title"] = "Новости | ООО Новый город"
+        context["news"] = PostNews.get_items()
+        return context
+
+
 def main(request):
     return render(request, "mainapp/index.html")
 
