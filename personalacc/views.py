@@ -219,18 +219,48 @@ class ManagerPageCreate(LoginRequiredMixin, CreateView):
 
 class HouseHistoryListView(LoginRequiredMixin, ListView):
     model = HouseHistory
+    paginate_by = 50
     context_object_name = "history"
     template_name = "personalacc/house_history_list.html"
 
 
 class RecalcHistoryListView(LoginRequiredMixin, ListView):
     model = Recalculations
+    paginate_by = 50
     context_object_name = "recalc"
     template_name = "personalacc/recalc_history_list.html"
 
 
+class SubsidiesHistoryListView(LoginRequiredMixin, ListView):
+    model = Subsidies
+    paginate_by = 50
+    context_object_name = "subsidies"
+    template_name = "personalacc/subsidies_history_list.html"
+
+
+class PrivilegesHistoryListView(LoginRequiredMixin, ListView):
+    model = Privileges
+    paginate_by = 50
+    context_object_name = "privileges"
+    template_name = "personalacc/privileges_history_list.html"
+
+
+class PaymentsHistoryListView(LoginRequiredMixin, ListView):
+    model = MainBook
+    paginate_by = 50
+    context_object_name = "payments"
+    template_name = "personalacc/payments_history_list.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["title"] = "История оплат | ООО Новый город"
+        context["payments"] = MainBook.get_all_debit()
+        return context
+    
+
 class AccountsReceivableListView(LoginRequiredMixin, ListView):
     model = PersonalAccountStatus
+    paginate_by = 50
     context_object_name = "receivable"
     template_name = "personalacc/accounts_receivable.html"
 

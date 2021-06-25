@@ -13,7 +13,7 @@
     <div class="container">
         <div class="mb-5">
             <h1 class="section__title  mt-3  mb-5">Новости</h1>
-            {% for news in news %}
+            {% for news in page_obj %}
             <div class="card border-secondary mb-3">
                 <div class="card-header">Дата добавления: {{ news.created }} 
                 {% if news.created|isLastWeek %}
@@ -26,6 +26,20 @@
                 </div>
             </div>
             {% endfor %}
+            <div class="pagination">
+                <span class="step-links">
+                    {% if page_obj.has_previous %}
+                        <a href="?page={{ page_obj.previous_page_number }}">&laquo; назад    </a>
+                    {% endif %}
+                    <span class="current  px-3">
+                        Страница {{ page_obj.number }} из {{ page_obj.paginator.num_pages }}.
+                    </span>
+            
+                    {% if page_obj.has_next %}
+                        <a href="?page={{ page_obj.next_page_number }}">    вперед &raquo;</a>
+                    {% endif %}
+                </span>
+            </div>
         </div>
     </div><!-- /.container -->
 </section>

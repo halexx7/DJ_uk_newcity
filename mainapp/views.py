@@ -29,6 +29,7 @@ class ContactList(LoginRequiredMixin, ListView):
 
 class NewstList(LoginRequiredMixin, ListView):
     model = PostNews
+    paginate_by = 10
     template_name = "mainapp/news.html"
 
     def get_context_data(self, **kwargs):

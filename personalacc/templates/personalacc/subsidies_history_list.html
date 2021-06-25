@@ -11,7 +11,7 @@
 <div class="container">
     <div class="my-5">
         <div class="row  mt-5  mb-3  d-flex justify-content-between">
-            <h4 class="col">История перерасчетов</h4>
+            <h4 class="col">История субсидий</h4>
             <a href="{% url 'personalacc:manager' %}" class="col  text-right  text-decoration-none">На главную</a>
         </div>
         <div class="pagination  my-3">
@@ -29,32 +29,28 @@
             </span>
         </div>
         <div class="manager-area__counters-history  mb-5">
-            <table class="table">
-                <thead>
+            <table class="table  mb-5">
+                <thead class="thead-light">
                     <tr>
                         <th scope="col">#</th>
-                        <th scope="col">Период</th>
-                        <th scope="col">Жилец</th>
-                        <th scope="col">Услуга</th>
-                        <th scope="col">Сумма</th>
+                        <th scope="col">ФИО</th>
+                        <th scope="col">Название</th>
+                        <th scope="col">Субсидия, %</th>
                         <th scope="col">Описание</th>
                     </tr>
                 </thead>
-    
-                {% for el in recalc %}
+                {% for el in subsidies %}
                 <tbody>
                     <tr>
                         <td>{{ el.id }}</td>
-                        <td>{{ el.period|date:"m - Y" }}</td>
                         <td>{{ el.user }}</td>
                         <td>{{ el.service }}</td>
-                        <td>{{ el.recalc }}</td>
+                        <td>{{ el.sale }}</td>
                         <td>{{ el.desc }}</td>
                     </tr>
                 </tbody>
                 {% endfor %}
-    
-            </table> 
+            </table>
         </div>
     </div>
 </div>
