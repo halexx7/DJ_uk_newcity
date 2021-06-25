@@ -187,30 +187,9 @@
                             <a href="{% url 'personalacc:house_history' %}" class="col  text-right  text-decoration-none">История показаний</a>
                         </div>
                         <div class="manager-area__counters-history  mb-5">
-                            <table class="table">
-                                <thead>
-                                    <tr>
-                                        <th scope="col">#</th>
-                                        <th scope="col">Дата</th>
-                                        <th scope="col">Адрес</th>
-                                        <th scope="col">ХВС</th>
-                                        <th scope="col">ХГС</th>
-                                    </tr>
-                                </thead>
-
-                                {% for el in house_current %}
-                                <tbody>
-                                    <tr>
-                                        <td>{{ el.id }}</td>
-                                        <td>{{ el.period|date:"m - Y" }}</td>
-                                        <td class="text-left">{{ el.house }}</td>
-                                        <td>{{ el.col_water }}</td>
-                                        <td>{{ el.hot_water }}</td>
-                                    </tr>
-                                </tbody>
-                                {% endfor %}
-
-                            </table> 
+                            <div class="house-current_list">
+                                {% include 'personalacc/includes/house_current_short_history.html' %}
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -312,18 +291,9 @@
                                     </div>
                                     
                                     <h4  class="pt-4  mb-4">Действующие льготы</h4>
-                                    <table class="table  mb-5">
-                                        <thead class="thead-light">
-                                            <tr>
-                                                <th scope="col">#</th>
-                                                <th scope="col">ФИО</th>
-                                                <th scope="col">Название</th>
-                                                <th scope="col">Льгота, %</th>
-                                                <th scope="col">Описание</th>
-                                            </tr>
-                                        </thead>
+                                   <div class="privileges_list">
                                         {% include 'personalacc/includes/privileges_short_story.html' %}
-                                    </table>
+                                   </div>
                                 </div>
 
                                 <!-- Link-SUBSIDIES -->
@@ -361,18 +331,9 @@
                                     </div>
 
                                     <h4  class="pt-4  mb-4">Действующие субсидии</h4>
-                                    <table class="table  mb-5">
-                                        <thead class="thead-light">
-                                            <tr>
-                                                <th scope="col">#</th>
-                                                <th scope="col">ФИО</th>
-                                                <th scope="col">Название</th>
-                                                <th scope="col">Субсидия, %</th>
-                                                <th scope="col">Описание</th>
-                                            </tr>
-                                        </thead>
+                                    <div class="subsidies_list">
                                         {% include 'personalacc/includes/subsidies_short_story.html' %}                                    
-                                    </table>
+                                    </div>
                                 </div>
                             </div>
                         </div><!-- ./col-9 -->
@@ -413,17 +374,9 @@
                     </div>
 
                     <h4 class="pt-2  mb-4">История оплат</h4>
-                    <table class="table">
-                        <thead class="thead-light">
-                            <tr>
-                                <th scope="col">#</th>
-                                <th scope="col">Период</th>
-                                <th scope="col">(Лицевой счет) - ФИО</th>
-                                <th scope="col">Сумма</th>
-                            </tr>
-                        </thead>
+                    <div class="payments_list">
                         {% include 'personalacc/includes/payments_short_story.html' %}  
-                    </table>
+                    </div>
                 </div>
             </div>
         </div>

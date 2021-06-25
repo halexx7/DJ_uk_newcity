@@ -82,7 +82,6 @@ class SubsidiesForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['service'].queryset = Services.objects.filter(const=False)
-        self.fields['user'].queryset = User.objects.none()
         self.helper = FormHelper()
         self.helper.form_show_labels = False
 
@@ -105,7 +104,6 @@ class PrivilegesForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['service'].queryset = Services.objects.filter(const=False)
-        self.fields['user'].queryset = User.objects.none()
         self.helper = FormHelper()
         self.helper.form_show_labels = False
 
@@ -128,7 +126,6 @@ class PaymentsForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['direction'].queryset = MainBook.objects.all().filter(direction="D")
-        self.fields['user'].queryset = User.objects.none()
         self.helper = FormHelper()
         self.helper.form_show_labels = False
 

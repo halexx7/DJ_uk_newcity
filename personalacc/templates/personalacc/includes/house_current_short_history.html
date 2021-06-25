@@ -1,0 +1,22 @@
+<table class="table">
+    <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Дата</th>
+            <th scope="col">Адрес</th>
+            <th scope="col">ХВС</th>
+            <th scope="col">ХГС</th>
+        </tr>
+    </thead>
+    {% for el in house_current %}
+    <tbody>
+        <tr>
+            <td>{{ el.id }}</td>
+            <td>{{ el.period|date:"m - Y" }}</td>
+            <td class="text-left">{{ el.house }}</td>
+            <td>{{ el.col_water }}</td>
+            <td>{{ el.hot_water }}</td>
+        </tr>
+    </tbody>
+    {% endfor %}
+</table> 

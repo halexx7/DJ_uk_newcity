@@ -220,6 +220,7 @@ class House(models.Model):
     updated = models.DateTimeField(verbose_name="Обновлен", auto_now=True)
 
     class Meta:
+        ordering = ("-updated",)
         verbose_name = "Дом"
         verbose_name_plural = "007 Дома"
 
@@ -229,6 +230,7 @@ class House(models.Model):
     @staticmethod
     def get_item(house):
         return House.objects.filter(id=house)[0:1]
+    
 
     def delete(self):
         self.is_active = False
@@ -248,6 +250,7 @@ class HouseCurrent(models.Model):
     updated = models.DateTimeField(verbose_name="Обновлен", auto_now=True)
 
     class Meta:
+        ordering = ("-updated",)
         verbose_name = "Домовой счетчик (текущий)"
         verbose_name_plural = "Домовые счетчики (текущие)"
         # unique_together = ('house',)
@@ -258,6 +261,10 @@ class HouseCurrent(models.Model):
     @staticmethod
     def get_item(user):
         return HouseCurrent.objects.filter(user=user)
+
+    @staticmethod
+    def get_qty_last_items(qty):
+        return HouseCurrent.objects.all()[:qty]
 
     def delete(self):
         self.is_active = False
@@ -293,6 +300,10 @@ class HouseHistory(models.Model):
     @staticmethod
     def get_last_val(house):
         return HouseHistory.objects.filter(house=house)[0:1]
+
+    @staticmethod
+    def get_qty_last_items(qty):
+        return HouseCurrent.objects.all()[:qty]
 
     def delete(self):
         self.is_active = False
@@ -528,6 +539,10 @@ class Recalculations(models.Model):
     @staticmethod
     def get_last_val(user):
         return Recalculations.objects.filter(user=user)[0:1]
+    
+    @staticmethod
+    def get_qty_last_items(qty):
+        return Recalculations.objects.all()[:qty]
 
     def delete(self):
         self.is_active = False
@@ -558,6 +573,10 @@ class Subsidies(models.Model):
     def get_items(user):
         return Subsidies.objects.filter(user=user)
 
+    @staticmethod
+    def get_qty_last_items(qty):
+        return Subsidies.objects.all()[:qty]
+
     def delete(self):
         self.is_active = False
         self.save()
@@ -585,12 +604,12 @@ class Privileges(models.Model):
 
     @staticmethod
     def get_items(user):
-        return Subsidies.objects.filter(user=user)
-    
-    def delete(self):
-        self.is_active = False
-        self.save()
+        return Privileges.objects.filter(user=user)
 
+    @staticmethod
+    def get_qty_last_items(qty):
+        return Privileges.objects.all()[:qty]
+    
     def delete(self):
         self.is_active = False
         self.save()
@@ -752,6 +771,10 @@ class MainBook(models.Model):
         """ Возвращает все списания co счета ВСЕ"""
         return MainBook.objects.filter(direction = 'C')
 
+    @staticmethod
+    def get_qty_last_items(qty):
+        return MainBook.objects.filter(direction = 'D').order_by("-updated",)[:qty]
+
     def delete(self):
         self.is_active = False
         self.save()
@@ -805,11 +828,3 @@ class PersonalAccountStatus(models.Model):
             "amount": (credit_sum - debit_sum),
         }
         obj, created = PersonalAccountStatus.objects.update_or_create(user=user, defaults=upd_val)
-
-
-
-
-
-
-
-

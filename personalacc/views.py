@@ -4,15 +4,14 @@ from dal import autocomplete
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.template.loader import render_to_string
 from django.core import serializers
-from django.http import JsonResponse, request
-from django.urls import reverse, reverse_lazy
+from django.http import JsonResponse
+from django.urls import reverse_lazy
 from django.views.generic import CreateView, DeleteView, ListView, UpdateView
 
 from authnapp.models import User
 from mainapp.models import (
     CurrentCounter,
     MainBook,
-    Payment,
     PersonalAccountStatus,
     UK,
     Appartament,
@@ -114,12 +113,12 @@ class ManagerPageCreate(LoginRequiredMixin, CreateView):
             if name not in context:
                 context[name] = form()
         context["uk"] = UK.objects.all()
-        context["house_history"] = HouseHistory.objects.all()
-        context["house_current"] = HouseCurrent.objects.all()
-        context["house_rec"] = Recalculations.objects.all()
-        context["house_privileges"] = Privileges.objects.all()
-        context["house_subsidies"] = Subsidies.objects.all()
-        context["house_pay_debit"] = MainBook.get_all_debit()
+        context["house_history"] = HouseHistory.get_qty_last_items(5)
+        context["house_current"] = HouseCurrent.get_qty_last_items(5)
+        context["house_rec"] = Recalculations.get_qty_last_items(5)
+        context["house_privileges"] = Privileges.get_qty_last_items(5)
+        context["house_subsidies"] = Subsidies.get_qty_last_items(5)
+        context["house_pay_debit"] = MainBook.get_qty_last_items(5)
         context["title"] = "Менеджер | ООО Новый город"
         return context
 
@@ -166,8 +165,10 @@ class ManagerPageCreate(LoginRequiredMixin, CreateView):
             previous_month = (kwargs['period'] - datetime.timedelta(days=1)).replace(day=1)
             previous_value = HouseCurrent.objects.filter(house_id=house, period=previous_month)
             previous_value.delete()
-        ser_instance = serializers.serialize("json", [obj,],)
-        return ser_instance
+        instance = HouseCurrent.get_qty_last_items(5)
+        content = {"house_current": instance}
+        result = render_to_string("personalacc/includes/house_current_short_history.html", content)
+        return result
 
     def recalculations_process(self, *args, **kwargs):
         update_values = {
@@ -177,7 +178,7 @@ class ManagerPageCreate(LoginRequiredMixin, CreateView):
         obj, created = Recalculations.objects.update_or_create(
             user_id=kwargs['user'], period=kwargs['period'], service_id=kwargs['post'].get("service"), defaults=update_values
         )
-        instance = Recalculations.objects.all()[:5]
+        instance = Recalculations.get_qty_last_items(5)
         content = {"house_rec": instance}
         result = render_to_string("personalacc/includes/recalc_short_story.html", content)
         return result
@@ -190,8 +191,10 @@ class ManagerPageCreate(LoginRequiredMixin, CreateView):
         obj, created = Privileges.objects.update_or_create(
             user_id=kwargs['user'], service_id=kwargs['post'].get("service"), defaults=update_values
         )
-        ser_instance = serializers.serialize("json", [obj,],)
-        return ser_instance
+        instance = Privileges.get_qty_last_items(5)
+        content = {"house_privileges": instance}
+        result = render_to_string("personalacc/includes/privileges_short_story.html", content)
+        return result
 
     def subsidies_process(self, *args, **kwargs):
         update_values = {
@@ -201,8 +204,10 @@ class ManagerPageCreate(LoginRequiredMixin, CreateView):
         obj, created = Subsidies.objects.update_or_create(
             user_id=kwargs['user'], service_id=kwargs['post'].get("service"), defaults=update_values
         )
-        ser_instance = serializers.serialize("json", [obj,],)
-        return ser_instance
+        instance = Subsidies.get_qty_last_items(5)
+        content = {"house_subsidies": instance}
+        result = render_to_string("personalacc/includes/subsidies_short_story.html", content)
+        return result
 
     def payments_process(self, *args, **kwargs):
         update_values = {
@@ -212,8 +217,10 @@ class ManagerPageCreate(LoginRequiredMixin, CreateView):
         obj, created = MainBook.objects.update_or_create(
             user_id=kwargs["user"], period=kwargs["period"], defaults=update_values
         )
-        ser_instance = serializers.serialize("json", [obj,],)
-        return ser_instance
+        instance = MainBook.get_qty_last_items(5)
+        content = {"house_pay_debit": instance}
+        result = render_to_string("personalacc/includes/payments_short_story.html", content)
+        return result
 
 
 class HouseHistoryListView(LoginRequiredMixin, ListView):

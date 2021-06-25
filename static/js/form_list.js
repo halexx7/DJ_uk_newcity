@@ -55,6 +55,7 @@ jQuery(document).ready(function(){
                 time = 15000;
                 typeAlert = `success`;
                 displayCounterAlert(say, typeAlert, time, e.target.id);
+                $('.house-current_list').html(data.instance);
             },
             error: function (data) {
                 say = `Что-то пошло не так! Попробуйте чуть позже!`;
@@ -101,6 +102,7 @@ jQuery(document).ready(function(){
                 time = 15000;
                 typeAlert = `success`;
                 displayCounterAlert(say, typeAlert, time, e.target.id);
+                $('.privileges_list').html(data.instance);
             },
             error: function (data) {
                 say = `Что-то пошло не так! Попробуйте чуть позже!`;
@@ -123,6 +125,7 @@ jQuery(document).ready(function(){
                 time = 15000;
                 typeAlert = `success`;
                 displayCounterAlert(say, typeAlert, time, e.target.id);
+                $('.subsidies_list').html(data.instance);
             },
             error: function (data) {
                 say = `Что-то пошло не так! Попробуйте чуть позже!`;
@@ -145,6 +148,7 @@ jQuery(document).ready(function(){
                 time = 15000;
                 typeAlert = `success`;
                 displayCounterAlert(say, typeAlert, time, e.target.id);
+                $('.payments_list').html(data.instance);
             },
             error: function (data) {
                 say = `Что-то пошло не так! Попробуйте чуть позже!`;
