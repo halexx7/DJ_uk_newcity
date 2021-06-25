@@ -1,9 +1,9 @@
 from django.contrib import admin
-from django.db import models
-from django.db.models.base import ModelState
 
 from authnapp.models import User
 from mainapp.models import (
+    PostNews,
+    MainBook,
     UK,
     Appartament,
     City,
@@ -200,3 +200,5 @@ admin.site.register(Profit)
 admin.site.register(Payment)
 admin.site.register(Recalculations)
 admin.site.register(Standart)
+admin.site.register(MainBook)
+admin.site.register(PostNews)

@@ -5,7 +5,7 @@ import re
 
 from django.core.serializers import serialize
 from django.utils.safestring import mark_safe
-from django.views.generic import CreateView, DeleteView, ListView, UpdateView
+from django.views.generic import ListView
 
 from authnapp.models import User
 from mainapp.models import (

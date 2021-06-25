@@ -1,0 +1,49 @@
+{% extends 'mainapp/base.html' %}
+{% load staticfiles %}
+
+
+{% block menu %}
+    {% include 'mainapp/includes/inc_menu.html' %}
+{% endblock menu %}
+
+
+{% block content %}
+<!-- Intro -->
+<div class="intro  intro--contact" id="intro">
+        
+</div>
+<div class="container">
+    <p>сегодня: {{ visit_date|date:"l, j F, Y" }}</p>
+</div>
+
+<!-- Contacts -->
+<section class="section  section--last">
+    <div class="container">
+        <h1 class="section__title"><span class="section__title-blue">Contacts</span> Up</h1>
+
+        <div class="contact__content">
+            <div class="contact__cart-box">
+
+                <div class="cart">
+                    <img class="contact__img  img" src="/static/img/wheel.svg" alt="Wheel">
+                    <h2 class="contact__city">{{ contact.city }}</h2>
+                    <div class="contact__item">
+                        <h3 class="contact__title">TELEPHONE</h3>
+                        <p class="contact__data">{{ contact.phone }}</p>
+                    </div>
+                    <div class="contact__item">
+                        <h3 class="contact__title">EMAIL</h3>
+                        <p class="contact__data">{{ contact.email }}</p>
+                    </div>
+                    <div class="contact__item">
+                        <h3 class="contact__title">ADDRESS</h3>
+                        <p class="contact__data">{{ contact.city }}</p>
+                    </div>
+                </div>
+                    
+            </div>
+        </div>
+
+    </div><!-- /.container -->
+</section>
+{% endblock content %}

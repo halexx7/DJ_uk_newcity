@@ -1,12 +1,9 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db import transaction
-from django.forms.models import BaseInlineFormSet, inlineformset_factory
-from django.shortcuts import HttpResponseRedirect, get_object_or_404, render
-from django.urls import reverse, reverse_lazy
+from django.shortcuts import HttpResponseRedirect, get_object_or_404
+from django.urls import reverse_lazy
 from django.views.generic import CreateView, DeleteView, ListView, UpdateView
 
-from authnapp.admin import UserCreationForm
-from authnapp.forms import AppartamentFormset
 from authnapp.managers import UserManager
 from authnapp.models import User
 from directory.forms import (

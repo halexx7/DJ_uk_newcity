@@ -1,18 +1,37 @@
 import datetime
 
-from django.contrib.auth import get_user_model
 from django.contrib.postgres.fields import JSONField
-from django.core.exceptions import ValidationError
 from django.db import models
-from django.db.models.deletion import CASCADE, PROTECT, SET_NULL
-from django.db.models.lookups import In
+from django.db.models.deletion import CASCADE, SET_NULL
 from django.db.models.signals import post_save, pre_delete
 from django.dispatch import receiver
-from django.shortcuts import get_object_or_404
-from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
 from authnapp.models import User
+
+class PostNews(models.Model):
+    title = models.CharField(verbose_name="Заголовок", max_length=128)
+    content = models.TextField(verbose_name="Описание")
+
+    is_active = models.BooleanField(verbose_name="Активная", db_index=True, default=True)
+    created = models.DateTimeField(verbose_name="Создан", auto_now_add=True)
+    updated = models.DateTimeField(verbose_name="Обновлен", auto_now=True)
+
+    class Meta:
+        ordering = ("-created",)
+        verbose_name = "Новость"
+        verbose_name_plural = "Новости"
+
+    def __str__(self):
+        return f'{self.title} - ({self.updated})'
+
+    @staticmethod
+    def get_items():
+        return PostNews.objects.filter(is_active=True)
+        
+    def delete(self):
+        self.is_active = False
+        self.save()
 
 
 class ServicesCategory(models.Model):
@@ -28,10 +47,6 @@ class ServicesCategory(models.Model):
 
     def __str__(self):
         return self.name
-
-    def delete(self):
-        self.is_active = False
-        self.save()
 
     def delete(self):
         self.is_active = False
@@ -96,11 +111,6 @@ class Services(models.Model):
         self.is_active = False
         self.save()
 
-    def delete(self):
-        self.is_active = False
-        self.save()
-
-
 class City(models.Model):
     city = models.CharField(verbose_name="Город", max_length=128)
 
@@ -114,10 +124,6 @@ class City(models.Model):
 
     def __str__(self):
         return self.city
-
-    def delete(self):
-        self.is_active = False
-        self.save()
 
     def delete(self):
         self.is_active = False
@@ -170,7 +176,7 @@ class UK(models.Model):
 
     @staticmethod
     def get_item(uk):
-        return House.objects.get(id=uk)
+        return UK.objects.get(id=uk)
 
     @staticmethod
     def get_full_name(uk):
