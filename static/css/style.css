@@ -329,3 +329,58 @@ ul, ol {
     height: calc(1.5em + .75rem + 2px) !important;
 }
 
+
+/* ================
+=== Contact Page ===
+==================*/
+.contact__cart-box {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-pack: center;
+    -ms-flex-pack: center;
+    justify-content: center;
+    -ms-flex-wrap: wrap;
+    flex-wrap: wrap;
+}
+
+.cart {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    padding: 30px 70px;
+    margin: 20px;
+    border: #000 2px solid;
+}
+
+.contact__img {
+    width: 35px;
+}
+
+.contact__city {
+    font-size: 36px;
+}
+
+.contact__title {
+    font-size: 16px;
+    color: gray;
+    text-transform: uppercase;
+    text-align: center;
+}
+
+.contact__data {
+    font-size: 16px;
+    text-align: center;
+}
+
+.section {
+    min-height: calc(100vh - 295px);
+}
+
