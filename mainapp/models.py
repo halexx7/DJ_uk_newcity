@@ -28,7 +28,7 @@ class ServicesCategory(models.Model):
 
     def __str__(self):
         return self.name
-    
+
     def delete(self):
         self.is_active = False
         self.save()
@@ -91,7 +91,7 @@ class Services(models.Model):
     @staticmethod
     def get_items():
         return Services.objects.filter(is_active=True)
-    
+
     def delete(self):
         self.is_active = False
         self.save()
@@ -114,7 +114,7 @@ class City(models.Model):
 
     def __str__(self):
         return self.city
-    
+
     def delete(self):
         self.is_active = False
         self.save()
@@ -177,9 +177,9 @@ class UK(models.Model):
         uk = UK.objects.get(id=uk)
         name = {
             "name": uk.name,
-            "address": f'{uk.street}, д.{uk.num_building}',
-            "phone": f'тел.{uk.phone}',
-            "web": uk.web_addr
+            "address": f"{uk.street}, д.{uk.num_building}",
+            "phone": f"тел.{uk.phone}",
+            "web": uk.web_addr,
         }
         return name
 
@@ -194,7 +194,6 @@ class UK(models.Model):
             "bank": uk.bank,
         }
         return requis
-
 
     def __str__(self):
         return self.name
@@ -230,7 +229,6 @@ class House(models.Model):
     @staticmethod
     def get_item(house):
         return House.objects.filter(id=house)[0:1]
-    
 
     def delete(self):
         self.is_active = False
@@ -317,7 +315,7 @@ class HouseHistory(models.Model):
         upd_val = {
             "col_water": instance.col_water,
             "hot_water": instance.hot_water,
-            #TODO электричество пока отменяется
+            # TODO электричество пока отменяется
             # "electric_day": instance.electric_day,
             # "electric_night": instance.electric_night,
         }
@@ -329,8 +327,12 @@ class Standart(models.Model):
     house = models.ForeignKey(House, verbose_name="Дом", null=True, on_delete=SET_NULL)
     col_water = models.DecimalField(verbose_name="Норматив ХВС", max_digits=6, decimal_places=2)
     hot_water = models.DecimalField(verbose_name="Норматив ХГС", max_digits=6, decimal_places=2)
-    electric_day = models.DecimalField(verbose_name="Норматив ЭЛ.День", max_digits=6, decimal_places=2, null=True, default=None)
-    electric_night = models.DecimalField(verbose_name="Нориматив ЭЛ.Ночь", max_digits=6, decimal_places=2, null=True, default=None)
+    electric_day = models.DecimalField(
+        verbose_name="Норматив ЭЛ.День", max_digits=6, decimal_places=2, null=True, default=None
+    )
+    electric_night = models.DecimalField(
+        verbose_name="Нориматив ЭЛ.Ночь", max_digits=6, decimal_places=2, null=True, default=None
+    )
 
     created = models.DateTimeField(verbose_name="Создан", auto_now_add=True)
     updated = models.DateTimeField(verbose_name="Обновлен", auto_now=True)
@@ -359,9 +361,9 @@ class Standart(models.Model):
         hist = HouseHistory.get_last_val(house)[0]
         sq = House.get_item(house)[0].sq_home
         upd_val = {
-            "col_water": ((int(instance.col_water) - int(hist.col_water))/sq),
-            "hot_water": ((int(instance.hot_water) - int(hist.hot_water))/sq),
-            #TODO электричество пока отменяется
+            "col_water": ((int(instance.col_water) - int(hist.col_water)) / sq),
+            "hot_water": ((int(instance.hot_water) - int(hist.hot_water)) / sq),
+            # TODO электричество пока отменяется
             # "electric_day": instance.electric_day,
             # "electric_night": instance.electric_night,
         }
@@ -458,9 +460,7 @@ class CurrentCounter(models.Model):
     electric_night = models.PositiveIntegerField(
         verbose_name="Электроэнергия ночь", null=True, blank=True, default=None
     )
-    electric_single = models.PositiveIntegerField(
-        verbose_name="Электроэнергия", null=True, blank=True, default=None
-    )
+    electric_single = models.PositiveIntegerField(verbose_name="Электроэнергия", null=True, blank=True, default=None)
 
     created = models.DateTimeField(verbose_name="Создан", auto_now_add=True)
     updated = models.DateTimeField(verbose_name="Обновлен", auto_now=True)
@@ -512,7 +512,7 @@ class HistoryCounter(models.Model):
         upd_val = {
             "col_water": instance.col_water,
             "hot_water": instance.hot_water,
-            #TODO электричество пока отменяется
+            # TODO электричество пока отменяется
             # "electric_day": instance.electric_day,
             # "electric_night": instance.electric_night,
         }
@@ -539,7 +539,7 @@ class Recalculations(models.Model):
     @staticmethod
     def get_last_val(user):
         return Recalculations.objects.filter(user=user)[0:1]
-    
+
     @staticmethod
     def get_qty_last_items(qty):
         return Recalculations.objects.all()[:qty]
@@ -609,7 +609,7 @@ class Privileges(models.Model):
     @staticmethod
     def get_qty_last_items(qty):
         return Privileges.objects.all()[:qty]
-    
+
     def delete(self):
         self.is_active = False
         self.save()
@@ -756,24 +756,26 @@ class MainBook(models.Model):
     @staticmethod
     def get_user_debit(user):
         """ Возвращает все поступления на счет конкретного жильца"""
-        return MainBook.objects.filter(user = user).filter(direction = 'D')
-    
+        return MainBook.objects.filter(user=user).filter(direction="D")
+
     @staticmethod
     def get_user_credit(user):
         """ Возвращает все списания co счета конкретного жильца"""
-        return MainBook.objects.filter(user = user).filter(direction = 'C')
+        return MainBook.objects.filter(user=user).filter(direction="C")
 
     def get_all_debit():
         """ Возвращает все поступления на счет ВСЕ"""
-        return MainBook.objects.filter(direction = 'D')
-    
+        return MainBook.objects.filter(direction="D")
+
     def get_all_credit():
         """ Возвращает все списания co счета ВСЕ"""
-        return MainBook.objects.filter(direction = 'C')
+        return MainBook.objects.filter(direction="C")
 
     @staticmethod
     def get_qty_last_items(qty):
-        return MainBook.objects.filter(direction = 'D').order_by("-updated",)[:qty]
+        return MainBook.objects.filter(direction="D").order_by(
+            "-updated",
+        )[:qty]
 
     def delete(self):
         self.is_active = False
@@ -822,7 +824,7 @@ class PersonalAccountStatus(models.Model):
         user = instance.user
         debit = MainBook.get_user_debit(user=user)
         credit = MainBook.get_user_credit(user=user)
-        debit_sum = sum(abs(d.amount )for d in debit)
+        debit_sum = sum(abs(d.amount) for d in debit)
         credit_sum = sum(abs(c.amount) for c in credit)
         upd_val = {
             "amount": (credit_sum - debit_sum),

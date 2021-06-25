@@ -1,5 +1,6 @@
 from django.conf import settings
-from django.urls import re_path, path
+from django.urls import path, re_path
+
 import invoice.views as invoice
 from invoice.apps import InvoiceConfig
 
@@ -12,4 +13,5 @@ urlpatterns = [
 
 if settings.DEBUG:
     from django.contrib.staticfiles.urls import staticfiles_urlpatterns
+
     urlpatterns += staticfiles_urlpatterns()

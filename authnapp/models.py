@@ -11,8 +11,6 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.utils.timezone import now
 from django.utils.translation import ugettext_lazy as _
-from django.contrib.auth.models import Group
-
 
 from .managers import UserManager
 
@@ -37,13 +35,15 @@ class User(AbstractBaseUser, PermissionsMixin):
     is_superuser = models.BooleanField(
         default=False,
         verbose_name="Суперпользователь",
-        help_text="Обозначает, что у этого пользователя есть все разрешения, без их явного назначения.",)
+        help_text="Обозначает, что у этого пользователя есть все разрешения, без их явного назначения.",
+    )
 
     last_login = models.DateTimeField(blank=True, null=True, verbose_name="Последний вход")
 
     activation_key = models.CharField(verbose_name="Ключ подтверждения", max_length=128, blank=True)
     activation_key_expires = models.DateTimeField(
-        verbose_name="Актуальность ключа", default=(now() + timedelta(hours=48)))
+        verbose_name="Актуальность ключа", default=(now() + timedelta(hours=48))
+    )
 
     objects = UserManager()
 

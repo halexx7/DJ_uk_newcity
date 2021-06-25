@@ -1,11 +1,10 @@
 from django import forms
-from django.forms.formsets import formset_factory
-from mainapp.models import Appartament, UserProfile
 from django.conf import settings
 from django.contrib import auth
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.mail import send_mail
 from django.db import transaction
+from django.forms.formsets import formset_factory
 from django.forms.models import BaseInlineFormSet, inlineformset_factory
 from django.shortcuts import HttpResponseRedirect, get_object_or_404, render
 from django.urls import reverse, reverse_lazy
@@ -21,6 +20,7 @@ from authnapp.forms import (
     UserRegisterForm,
 )
 from authnapp.models import User
+from mainapp.models import Appartament, UserProfile
 
 
 def login(request):
