@@ -60,7 +60,7 @@
 
                         <div class="nav">
                             <a class="nav-link active" href="{% url 'directory:list' %}">Справочники</a>
-                            <a class="nav-link" href="#">Ссылка</a>
+                            <a class="nav-link" href="{% url 'person:receivable' %}">Дебиторская задолжность</a>
                             <a class="nav-link" href="#">Ссылка</a>
                         </div>
 
@@ -218,9 +218,13 @@
                 <!-- Tab-RECALC -->
                 <div class="tab-pane  fade" id="recalc" role="tabpanel" aria-labelledby="recalc-tab">
 
+                    <h4 class="mb-4">Внести перерасчет</h4>
+                    <div class="alert alert-warning" role="alert">
+                        <p>Для обновления данных за <span class="text-700">текущий</span> месяц, просто введите данные заново!</p>
+                        <p>Для изменения данных за прошлые периоды, обратитеть к Администратору!</p>
+                        <p>Будьте осторожны! При изменении исторических данных, это скажется на всех расчетах!</p>
+                    </div>
                     <div class="wrapper__form-recalc">
-                        <h4 class="mb-4">Внести перерасчет</h4>
-                        
                         <form class="ml-3  mb-5" id="recalculations_form" name="recalculations_form">
                             {% csrf_token %}
                             <input type="hidden" name="form_type" value="recalculations_form">
@@ -246,7 +250,10 @@
                         </form>
                     </div>
 
-                    <h4 class="pt-2  mb-4">История перерасчетов</h4>
+                    <div class="row  mt-5  mb-3  d-flex justify-content-between">
+                        <h4 class="pt-2  mb-4">Последние перерасчеты</h4>
+                        <a href="{% url 'personalacc:recalc_history' %}" class="col  text-right  text-decoration-none">История перерасчетов</a>
+                    </div>
 
                     <table class="table">
                         <thead class="thead-light">
@@ -298,6 +305,9 @@
                                     aria-labelledby="v-pills-privilegies-tab">
 
                                     <h4 class="mb-4">Добваить льготу</h4>
+                                    <div class="alert alert-warning" role="alert">
+                                        <p>Для обновления данных, просто введите данные заново!</p>
+                                    </div>
                                     <div class="manager-privileges__form">
                                         
                                     <form class="ml-3  mb-5" id="privilege_form" name="privilege_form">
@@ -355,6 +365,9 @@
                                     aria-labelledby="v-pills-grant-tab">
 
                                     <h4 class="mb-4">Добваить субсидию</h4>
+                                    <div class="alert alert-warning" role="alert">
+                                        <p>Для обновления данных, просто введите данные заново!</p>
+                                    </div>
                                     <div class="manager-privileges__form">
                                         <form class="ml-3  mb-5" id="subsidies_form" name="subsidies_form">
                                             {% csrf_token %}
@@ -389,7 +402,7 @@
                                                 <th scope="col">ФИО</th>
                                                 <th scope="col">Название</th>
                                                 <th scope="col">Субсидия, %</th>
-                                                <th scope="col">Редактировать</th>
+                                                <th scope="col">Описание</th>
                                             </tr>
                                         </thead>
                                         {% for el in house_privileges %}
@@ -413,10 +426,11 @@
 
                 <!-- Tab-PAYMENTS -->
                 <div class="tab-pane  fade" id="payments" role="tabpanel" aria-labelledby="payments-tab">
-
+                    <h4 class="mb-4">Внести оплату</h4>
+                    <div class="alert alert-warning" role="alert">
+                        <p>Для обновления данных за <span class="text-700">текущий</span> месяц, просто введите данные заново!</p>
+                    </div>
                     <div class="wrapper__form-recalc">
-                        <h4 class="mb-4">Внести оплату</h4>
-                        
                         <form class="ml-3  mb-5" id="payments_form" name="payments_form">
                             {% csrf_token %}
                             <input type="hidden" name="form_type" value="payments_form">
@@ -469,4 +483,34 @@
         </div>
     </div>
 </div>
+
 {% endblock content %}
+
+{% block footer %}
+
+{{ recalculations_form.media }}
+{{ payments_form.media }}
+{{ privilege_form.media }}
+{{ subsidies_form.media }}
+
+<script>
+(function($) {
+    $('#add-form').click(function() {
+        var index = $('#id_inline_test_models-TOTAL_FORMS').val()
+        var newTable = $('#id_inline_test_models-__prefix__-DELETE').parents('table').clone()
+        newTable.find(':input').each(function() {
+            for (attr of ['name', 'id'])
+                $(this).attr(
+                    attr,
+                    $(this).attr(attr).replace('__prefix__', index)
+                )
+        })
+        newTable.insertBefore($(this))
+        $('#id_inline_test_models-TOTAL_FORMS').val(
+            parseInt($('#id_inline_test_models-TOTAL_FORMS').val()) + 1
+        )
+        newTable.slideDown()
+    });
+})($)
+</script>
+{% endblock footer %}

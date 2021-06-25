@@ -1,0 +1,48 @@
+{% extends 'personalacc/base.html' %}
+{% load staticfiles %}
+
+
+{% block menu %}
+    {% include 'mainapp/includes/inc_menu.html' %}
+{% endblock menu %}
+
+{% block content %}
+
+<div class="container">
+    <div class="my-5">
+        <div class="row  mt-5  mb-3  d-flex justify-content-between">
+            <h4 class="col">Информация по задолжности</h4>
+            <a href="{% url 'personalacc:manager' %}" class="col  text-right  text-decoration-none">На главную</a>
+        </div>
+        <div class="manager-area__counters-history  mb-5">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Жилец</th>
+                        <th scope="col">Адрес</th>
+                        <th scope="col">Задолжность</th>
+                    </tr>
+                </thead>
+    
+                {% for el in receivable %}
+                <tbody>
+                    <tr>
+                        <td>{{ el.id }}</td>
+                        <td>{{ el.user }}</td>
+                        {% for app in appartament %}
+                            {% if app.user == el.user %}
+                                <td>{{ app }}</td>
+                            {% endif %}
+                        {% endfor %}
+                        <td>{{ el.amount }}</td>
+                    </tr>
+                </tbody>
+                {% endfor %}
+    
+            </table> 
+        </div>
+    </div>
+</div>
+
+{% endblock content %}

@@ -310,3 +310,22 @@ ul, ol {
         display: none !important;
     }
 }
+
+
+
+/* Django-autocomplete-light */
+.select2-container {
+    min-width: 35em !important;
+    height: auto !important;
+}
+
+.select2-container--default 
+.select2-selection--single {
+    border: 1px solid #ced4da !important;
+}
+
+.select2-container 
+.select2-selection--single {
+    height: calc(1.5em + .75rem + 2px) !important;
+}
+

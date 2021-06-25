@@ -1,23 +1,20 @@
 import datetime
 import json
 from typing import KeysView
+from dal import autocomplete
 
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core import serializers
-from django.db.models.signals import pre_delete
-from django.dispatch import receiver
 from django.http import JsonResponse
-from django.shortcuts import HttpResponseRedirect, get_object_or_404, render
 from django.urls import reverse, reverse_lazy
 from django.views.generic import CreateView, DeleteView, ListView, UpdateView
-from django.views.generic.detail import DetailView
 
-from authnapp.forms import UserEditForm, UserLoginForm, UserProfileEditForm, UserRegisterForm
 from authnapp.models import User
 from mainapp.models import (
     CurrentCounter,
     MainBook,
     Payment,
+    PersonalAccountStatus,
     UK,
     Appartament,
     HistoryCounter,
@@ -222,3 +219,32 @@ class HouseHistoryListView(LoginRequiredMixin, ListView):
     model = HouseHistory
     context_object_name = "history"
     template_name = "personalacc/house_history_list.html"
+
+
+class RecalcHistoryListView(LoginRequiredMixin, ListView):
+    model = Recalculations
+    context_object_name = "recalc"
+    template_name = "personalacc/recalc_history_list.html"
+
+
+class AccountsReceivableListView(LoginRequiredMixin, ListView):
+    model = PersonalAccountStatus
+    context_object_name = "receivable"
+    template_name = "personalacc/accounts_receivable.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["title"] = "Дебиторская задолжность | ООО Новый город"
+        context["appartament"] = Appartament.objects.all()
+        return context
+
+
+class UserAutocomplete(autocomplete.Select2QuerySetView):
+    def get_queryset(self):
+        # Don't forget to filter out results depending on the visitor!
+        if not self.request.user.is_authenticated:
+            return User.objects.none()
+        qs = User.objects.filter(is_staff=False)
+        if self.q:
+            qs = qs.filter(name__istartswith=self.q)
+        return qs

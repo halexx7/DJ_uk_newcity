@@ -25,6 +25,8 @@
 
     <!-- Main CSS -->
     <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
     {% endblock css %}
 
 
@@ -65,6 +67,9 @@
     <script src="{% static 'js/form_list.js' %}"></script>
     <!-- <script src="{% static 'js/invoice.js' %}"></script> -->
     {% endblock js %}
+
+    {% block footer %}
+    {% endblock footer %}
 </body>
 
 </html>

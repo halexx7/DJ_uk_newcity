@@ -159,7 +159,6 @@ jQuery(document).ready(function(){
     });
 
 
-
     // USER_LIST
     //Ловим событие формы COUNTERFORM
     $('#counterBtn').on('click', function (e) {
