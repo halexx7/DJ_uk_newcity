@@ -351,6 +351,12 @@ class AppartamentsCreateView(LoginRequiredMixin, CreateView):
         context = super().get_context_data(**kwargs)
         context["title"] = "Квартира/создание"
         return context
+    
+    def get_form_kwargs(self, *args, **kwargs):
+        kwargs = super().get_form_kwargs(*args, **kwargs)
+        # Заполняем форму начальными данными
+        kwargs["initial"] = {"house": self.kwargs["pk"]}
+        return kwargs
 
 
 class AppartamentsUpdateView(LoginRequiredMixin, UpdateView):
@@ -363,6 +369,12 @@ class AppartamentsUpdateView(LoginRequiredMixin, UpdateView):
         context = super().get_context_data(**kwargs)
         context["title"] = "Квартира/редактирование"
         return context
+
+    def get_form_kwargs(self, *args, **kwargs):
+        kwargs = super().get_form_kwargs(*args, **kwargs)
+        # Заполняем форму начальными данными
+        kwargs["initial"] = {"house": self.kwargs["pk"]}
+        return kwargs
 
 
 class AppartamentsDeleteView(LoginRequiredMixin, DeleteView):

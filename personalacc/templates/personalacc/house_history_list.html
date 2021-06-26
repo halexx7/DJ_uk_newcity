@@ -37,8 +37,11 @@
                         <th scope="col">Адрес</th>
                         <th scope="col">ХВС</th>
                         <th scope="col">ХГС</th>
+                        
+                        {% comment "Заказчик пока отменил"%}
                         <th scope="col">Эл.день</th>
                         <th scope="col">Эл.ночь</th>
+                        {% endcomment %}
                     </tr>
                 </thead>
                 {% for el in history %}
@@ -49,8 +52,10 @@
                         <td class="text-left">{{ el.house }}</td>
                         <td>{{ el.col_water }}</td>
                         <td>{{ el.hot_water }}</td>
+                        {% comment %}
                         <td>{{ el.electric_day }}</td>
                         <td>{{ el.electric_night }}</td>
+                        {% endcomment %}
                     </tr>
                 </tbody>
                 {% endfor %}

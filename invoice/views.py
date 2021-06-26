@@ -6,6 +6,7 @@ import re
 from django.core.serializers import serialize
 from django.utils.safestring import mark_safe
 from django.views.generic import ListView
+from django.views.generic.detail import DetailView
 
 from authnapp.models import User
 from mainapp.models import (
@@ -29,7 +30,7 @@ def main(request):
     pass
 
 
-class InvoiceViews(ListView):
+class InvoiceViews(DetailView):
     model = User
     context_object_name = "user"
     template_name = "invoice/invoice.html"
@@ -39,7 +40,7 @@ class InvoiceViews(ListView):
 
     def get_context_data(self, **kwargs):
         user = self.request.user
-        self.wrapper()
+        # self.wrapper()
         context = super().get_context_data(**kwargs)
         context["header"] = mark_safe(serialize("json", HeaderData.objects.filter(user=user)))
         context["constant"] = mark_safe(serialize("json", ConstantPayments.objects.filter(user=user)))

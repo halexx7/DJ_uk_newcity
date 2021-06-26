@@ -98,7 +98,7 @@ function drawingTable (object) {
     let total = Number(), totalPre = Number(), totalSubs = Number(), totalPrivi = Number(), totalRecal = Number();
     object.forEach(function (item, i, arr) {
         total += Number(item.total)
-        totalPre += Number(item.pre_total);ы
+        totalPre += Number(item.pre_total);
         totalSubs += Number(item.subsidies);
         totalPrivi += Number(item.privileges);
         totalRecal += Number(item.recalculation);

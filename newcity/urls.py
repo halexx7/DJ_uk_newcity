@@ -11,9 +11,9 @@ urlpatterns = [
     re_path(r"^contact/$", mainapp.ContactList.as_view(), name="contact"),
     re_path(r"^news/$", mainapp.NewstList.as_view(), name="news"),
     re_path(r"^auth/", include("authnapp.urls", namespace="auth")),
+    re_path(r"^directory/", include("directory.urls", namespace="directory")),
     
     path("person/", include("personalacc.urls", namespace="person")),
-    path("directory/", include("directory.urls", namespace="directory")),
     path("invoice/", include("invoice.urls", namespace="invoice")),
     path("admin/", admin.site.urls, name="admin"),
 ]

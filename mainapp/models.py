@@ -761,20 +761,20 @@ class MainBook(models.Model):
 
     @staticmethod
     def get_user_debit(user):
-        """ Возвращает все поступления на счет конкретного жильца"""
+        """ Возвращает все ОПЛАТЫ конкретного жильца"""
         return MainBook.objects.filter(user=user).filter(direction="D")
 
     @staticmethod
     def get_user_credit(user):
-        """ Возвращает все списания co счета конкретного жильца"""
+        """ Возвращает все НАЧИСЛЕНИЯ конкретного жильца"""
         return MainBook.objects.filter(user=user).filter(direction="C")
 
     def get_all_debit():
-        """ Возвращает все поступления на счет ВСЕ"""
+        """ Возвращает все ОПЛАТЫ на счет ВСЕ"""
         return MainBook.objects.filter(direction="D")
 
     def get_all_credit():
-        """ Возвращает все списания co счета ВСЕ"""
+        """ Возвращает все НАЧИСЛЕНИЯ co счета ВСЕ"""
         return MainBook.objects.filter(direction="C")
 
     @staticmethod

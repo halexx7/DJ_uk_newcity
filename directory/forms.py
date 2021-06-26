@@ -73,6 +73,10 @@ class HouseEditForm(BootstrapStylesMixins, forms.ModelForm):
 class AppartamentsEditForm(BootstrapStylesMixins, forms.ModelForm):
     field_name = ["user", "house", "number", "add_number", "sq_appart", "num_owner", "is_active"]
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["house"].queryset = House.objects.filter(id=kwargs["initial"]["house"])
+
     class Meta:
         model = Appartament
         fields = ("user", "house", "number", "add_number", "sq_appart", "num_owner", "is_active")

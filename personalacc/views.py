@@ -44,7 +44,7 @@ class UserPageCreate(LoginRequiredMixin, CreateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["profiles"] = UserProfile.objects.get(user=self.request.user)
-        context["payments"] = MainBook.objects.filter(direction="C")
+        context["credit"] = MainBook.get_user_credit(self.request.user)
         context["appartament"] = Appartament.objects.filter(user=self.request.user)
         context["history"] = HistoryCounter.get_last_val(self.request.user)
         context["title"] = "Пользователь | ООО Новый город"
