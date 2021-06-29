@@ -42,7 +42,6 @@ class InvoiceViews(DetailView):
         # user = self.request.user
         id = self.kwargs['pk']
         user = self.request.user
-        user = self.request.user
         self.wrapper()
         context = super().get_context_data(**kwargs)
         context["header"] = mark_safe(serialize("json", HeaderData.objects.filter(user=user)))

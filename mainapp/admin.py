@@ -16,7 +16,7 @@ from mainapp.models import (
     Metrics,
     Payment,
     Privileges,
-    Profit,
+    PaymentOrder,
     Recalculations,
     Services,
     ServicesCategory,
@@ -196,7 +196,7 @@ admin.site.register(ConstantPayments)
 admin.site.register(VariablePayments)
 admin.site.register(Subsidies)
 admin.site.register(Privileges)
-admin.site.register(Profit)
+admin.site.register(PaymentOrder)
 admin.site.register(Payment)
 admin.site.register(Recalculations)
 admin.site.register(Standart)
