@@ -35,12 +35,15 @@ class InvoiceViews(DetailView):
     context_object_name = "user"
     template_name = "invoice/invoice.html"
 
-    def get_queryset(self):
-        return User.objects.filter(pk=self.request.user.id)
+    # def get_queryset(self, **kwargs):
+    #     return User.objects.filter(pk=kwargs['pk'])
 
     def get_context_data(self, **kwargs):
+        # user = self.request.user
+        id = self.kwargs['pk']
         user = self.request.user
-        # self.wrapper()
+        user = self.request.user
+        self.wrapper()
         context = super().get_context_data(**kwargs)
         context["header"] = mark_safe(serialize("json", HeaderData.objects.filter(user=user)))
         context["constant"] = mark_safe(serialize("json", ConstantPayments.objects.filter(user=user)))

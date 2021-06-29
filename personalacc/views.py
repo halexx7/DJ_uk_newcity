@@ -39,7 +39,6 @@ class UserPageCreate(LoginRequiredMixin, CreateView):
     form_class = CurrentCounterForm
     context_object_name = "user"
     template_name = "personalacc/user_list.html"
-    success_url = reverse_lazy("person:thanks")
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
