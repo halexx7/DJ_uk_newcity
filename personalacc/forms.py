@@ -1,16 +1,13 @@
 from crispy_forms.helper import FormHelper
 from dal import autocomplete
 from django import forms
-from django.forms import widgets
 
-from authnapp.forms import BootstrapStylesMixins
 from authnapp.models import User
 from mainapp.models import (
     CurrentCounter,
     HouseCurrent,
     HouseHistory,
     MainBook,
-    Payment,
     Privileges,
     Recalculations,
     Services,

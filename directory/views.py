@@ -16,7 +16,7 @@ from directory.forms import (
     ServicesEditForm,
     StreetEditForm,
 )
-from mainapp.models import Appartament, City, House, Services, ServicesCategory, Street, UserProfile
+from mainapp.models import Appartament, City, House, Services, ServicesCategory, Street
 
 
 class DirectoryList(LoginRequiredMixin, ListView):
@@ -351,7 +351,7 @@ class AppartamentsCreateView(LoginRequiredMixin, CreateView):
         context = super().get_context_data(**kwargs)
         context["title"] = "Квартира/создание"
         return context
-    
+
     def get_form_kwargs(self, *args, **kwargs):
         kwargs = super().get_form_kwargs(*args, **kwargs)
         # Заполняем форму начальными данными

@@ -1,8 +1,8 @@
-from django.shortcuts import render
-
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.views.generic import CreateView, DeleteView, ListView, UpdateView
-from mainapp.models import PostNews, UK
+from django.shortcuts import render
+from django.views.generic import ListView
+
+from mainapp.models import UK, PostNews
 
 
 class IndexList(LoginRequiredMixin, ListView):

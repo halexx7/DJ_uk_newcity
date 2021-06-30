@@ -5,18 +5,17 @@ import re
 
 from django.core.serializers import serialize
 from django.utils.safestring import mark_safe
-from django.views.generic import ListView
 from django.views.generic.detail import DetailView
 
 from authnapp.models import User
 from mainapp.models import (
-    PaymentOrder,
     UK,
     Appartament,
     ConstantPayments,
     CurrentCounter,
     HeaderData,
     HistoryCounter,
+    PaymentOrder,
     PersonalAccountStatus,
     Privileges,
     Recalculations,
@@ -37,9 +36,8 @@ class InvoiceViews(DetailView):
 
     def get_context_data(self, **kwargs):
         # user = self.request.user
-        pk = self.kwargs['pk']
+        pk = self.kwargs["pk"]
         user = self.request.user
-        self.wrapper()
         context = super().get_context_data(**kwargs)
         context["header"] = mark_safe(serialize("json", HeaderData.objects.filter(user=user)))
         context["constant"] = mark_safe(serialize("json", ConstantPayments.objects.filter(user=user)))
@@ -48,10 +46,11 @@ class InvoiceViews(DetailView):
         context["status"] = mark_safe(serialize("json", PersonalAccountStatus.get_item(user)))
         return context
 
-    def wrapper(self):
-        get_calc_const()
-        get_calc_variable()
-        get_head_data()
+
+def starter():
+    get_calc_const()
+    get_calc_variable()
+    get_head_data()
 
 
 # Расчет КОНСТАНТНЫХ платежей (по сигналу когда идут изменения в таблице Services)

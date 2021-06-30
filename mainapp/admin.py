@@ -2,8 +2,6 @@ from django.contrib import admin
 
 from authnapp.models import User
 from mainapp.models import (
-    PostNews,
-    MainBook,
     UK,
     Appartament,
     City,
@@ -13,10 +11,12 @@ from mainapp.models import (
     House,
     HouseCurrent,
     HouseHistory,
+    MainBook,
     Metrics,
     Payment,
-    Privileges,
     PaymentOrder,
+    PostNews,
+    Privileges,
     Recalculations,
     Services,
     ServicesCategory,

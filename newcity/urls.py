@@ -12,7 +12,6 @@ urlpatterns = [
     re_path(r"^news/$", mainapp.NewstList.as_view(), name="news"),
     re_path(r"^auth/", include("authnapp.urls", namespace="auth")),
     re_path(r"^directory/", include("directory.urls", namespace="directory")),
-    
     path("person/", include("personalacc.urls", namespace="person")),
     path("invoice/", include("invoice.urls", namespace="invoice")),
     path("admin/", admin.site.urls, name="admin"),

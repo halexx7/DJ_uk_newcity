@@ -9,6 +9,7 @@ from django.utils.translation import gettext_lazy as _
 
 from authnapp.models import User
 
+
 class PostNews(models.Model):
     title = models.CharField(verbose_name="Заголовок", max_length=128)
     content = models.TextField(verbose_name="Описание")
@@ -23,12 +24,12 @@ class PostNews(models.Model):
         verbose_name_plural = "Новости"
 
     def __str__(self):
-        return f'{self.title} - ({self.updated})'
+        return f"{self.title} - ({self.updated})"
 
     @staticmethod
     def get_items():
         return PostNews.objects.filter(is_active=True)
-        
+
     def delete(self):
         self.is_active = False
         self.save()
@@ -110,6 +111,7 @@ class Services(models.Model):
     def delete(self):
         self.is_active = False
         self.save()
+
 
 class City(models.Model):
     city = models.CharField(verbose_name="Город", max_length=128)
@@ -823,7 +825,7 @@ class PaymentOrder(models.Model):
                 "variable_data": variable.data,
                 "amount": (constant.total + variable.total),
                 "pre_amount": (constant.pre_total + variable.pre_total),
-                }
+            }
             obj, created = PaymentOrder.objects.update_or_create(user=user, period=period, defaults=upd_val)
         else:
             pass

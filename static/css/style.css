@@ -180,6 +180,10 @@ ul, ol {
     max-width: 500px;
 }
 
+.formating__wrapper {
+    max-width: 600px;
+}
+
 
 /* ===============
 === Register Page ===

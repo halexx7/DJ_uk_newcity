@@ -59,12 +59,11 @@
                     <div class="row  mb-3  d-flex justify-content-between">
 
                         <div class="nav">
-                            <a class="nav-link active" href="{% url 'directory:list' %}">Справочники</a>
+                            <a class="nav-link  active" href="{% url 'directory:list' %}">Справочники</a>
                             <a class="nav-link" href="{% url 'person:receivable' %}">Дебиторская задолжность</a>
-                            <a class="nav-link" href="#">Ссылка</a>
                         </div>
 
-                        <a href="{% url 'authnapp:password_change' %}" class="col  text-right  text-decoration-none">Изменить пароль</a>
+                        <a class="btn  btn-primary" href="{% url 'person:formation_payments' %}" role="button" aria-pressed="true">Сформировать платежки</a>
                     </div>
                     <p class="user-area__subtitle  text-700  mb-4">Информация о компании</p>
                     <table class="table table-striped">

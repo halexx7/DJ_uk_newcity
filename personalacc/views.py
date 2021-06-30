@@ -3,14 +3,15 @@ import datetime
 from dal import autocomplete
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core import serializers
+from django.db.models.base import Model
 from django.http import JsonResponse
 from django.template.loader import render_to_string
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, DeleteView, ListView, UpdateView
 
 from authnapp.models import User
+from invoice.views import starter
 from mainapp.models import (
-    PaymentOrder,
     UK,
     Appartament,
     CurrentCounter,
@@ -18,6 +19,7 @@ from mainapp.models import (
     HouseCurrent,
     HouseHistory,
     MainBook,
+    PaymentOrder,
     PersonalAccountStatus,
     Privileges,
     Recalculations,
@@ -257,7 +259,7 @@ class PaymentsHistoryListView(LoginRequiredMixin, ListView):
         context["title"] = "История оплат | ООО Новый город"
         context["payments"] = MainBook.get_all_debit()
         return context
-    
+
 
 class AccountsReceivableListView(LoginRequiredMixin, ListView):
     model = PersonalAccountStatus
@@ -281,3 +283,17 @@ class UserAutocomplete(autocomplete.Select2QuerySetView):
         if self.q:
             qs = qs.filter(name__istartswith=self.q)
         return qs
+
+
+class FormationPayments(LoginRequiredMixin, ListView):
+
+    Model = User
+    template_name = "personalacc/formation_payments.html"
+    queryset = User.objects.filter(id=1)
+
+    def post(self, *args, **kwargs):
+        if self.request.is_ajax and self.request.method == "POST":
+            starter()
+            return JsonResponse({"alert": "OK"}, status=200)
+        else:
+            return JsonResponse({"alert": "NOT OK!"}, status=400)

@@ -1,5 +1,6 @@
-from django import template
 from datetime import datetime, timedelta
+
+from django import template
 
 register = template.Library()
 

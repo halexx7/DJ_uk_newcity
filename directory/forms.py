@@ -5,7 +5,6 @@ from django.forms.models import inlineformset_factory
 
 from authnapp.admin import UserCreationForm
 from authnapp.forms import BootstrapStylesMixins
-from authnapp.models import User
 from mainapp.models import Appartament, City, House, Services, ServicesCategory, Street
 
 
