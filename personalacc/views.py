@@ -10,6 +10,7 @@ from django.views.generic import CreateView, DeleteView, ListView, UpdateView
 
 from authnapp.models import User
 from mainapp.models import (
+    PaymentOrder,
     UK,
     Appartament,
     CurrentCounter,
@@ -44,6 +45,7 @@ class UserPageCreate(LoginRequiredMixin, CreateView):
         context = super().get_context_data(**kwargs)
         context["profiles"] = UserProfile.objects.get(user=self.request.user)
         context["credit"] = MainBook.get_user_credit(self.request.user)
+        context["order"] = PaymentOrder.objects.filter(user=self.request.user)
         context["appartament"] = Appartament.objects.filter(user=self.request.user)
         context["history"] = HistoryCounter.get_last_val(self.request.user)
         context["title"] = "Пользователь | ООО Новый город"

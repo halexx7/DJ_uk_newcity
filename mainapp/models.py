@@ -694,63 +694,6 @@ class HeaderData(models.Model):
         self.save()
 
 
-# Начисления (Плетежка)
-class PaymentOrder(models.Model):
-    user = models.ForeignKey(User, verbose_name="Пользователь", null=True, on_delete=SET_NULL)
-    period = models.DateField(verbose_name="Создан", default=datetime.datetime.now().replace(day=1))
-    header_data = JSONField(verbose_name="Данные для шапки")
-    constant_data = JSONField(verbose_name="Постоянная часть")
-    variable_data = JSONField(verbose_name="Переменная часть")
-    # Чистая сумма - за вычетом субсидий, льгот, перерасчетов и т.д.
-    amount = models.DecimalField(verbose_name="Чистая_сумма", max_digits=7, decimal_places=2)
-    # Грязная сумма - до вычетов
-    pre_amount = models.DecimalField(verbose_name="Грязная сумма", max_digits=7, decimal_places=2)
-
-    created = models.DateTimeField(verbose_name="Создан", auto_now_add=True)
-    updated = models.DateTimeField(verbose_name="Обновлен", auto_now=True)
-
-    class Meta:
-        ordering = ("-period",)
-        verbose_name = "Начисление"
-        verbose_name_plural = "Начисления"
-
-    def get_last_val(self):
-        return PaymentOrder.objects.filter(user=self.user)[0:1]
-
-    def delete(self):
-        self.is_active = False
-        self.save()
-
-    @receiver(post_save, sender=ConstantPayments)
-    @receiver(post_save, sender=VariablePayments)
-    def procc_update_data(sender, instance, **kwargs):
-        user = instance.user
-        constant = ConstantPayments.objects.get(user=user)
-        try:
-            period = datetime.datetime.now().replace(day=1)
-            variable = VariablePayments.objects.filter(period=period).get(user=user)
-            upd_val = {
-                "constant_data": constant.data,
-                "variable_data": variable.data,
-                "amount": (constant.total + variable.total),
-                "pre_amount": (constant.pre_total + variable.pre_total),
-                }
-            obj, created = PaymentOrder.objects.update_or_create(user=user, period=period, defaults=upd_val)
-        except:
-            pass
-
-    @receiver(post_save, sender=HeaderData)
-    def procc_update_data(sender, instance, **kwargs):
-        try:
-            user = instance.user
-            period = datetime.datetime.now().replace(day=1)
-            header_data = HeaderData.objects.get(user=user)
-            upd_val = {"header_data": header_data}
-            obj, created = PaymentOrder.objects.get(user=user, period=period, defaults=upd_val)
-        except:
-            pass
-
-
 # Инфорамация по оплатам
 class Payment(models.Model):
     user = models.ForeignKey(User, verbose_name="Пользователь", null=True, on_delete=SET_NULL)
@@ -835,6 +778,63 @@ class MainBook(models.Model):
             obj, created = MainBook.objects.update_or_create(user=user, period=period, direction="C", defaults=upd_val)
         except:
             pass
+
+
+# Начисления (Плетежка)
+class PaymentOrder(models.Model):
+    user = models.ForeignKey(User, verbose_name="Пользователь", null=True, on_delete=SET_NULL)
+    period = models.DateField(verbose_name="Создан", default=datetime.datetime.now().replace(day=1))
+    header_data = JSONField(verbose_name="Данные для шапки", null=True, default=None)
+    constant_data = JSONField(verbose_name="Постоянная часть")
+    variable_data = JSONField(verbose_name="Переменная часть")
+    # Чистая сумма - за вычетом субсидий, льгот, перерасчетов и т.д.
+    amount = models.DecimalField(verbose_name="Чистая_сумма", max_digits=7, decimal_places=2)
+    # Грязная сумма - до вычетов
+    pre_amount = models.DecimalField(verbose_name="Грязная сумма", max_digits=7, decimal_places=2)
+
+    created = models.DateTimeField(verbose_name="Создан", auto_now_add=True)
+    updated = models.DateTimeField(verbose_name="Обновлен", auto_now=True)
+
+    class Meta:
+        ordering = ("-period",)
+        verbose_name = "Начисление"
+        verbose_name_plural = "Начисления"
+
+    def get_last_val(self):
+        return PaymentOrder.objects.filter(user=self.user)[0:1]
+
+    @staticmethod
+    def get_item(id):
+        return PaymentOrder.objects.filter(id=id)
+
+    def delete(self):
+        self.is_active = False
+        self.save()
+
+    @receiver(post_save, sender=MainBook)
+    def procc_update_data(sender, instance, **kwargs):
+        if instance.direction == "C":
+            user = instance.user
+            period = instance.period
+            constant = ConstantPayments.objects.get(user=user)
+            variable = VariablePayments.objects.filter(period=period).get(user=user)
+            upd_val = {
+                "constant_data": constant.data,
+                "variable_data": variable.data,
+                "amount": (constant.total + variable.total),
+                "pre_amount": (constant.pre_total + variable.pre_total),
+                }
+            obj, created = PaymentOrder.objects.update_or_create(user=user, period=period, defaults=upd_val)
+        else:
+            pass
+
+    @receiver(post_save, sender=HeaderData)
+    def procc_update_headerdata(sender, instance, **kwargs):
+        user = instance.user
+        period = datetime.datetime.now().replace(day=1)
+        header_data = HeaderData.objects.get(user=user)
+        upd_val = {"header_data": header_data}
+        PaymentOrder.objects.filter(user=user, period=period).update(header_data=header_data.data)
 
 
 # Текущее состояние счета

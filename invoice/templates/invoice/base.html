@@ -31,10 +31,12 @@
     {% block js %}
     <script id="hello-data" type="application/json">{{ appartaments }}</script>
     <script>
-        const period = {{ variable }}[0].fields.period;
-        const header = JSON.parse({{ header }}[0].fields.data);
-        const constant = JSON.parse({{ constant }}[0].fields.data);
-        const variable = JSON.parse({{ variable }}[0].fields.data);
+        const period = {{ order }}[0].fields.period;
+        const header = JSON.parse({{ order }}[0].fields.header_data);
+        const constant = JSON.parse({{ order }}[0].fields.constant_data);
+        const variable = JSON.parse({{ order }}[0].fields.variable_data);
+        const amount = JSON.parse({{ order }}[0].fields.amount);
+        const pre_amount = JSON.parse({{ order }}[0].fields.pre_amount);
         const status = JSON.parse({{ status }}[0].fields.amount);
     </script>
 
@@ -51,3 +53,12 @@
 </body>
 
 </html>
+
+<!-- <script>
+    const order = JSON.parse({{ order }}[0].fields.amount);
+    const period = {{ variable }}[0].fields.period;
+    const header = JSON.parse({{ header }}[0].fields.data);
+    const constant = JSON.parse({{ constant }}[0].fields.data);
+    const variable = JSON.parse({{ variable }}[0].fields.data);
+    const status = JSON.parse({{ status }}[0].fields.amount);
+</script> -->
