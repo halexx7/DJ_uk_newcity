@@ -133,7 +133,7 @@
                     </div>
 
                     {% now "d" as today %}
-                    {% if "01" < today and today < "31" %}
+                    {% if "00" < today and today < "31" %}
                         <h4 class="mt-2  mb-5">Таблица для заполнения</h4>
                         <form id="house_count_form" method="POST" name="house_count_form">
                             {% csrf_token %}

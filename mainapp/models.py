@@ -6,6 +6,7 @@ from django.db.models.deletion import CASCADE, SET_NULL
 from django.db.models.signals import post_save, pre_delete
 from django.dispatch import receiver
 from django.utils.translation import gettext_lazy as _
+from django.utils.timezone import now
 
 from authnapp.models import User
 
