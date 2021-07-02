@@ -48,6 +48,7 @@ class InvoiceViews(DetailView):
 
 
 def starter():
+    """Расчитываем все платежки"""
     get_calc_const()
     get_calc_variable()
     get_head_data()
@@ -119,7 +120,7 @@ def get_calc_variable():
 
         try:
             # Если счетчики введены, считаем объем
-            object_curr = CurrentCounter.get_last_val(user.id)[0]
+            object_curr = CurrentCounter.get_last_val(user.id)
             # TODO Почему тип list???
             volume_col = (object_curr.col_water - hist.col_water,)
             volume_hot = (object_curr.hot_water - hist.hot_water,)

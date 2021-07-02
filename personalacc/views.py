@@ -72,9 +72,9 @@ class UserPageCreate(LoginRequiredMixin, CreateView):
             if form.is_valid():
                 post = self.request.POST
                 user = self.request.user
-                # period = datetime.datetime.now().date().replace(day=1)
+                period = datetime.datetime.now().date().replace(day=1)
                 # TODO для проверки работы скрипта
-                period = datetime.datetime.now().date().replace(day=1, month=10)
+                # period = datetime.datetime.now().date().replace(day=1, month=10)
                 update_values = {
                     "col_water": post.get("col_water"),
                     "hot_water": post.get("hot_water"),

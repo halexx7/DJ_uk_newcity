@@ -484,7 +484,12 @@ class CurrentCounter(models.Model):
 
     @staticmethod
     def get_last_val(user):
-        return CurrentCounter.objects.filter(user=user)[0:1]
+        period=datetime.datetime.now().replace(day=1)
+        obj=CurrentCounter.objects.latest("period")
+        if obj.period == period:
+            return obj
+        else:
+            return None
 
 
 # История показания счетчиков (индивидуальные)
