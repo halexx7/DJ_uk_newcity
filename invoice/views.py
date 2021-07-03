@@ -23,6 +23,7 @@ from mainapp.models import (
     Standart,
     Subsidies,
     VariablePayments,
+    AverageСalculationBuffer,
 )
 
 
@@ -117,6 +118,11 @@ def get_calc_variable():
         stand = Standart.get_last_val(appa.house_id)[0]
         sq_appa = appa.sq_appart
         hist = HistoryCounter.get_last_val(user.id)[0]
+        curr = {
+            "user": user_id,
+            "standart": False,
+            "period": object_curr.period
+        }
 
         try:
             # Если счетчики введены, считаем объем
@@ -125,22 +131,19 @@ def get_calc_variable():
             volume_col = (object_curr.col_water - hist.col_water,)
             volume_hot = (object_curr.hot_water - hist.hot_water,)
             volume_sewage = volume_col[0] + volume_hot[0]
-            curr = {
-                "standart": False,
-                "volume_col": volume_col[0],
-                "volume_hot": volume_hot[0],
-                "volume_sewage": volume_sewage,
-                "period": object_curr.period,
-            }
+            # Проверяем наличие данных в буфере накопительных платежей для перерасчета
+            buff = AverageСalculationBuffer.get_item(user_id)
+            curr["volume_col"] = volume_col[0]
+            curr["volume_hot"] = volume_hot[0]
+            curr["volume_sewage"] = volume_sewage
+            curr["buffer"] = buff
         except:
             # Если счетчики не введены, берем общедомовой средний объем
-            curr = {
-                "standart": True,
-                "volume_col": stand.col_water,
-                "volume_hot": stand.col_water,
-                "volume_sewage": (stand.col_water + stand.col_water) * sq_appa,
-                "period": (period - datetime.timedelta(days=1)),
-            }
+            curr["standart"] = True
+            curr["volume_col"] = stand.col_water
+            curr["volume_hot"] = stand.col_water,
+            curr["volume_sewage"] = (stand.col_water + stand.col_water) * sq_appa
+            curr["period"] = period - datetime.timedelta(days=1)
 
         subs = Subsidies.get_items(user.id)
         priv = Privileges.get_items(user.id)
@@ -177,8 +180,26 @@ def get_calc_service(el, curr, sq_appa, subs, priv, recl):
         water = True
     if not curr["standart"] and water:
         element["accured"] = el.rate * element["volume"]
+        if curr["buffer"]:
+            period = datetime.datetime.now().replace(day=1)
+            upd_val = {
+                "user": curr["user"],
+                "service": el.name,
+                "recalc": curr["buffer"][el.name] - element["accured"],
+                "desc": f"Автоматический перерасчет на основании введенных пользователем счетчиков"
+            }
+        obj, created = Recalculations.objects.update_or_create(user=curr['user'], period=period, defaults=upd_val)
+
     elif curr["standart"] and water:
         element["accured"] = el.rate * element["volume"] * sq_appa
+
+        try:
+            obj = AverageСalculationBuffer.objects.get(user=curr['user'])
+            obj[el.name] += element["accured"]
+            upd_val = {el.name: curr["user"]}
+
+        obj = AverageСalculationBuffer.objects.get_or_create(user=curr['user'], defaults=upd_val)
+
     if re.search(r"водоотведение", el.name.lower()):
         element["volume"] = curr["volume_sewage"]
         element["accured"] = el.rate * curr["volume_sewage"]

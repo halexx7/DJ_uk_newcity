@@ -878,3 +878,25 @@ class PersonalAccountStatus(models.Model):
             "amount": (credit_sum - debit_sum),
         }
         obj, created = PersonalAccountStatus.objects.update_or_create(user=user, defaults=upd_val)
+
+
+# Накопительный БУФФЕР средних начислений
+class AverageСalculationBuffer(models.Model):
+    """Накапливаем сумму начислений при расчете по общедомовым счетчикам"""
+    user = models.OneToOneField(User, verbose_name="Пользователь", on_delete=CASCADE)
+    col_water = models.DecimalField(verbose_name="Буффер холодной воды", max_digits=7, decimal_places=2)
+    hot_water = models.DecimalField(verbose_name="Буффер горячей воды", max_digits=7, decimal_places=2)
+
+    created = models.DateTimeField(verbose_name="Создан", auto_now_add=True)
+    updated = models.DateTimeField(verbose_name="Обновлен", auto_now=True)
+
+    class Meta:
+        verbose_name = "Буффер средних начислений"
+
+    @staticmethod
+    def get_item(user):
+        try:
+            buff = AverageСalculationBuffer.objects.filter(user=user)
+            return buff
+        except:
+            return False
