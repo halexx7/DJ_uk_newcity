@@ -197,8 +197,10 @@ def get_calc_service(el, curr, sq_appa, subs, priv, recl):
             obj = AverageСalculationBuffer.objects.get(user=curr['user'])
             obj[el.name] += element["accured"]
             upd_val = {el.name: curr["user"]}
-
-        obj = AverageСalculationBuffer.objects.get_or_create(user=curr['user'], defaults=upd_val)
+            obj = AverageСalculationBuffer.objects.update(user=curr['user'], defaults=upd_val)
+        except:
+            upd_val = {el.user: curr["user"], el.name: element["accured"]}
+            obj = AverageСalculationBuffer.objects.create(user=curr['user'], defaults=upd_val)
 
     if re.search(r"водоотведение", el.name.lower()):
         element["volume"] = curr["volume_sewage"]

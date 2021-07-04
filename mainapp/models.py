@@ -884,8 +884,8 @@ class PersonalAccountStatus(models.Model):
 class AverageСalculationBuffer(models.Model):
     """Накапливаем сумму начислений при расчете по общедомовым счетчикам"""
     user = models.OneToOneField(User, verbose_name="Пользователь", on_delete=CASCADE)
-    col_water = models.DecimalField(verbose_name="Буффер холодной воды", max_digits=7, decimal_places=2)
-    hot_water = models.DecimalField(verbose_name="Буффер горячей воды", max_digits=7, decimal_places=2)
+    col_water = models.DecimalField(verbose_name="Буффер холодной воды", max_digits=7, decimal_places=2, null=True, default=None)
+    hot_water = models.DecimalField(verbose_name="Буффер горячей воды", max_digits=7, decimal_places=2, null=True, default=None)
 
     created = models.DateTimeField(verbose_name="Создан", auto_now_add=True)
     updated = models.DateTimeField(verbose_name="Обновлен", auto_now=True)
