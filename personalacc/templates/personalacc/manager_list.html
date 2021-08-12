@@ -59,12 +59,11 @@
                     <div class="row  mb-3  d-flex justify-content-between">
 
                         <div class="nav">
-                            <a class="nav-link active" href="{% url 'directory:list' %}">Справочники</a>
+                            <a class="nav-link  active" href="{% url 'directory:list' %}">Справочники</a>
                             <a class="nav-link" href="{% url 'person:receivable' %}">Дебиторская задолжность</a>
-                            <a class="nav-link" href="#">Ссылка</a>
                         </div>
 
-                        <a href="{% url 'authnapp:password_change' %}" class="col  text-right  text-decoration-none">Изменить пароль</a>
+                        <a class="btn  btn-primary" href="{% url 'person:formation_payments' %}" role="button" aria-pressed="true">Сформировать платежки</a>
                     </div>
                     <p class="user-area__subtitle  text-700  mb-4">Информация о компании</p>
                     <table class="table table-striped">
@@ -134,7 +133,7 @@
                     </div>
 
                     {% now "d" as today %}
-                    {% if "01" < today and today < "31" %}
+                    {% if "00" < today and today < "31" %}
                         <h4 class="mt-2  mb-5">Таблица для заполнения</h4>
                         <form id="house_count_form" method="POST" name="house_count_form">
                             {% csrf_token %}
@@ -187,30 +186,9 @@
                             <a href="{% url 'personalacc:house_history' %}" class="col  text-right  text-decoration-none">История показаний</a>
                         </div>
                         <div class="manager-area__counters-history  mb-5">
-                            <table class="table">
-                                <thead>
-                                    <tr>
-                                        <th scope="col">#</th>
-                                        <th scope="col">Дата</th>
-                                        <th scope="col">Адрес</th>
-                                        <th scope="col">ХВС</th>
-                                        <th scope="col">ХГС</th>
-                                    </tr>
-                                </thead>
-
-                                {% for el in house_current %}
-                                <tbody>
-                                    <tr>
-                                        <td>{{ el.id }}</td>
-                                        <td>{{ el.period|date:"m - Y" }}</td>
-                                        <td class="text-left">{{ el.house }}</td>
-                                        <td>{{ el.col_water }}</td>
-                                        <td>{{ el.hot_water }}</td>
-                                    </tr>
-                                </tbody>
-                                {% endfor %}
-
-                            </table> 
+                            <div class="house-current_list">
+                                {% include 'personalacc/includes/house_current_short_history.html' %}
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -249,37 +227,13 @@
                             <button action="{% url 'person:user' %}" type="button" class="btn  btn-primary  my-2" id="recalcBtn">Внести</button>
                         </form>
                     </div>
-
                     <div class="row  mt-5  mb-3  d-flex justify-content-between">
                         <h4 class="pt-2  mb-4">Последние перерасчеты</h4>
                         <a href="{% url 'personalacc:recalc_history' %}" class="col  text-right  text-decoration-none">История перерасчетов</a>
                     </div>
-
-                    <table class="table">
-                        <thead class="thead-light">
-                            <tr>
-                                <th scope="col">#</th>
-                                <th scope="col">Период</th>
-                                <th scope="col">(Лицевой счет) - ФИО</th>
-                                <th scope="col">Услуга</th>
-                                <th scope="col">Долг(+)/переплата(-)</th>
-                                <th scope="col">Описание</th>
-                            </tr>
-                        </thead>
-
-                        {% for el in house_rec %}
-                        <tbody>
-                            <tr>
-                                <td>{{ el.id }}</td>
-                                <td>{{ el.period|date:"m - Y" }}</td>
-                                <td>{{ el.user }}</td>
-                                <td>{{ el.service }}</td>
-                                <td>{{ el.recalc}}</td>
-                                <td>{{ el.desc}}</td>
-                            </tr>
-                        </tbody>
-                        {% endfor %}
-                    </table>
+                    <div class="recalc_list">
+                        {% include 'personalacc/includes/recalc_short_story.html' %}
+                    </div>
                 </div>
 
                 <!-- Tab-PRIVILEGES -->
@@ -335,29 +289,15 @@
                                     </form>
                                     </div>
                                     
-                                    <h4  class="pt-4  mb-4">Действующие льготы</h4>
-                                    <table class="table  mb-5">
-                                        <thead class="thead-light">
-                                            <tr>
-                                                <th scope="col">#</th>
-                                                <th scope="col">ФИО</th>
-                                                <th scope="col">Название</th>
-                                                <th scope="col">Льгота, %</th>
-                                                <th scope="col">Описание</th>
-                                            </tr>
-                                        </thead>
-                                        {% for el in house_privileges %}
-                                        <tbody>
-                                            <tr>
-                                                <td>{{ el.id }}</td>
-                                                <td>{{ el.user }}</td>
-                                                <td>{{ el.service }}</td>
-                                                <td>{{ el.sale }}</td>
-                                                <td>{{ el.desc }}</td>
-                                            </tr>
-                                        </tbody>
-                                        {% endfor %}
-                                    </table>
+                                    <div class="row  mt-5  mb-3  d-flex  justify-content-between  align-items-center">
+                                        <h4  class="pt-4  mb-4">Действующие льготы</h4>
+                                        <div>
+                                            <a href="{% url 'personalacc:privileges_history' %}" class="col  text-right  text-decoration-none">История льгот</a>
+                                        </div>
+                                    </div>
+                                    <div class="privileges_list">
+                                        {% include 'personalacc/includes/privileges_short_story.html' %}
+                                    </div>
                                 </div>
 
                                 <!-- Link-SUBSIDIES -->
@@ -393,30 +333,15 @@
                                             <button action="{% url 'person:user' %}" type="button" class="btn  btn-primary  my-2" id="subsidiesBtn">Внести</button>
                                         </form>
                                     </div>
-
-                                    <h4  class="pt-4  mb-4">Действующие субсидии</h4>
-                                    <table class="table  mb-5">
-                                        <thead class="thead-light">
-                                            <tr>
-                                                <th scope="col">#</th>
-                                                <th scope="col">ФИО</th>
-                                                <th scope="col">Название</th>
-                                                <th scope="col">Субсидия, %</th>
-                                                <th scope="col">Описание</th>
-                                            </tr>
-                                        </thead>
-                                        {% for el in house_privileges %}
-                                        <tbody>
-                                            <tr>
-                                                <td>{{ el.id }}</td>
-                                                <td>{{ el.user }}</td>
-                                                <td>{{ el.service }}</td>
-                                                <td>{{ el.sale }}</td>
-                                                <td>{{ el.desc }}</td>
-                                            </tr>
-                                        </tbody>
-                                        {% endfor %}                                        
-                                    </table>
+                                    <div class="row  mt-5  mb-3  d-flex  justify-content-between  align-items-center">
+                                        <h4  class="pt-4  mb-4">Действующие субсидии</h4>
+                                        <div>
+                                            <a href="{% url 'personalacc:subsidies_history' %}" class="col  text-right  text-decoration-none">История субсидий</a>
+                                        </div>
+                                    </div>
+                                    <div class="subsidies_list">
+                                        {% include 'personalacc/includes/subsidies_short_story.html' %}                                    
+                                    </div>
                                 </div>
                             </div>
                         </div><!-- ./col-9 -->
@@ -456,28 +381,15 @@
                         </form>
                     </div>
 
-                    <h4 class="pt-2  mb-4">История оплат</h4>
-                    <table class="table">
-                        <thead class="thead-light">
-                            <tr>
-                                <th scope="col">#</th>
-                                <th scope="col">Период</th>
-                                <th scope="col">(Лицевой счет) - ФИО</th>
-                                <th scope="col">Сумма</th>
-                            </tr>
-                        </thead>
-
-                        {% for el in house_pay_debit %}
-                        <tbody>
-                            <tr>
-                                <td>{{ el.id }}</td>
-                                <td>{{ el.period|date:"m - Y" }}</td>
-                                <td>{{ el.user }}</td>
-                                <td>{{ el.amount }}</td>
-                            </tr>
-                        </tbody>
-                        {% endfor %}
-                    </table>
+                    <div class="row  mt-5  mb-3  d-flex  justify-content-between  align-items-center">
+                        <h4 class="pt-2  mb-4">История оплат</h4>
+                        <div>
+                            <a href="{% url 'personalacc:payments_history' %}" class="col  text-right  text-decoration-none">История оплат</a>
+                        </div>
+                    </div>
+                    <div class="subsidies_list">
+                        {% include 'personalacc/includes/payments_short_story.html' %}                                    
+                    </div>
                 </div>
             </div>
         </div>
@@ -493,24 +405,4 @@
 {{ privilege_form.media }}
 {{ subsidies_form.media }}
 
-<script>
-(function($) {
-    $('#add-form').click(function() {
-        var index = $('#id_inline_test_models-TOTAL_FORMS').val()
-        var newTable = $('#id_inline_test_models-__prefix__-DELETE').parents('table').clone()
-        newTable.find(':input').each(function() {
-            for (attr of ['name', 'id'])
-                $(this).attr(
-                    attr,
-                    $(this).attr(attr).replace('__prefix__', index)
-                )
-        })
-        newTable.insertBefore($(this))
-        $('#id_inline_test_models-TOTAL_FORMS').val(
-            parseInt($('#id_inline_test_models-TOTAL_FORMS').val()) + 1
-        )
-        newTable.slideDown()
-    });
-})($)
-</script>
 {% endblock footer %}

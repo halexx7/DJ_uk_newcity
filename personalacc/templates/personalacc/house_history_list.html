@@ -15,6 +15,20 @@
             <a href="{% url 'personalacc:manager' %}" class="col  text-right  text-decoration-none">На главную</a>
         </div>
         <div class="manager-area__counters-history  mb-5">
+            <div class="pagination  my-4">
+                <span class="step-links">
+                    {% if page_obj.has_previous %}
+                        <a href="?page={{ page_obj.previous_page_number }}">&laquo; назад    </a>
+                    {% endif %}
+                    <span class="current  px-3">
+                        Страница {{ page_obj.number }} из {{ page_obj.paginator.num_pages }}.
+                    </span>
+            
+                    {% if page_obj.has_next %}
+                        <a href="?page={{ page_obj.next_page_number }}">    вперед &raquo;</a>
+                    {% endif %}
+                </span>
+            </div>
             <table class="table">
                 <thead>
                     <tr>
@@ -23,11 +37,13 @@
                         <th scope="col">Адрес</th>
                         <th scope="col">ХВС</th>
                         <th scope="col">ХГС</th>
+                        
+                        {% comment "Заказчик пока отменил"%}
                         <th scope="col">Эл.день</th>
                         <th scope="col">Эл.ночь</th>
+                        {% endcomment %}
                     </tr>
                 </thead>
-    
                 {% for el in history %}
                 <tbody>
                     <tr>
@@ -36,8 +52,10 @@
                         <td class="text-left">{{ el.house }}</td>
                         <td>{{ el.col_water }}</td>
                         <td>{{ el.hot_water }}</td>
+                        {% comment %}
                         <td>{{ el.electric_day }}</td>
                         <td>{{ el.electric_night }}</td>
+                        {% endcomment %}
                     </tr>
                 </tbody>
                 {% endfor %}

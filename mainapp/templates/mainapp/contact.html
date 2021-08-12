@@ -1,0 +1,40 @@
+{% extends 'mainapp/base.html' %}
+{% load staticfiles %}
+
+
+{% block menu %}
+    {% include 'mainapp/includes/inc_menu.html' %}
+{% endblock menu %}
+
+
+{% block content %}
+<!-- Contacts -->
+<section class="section  section--last">
+    <div class="container">
+        <h1 class="section__title  mt-3">Контакты</h1>
+
+        <div class="contact__content">
+            <div class="contact__cart-box">
+
+                <div class="cart  my-5">
+                    <img class="contact__img  img  mb-3" src="{% static 'img/icon/telephone-fill.svg' %}" alt="Telephone">
+                    <h2 class="contact__city  mb-3">{{ contact.city }}</h2>
+                    <div class="contact__item">
+                        <h3 class="contact__title">ТЕЛЕФОН</h3>
+                        <p class="contact__data">{{ contact.phone }}</p>
+                    </div>
+                    <div class="contact__item  mb-3">
+                        <h3 class="contact__title">E-MAIL</h3>
+                        <p class="contact__data">{{ contact.email }}</p>
+                    </div>
+                    <div class="contact__item">
+                        <h3 class="contact__title">АДРЕС</h3>
+                        <p class="contact__data">{{ contact.street }}, {{ contact.num_building }}</p>
+                    </div>
+                </div>
+                    
+            </div>
+        </div>
+    </div><!-- /.container -->
+</section>
+{% endblock content %}

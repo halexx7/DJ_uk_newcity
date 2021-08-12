@@ -31,37 +31,38 @@ jQuery(document).ready(function(){
         }
     });
 
-    //Ловим событие формы 1
-    $('#houseCounterBtn').on('click', function (e) {
+    // Выводим сообщение в соответствующий Alert bootstrap
+    function displayCounterAlert(say, typeAlert, time, target){
+        $('#successAlert').remove();
+            $('form input[name="col_water"], form input[name="hot_water"]').val('');
+            setTimeout(function(){
+                $('#successAlert').remove();
+            }, time);
+    };
+
+    //Ловим нажатие кнопки формирования платежки
+    $('#formationPayBtn').on('click', function (e) {
         e.preventDefault();
-        var mForm = $('#houseCounterForm').serialize();
-        console.log(mForm);
+        var mForm = $('#formationPayForm').serialize();
         $.ajax({
             type : 'POST',
             data: mForm,
             success: function (e) {
-        	    console.log(e);
+                $(`.category__form`).addClass(`d-flex  flex-column  align-items-center`);
+                $(`.category__form`).html(`<div class="flex-fill  alert  alert-success  mt-5  mb-3" id="successAlert">
+                <p>Платежки успешно сформированы!</p>
+                </div>
+                <div><a class="btn btn-link  nav-link" role="button" onclick="javascript:history.back(); return false;">Вернуться на главную</a></div>
+                `);
             },
             error: function (e) {
-                console.log(e);
-            }
-        });
-    });
-
-    //Ловим событие формы 2
-    $('#recalcBtn').on('click', function (e) {
-        e.preventDefault();
-        var mForm = $('#recalcForm').serialize();
-        console.log(mForm);
-        $.ajax({
-            type : 'POST',
-            data: mForm,
-            success: function (data) {
-        	    console.log(data.responseText);
+                $(`.category__form`).addClass(`d-flex  flex-column  align-items-center`);
+                $(`.category__form`).html(`<div class="flex-fill  alert  alert-danger  mt-5  mb-3" id="successAlert">
+                <p>Что-то пошло не так! Попробуйте чуть позже!</p>
+                </div>
+                <div><a class="btn btn-link  nav-link" role="button" onclick="javascript:history.back(); return false;">Вернуться на главную</a></div>
+                `);
             },
-            error: function (data) {
-                console.log(data.responseText);
-            }
         });
     });
 });

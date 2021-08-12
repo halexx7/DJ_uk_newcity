@@ -1,7 +1,6 @@
 from django.urls import re_path
 
 import directory.views as directory
-import personalacc.views as personalacc
 from personalacc.apps import PersonalaccConfig
 
 app_name = PersonalaccConfig.name

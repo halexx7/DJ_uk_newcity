@@ -39,7 +39,7 @@
                 </li>
                 <li class="nav-item" role="presentation">
                     <a class="nav-link" id="contact-tab" data-toggle="tab" href="#history" role="tab"
-                        aria-controls="contact" aria-selected="false">История платежей</a>
+                        aria-controls="contact" aria-selected="false">История начислений</a>
                 </li>
             </ul>
 
@@ -191,13 +191,16 @@
                                 </tr>
                             </thead>
                             <tbody>
+                                
+                                {% for el in order %}
                                 <tr>
-                                    <td>01.2021</td>
-                                    <td class="text-center">4500 руб.</td>
-                                    <td class="text-center"><a class="btn btn-light border border-secondary  btn-sm" href="{% url 'invoice:invoice' %}" role="button">Квитанция</a></td>
-                                    <!-- <td class="text-center"><button type="submit" href="{% url 'invoice:invoice' %}" class="btn btn-light border border-secondary  btn-sm">Квитанция</button></td> -->
+                                    <td>{{ el.period }}</td>
+                                    <td class="text-center">{{ el.amount }} руб.</td>
+                                    <td class="text-center"><a class="btn btn-light border border-secondary  btn-sm" href="{% url 'invoice:invoice' el.id %}" role="button">Квитанция</a></td>
                                     <td class="text-center"><a href="#" class="text-decoration-none">Оплатить</a></td>
                                 </tr>
+                                {% endfor %}
+                                    
                                 <tr>
                                     <td>02.2021</td>
                                     <td class="text-center">4200 руб.</td>

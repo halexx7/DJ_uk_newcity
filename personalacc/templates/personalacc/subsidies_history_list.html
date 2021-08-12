@@ -1,0 +1,58 @@
+{% extends 'personalacc/base.html' %}
+{% load staticfiles %}
+
+
+{% block menu %}
+    {% include 'mainapp/includes/inc_menu.html' %}
+{% endblock menu %}
+
+{% block content %}
+
+<div class="container">
+    <div class="my-5">
+        <div class="row  mt-5  mb-3  d-flex justify-content-between">
+            <h4 class="col">История субсидий</h4>
+            <a href="{% url 'personalacc:manager' %}" class="col  text-right  text-decoration-none">На главную</a>
+        </div>
+        <div class="pagination  my-3">
+            <span class="step-links">
+                {% if page_obj.has_previous %}
+                    <a href="?page={{ page_obj.previous_page_number }}">&laquo; назад    </a>
+                {% endif %}
+                <span class="current  px-3">
+                    Страница {{ page_obj.number }} из {{ page_obj.paginator.num_pages }}.
+                </span>
+        
+                {% if page_obj.has_next %}
+                    <a href="?page={{ page_obj.next_page_number }}">    вперед &raquo;</a>
+                {% endif %}
+            </span>
+        </div>
+        <div class="manager-area__counters-history  mb-5">
+            <table class="table  mb-5">
+                <thead class="thead-light">
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">ФИО</th>
+                        <th scope="col">Название</th>
+                        <th scope="col">Субсидия, %</th>
+                        <th scope="col">Описание</th>
+                    </tr>
+                </thead>
+                {% for el in subsidies %}
+                <tbody>
+                    <tr>
+                        <td>{{ el.id }}</td>
+                        <td>{{ el.user }}</td>
+                        <td>{{ el.service }}</td>
+                        <td>{{ el.sale }}</td>
+                        <td>{{ el.desc }}</td>
+                    </tr>
+                </tbody>
+                {% endfor %}
+            </table>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}

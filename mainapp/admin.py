@@ -1,7 +1,4 @@
 from django.contrib import admin
-from django.db import models
-from django.db.models.base import ModelState
-from authnapp.models import User
 
 from authnapp.models import User
 from mainapp.models import (
@@ -14,10 +11,12 @@ from mainapp.models import (
     House,
     HouseCurrent,
     HouseHistory,
+    MainBook,
     Metrics,
     Payment,
+    PaymentOrder,
+    PostNews,
     Privileges,
-    Profit,
     Recalculations,
     Services,
     ServicesCategory,
@@ -197,7 +196,9 @@ admin.site.register(ConstantPayments)
 admin.site.register(VariablePayments)
 admin.site.register(Subsidies)
 admin.site.register(Privileges)
-admin.site.register(Profit)
+admin.site.register(PaymentOrder)
 admin.site.register(Payment)
 admin.site.register(Recalculations)
 admin.site.register(Standart)
+admin.site.register(MainBook)
+admin.site.register(PostNews)

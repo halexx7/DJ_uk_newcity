@@ -1,0 +1,20 @@
+<table class="table">
+    <thead class="thead-light">
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Период</th>
+            <th scope="col">(Лицевой счет) - ФИО</th>
+            <th scope="col">Сумма</th>
+        </tr>
+    </thead>
+    {% for el in house_pay_debit %}
+    <tbody>
+        <tr>
+            <td>{{ el.id }}</td>
+            <td>{{ el.period|date:"m - Y" }}</td>
+            <td>{{ el.user }}</td>
+            <td>{{ el.amount }}</td>
+        </tr>
+    </tbody>
+    {% endfor %}
+</table>

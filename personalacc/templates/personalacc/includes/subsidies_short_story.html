@@ -1,0 +1,24 @@
+<table class="table  mb-5">
+    <thead class="thead-light">
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">ФИО</th>
+            <th scope="col">Название</th>
+            <th scope="col">Субсидия, %</th>
+            <th scope="col">Описание</th>
+        </tr>
+    </thead>
+    {% for el in house_subsidies %}
+    <tbody>
+        <tr>
+            <td>{{ el.id }}</td>
+            <td>{{ el.user }}</td>
+            <td>{{ el.service }}</td>
+            <td>{{ el.sale }}</td>
+            <td>{{ el.desc }}</td>
+        </tr>
+    </tbody>
+    {% endfor %}
+</table>
+
+ 

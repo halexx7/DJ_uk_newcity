@@ -1,12 +1,9 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db import transaction
-from django.forms.models import BaseInlineFormSet, inlineformset_factory
-from django.shortcuts import HttpResponseRedirect, get_object_or_404, render
-from django.urls import reverse, reverse_lazy
+from django.shortcuts import HttpResponseRedirect, get_object_or_404
+from django.urls import reverse_lazy
 from django.views.generic import CreateView, DeleteView, ListView, UpdateView
 
-from authnapp.admin import UserCreationForm
-from authnapp.forms import AppartamentFormset
 from authnapp.managers import UserManager
 from authnapp.models import User
 from directory.forms import (
@@ -19,7 +16,7 @@ from directory.forms import (
     ServicesEditForm,
     StreetEditForm,
 )
-from mainapp.models import Appartament, City, House, Services, ServicesCategory, Street, UserProfile
+from mainapp.models import Appartament, City, House, Services, ServicesCategory, Street
 
 
 class DirectoryList(LoginRequiredMixin, ListView):
@@ -355,6 +352,12 @@ class AppartamentsCreateView(LoginRequiredMixin, CreateView):
         context["title"] = "Квартира/создание"
         return context
 
+    def get_form_kwargs(self, *args, **kwargs):
+        kwargs = super().get_form_kwargs(*args, **kwargs)
+        # Заполняем форму начальными данными
+        kwargs["initial"] = {"house": self.kwargs["pk"]}
+        return kwargs
+
 
 class AppartamentsUpdateView(LoginRequiredMixin, UpdateView):
     model = Appartament
@@ -366,6 +369,12 @@ class AppartamentsUpdateView(LoginRequiredMixin, UpdateView):
         context = super().get_context_data(**kwargs)
         context["title"] = "Квартира/редактирование"
         return context
+
+    def get_form_kwargs(self, *args, **kwargs):
+        kwargs = super().get_form_kwargs(*args, **kwargs)
+        # Заполняем форму начальными данными
+        kwargs["initial"] = {"house": self.kwargs["pk"]}
+        return kwargs
 
 
 class AppartamentsDeleteView(LoginRequiredMixin, DeleteView):

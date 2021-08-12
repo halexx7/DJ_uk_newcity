@@ -5,7 +5,6 @@ from django.forms.models import inlineformset_factory
 
 from authnapp.admin import UserCreationForm
 from authnapp.forms import BootstrapStylesMixins
-from authnapp.models import User
 from mainapp.models import Appartament, City, House, Services, ServicesCategory, Street
 
 
@@ -72,6 +71,10 @@ class HouseEditForm(BootstrapStylesMixins, forms.ModelForm):
 
 class AppartamentsEditForm(BootstrapStylesMixins, forms.ModelForm):
     field_name = ["user", "house", "number", "add_number", "sq_appart", "num_owner", "is_active"]
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["house"].queryset = House.objects.filter(id=kwargs["initial"]["house"])
 
     class Meta:
         model = Appartament
