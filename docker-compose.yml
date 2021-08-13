@@ -4,12 +4,11 @@ services:
   db:
     container_name: uk_pdb
     image: postgres
-    environment:
-      - POSTGRES_DB=post
-      - POSTGRES_USER=post
-      - POSTGRES_PASSWORD=post
+    env_file:
+      - .env
     volumes:
-      - ./postgress/:/var/lib/postgresql/data/
+      - ./dumps:/code/dumps
+      - ./data/postgresql:/var/lib/postgresql/data
     ports:
       - 5432:5432
     restart: always

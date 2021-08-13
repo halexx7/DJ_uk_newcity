@@ -14,3 +14,12 @@ CRM для работы управляющей компании на Django.
 ## Лицензия
 
 MIT
+
+get start
+
+docker-compose up
+
+docker exec -it uk_djo bash
+
+python3 manage.py migrate
+
