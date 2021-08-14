@@ -11,7 +11,7 @@
 {% block content %}
 <div class="intro-user  mt-5">
     <div class="container">
-        <h2 class="intro-user__title  text-center">Здравствуйте, Иванов Иван!</h2>
+        <h2 class="intro-user__title  text-center">Здравствуйте, {{ user.name }}</h2>
     </div>
 </div>
 
@@ -89,16 +89,17 @@
                     <h4 class="mb-3">Введите показания счетчиков в поля</h4>
                         <div class="alert alert-warning" role="alert">
                             <ul class="">
+                                <li><span class="text-700">Счетчик ГВС</span> (горячая вода), укажите целое число до запятой</li>
+                                <li><span class="text-700">Счетчик ХВС</span> (холодная вода), укажите целое число до запятой</li>
                                 {% comment 'Заказчик отменил пока'%}
-                                    <li><span class="text-700">Счетчик ГВС</span> (горячая вода), укажите целое число до запятой</li>
-                                    <li><span class="text-700">Счетчик ХВС</span> (холодная вода), укажите целое число до запятой</li>
+                                    {% if user.profiles.type_electric_meter == '2' %}
+                                        <li><span class="text-700">Электроэнергия (день)</span>, укажите целое число до запятой</li>
+                                        <li><span class="text-700">Электроэнергия (ночь)</span>, укажите целое число до запятой</li>
+                                    {% else %}
+                                        <li><span class="text-700">Электроэнергия</span>, укажите целое число до запятой</li>
+                                    {% endif %}
                                 {% endcomment %}
-                                {% if user.profiles.type_electric_meter == '2' %}
-                                    <li><span class="text-700">Электроэнергия (день)</span>, укажите целое число до запятой</li>
-                                    <li><span class="text-700">Электроэнергия (ночь)</span>, укажите целое число до запятой</li>
-                                {% else %}
-                                    <li><span class="text-700">Электроэнергия</span>, укажите целое число до запятой</li>
-                                {% endif %}
+
                                 <li>Нажать кнопку <span class="text-700">СОХРАНИТЬ</span></li>
                             </ul>
                         </div>
