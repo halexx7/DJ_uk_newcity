@@ -192,28 +192,15 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                
                                 {% for el in order %}
                                 <tr>
                                     <td>{{ el.period }}</td>
                                     <td class="text-center">{{ el.amount }} руб.</td>
                                     <td class="text-center"><a class="btn btn-light border border-secondary  btn-sm" href="{% url 'invoice:invoice' el.id %}" role="button">Квитанция</a></td>
+                                    {% comment %}оплачено или нет? Делать проверку и отображать если не оплачено!{% endcomment %}
                                     <td class="text-center"><a href="#" class="text-decoration-none">Оплатить</a></td>
                                 </tr>
                                 {% endfor %}
-                                    
-                                <tr>
-                                    <td>02.2021</td>
-                                    <td class="text-center">4200 руб.</td>
-                                    <td class="text-center"><button type="button" class="btn btn-light border border-secondary  btn-sm">Квитанция</button></td>
-                                    <td class="text-center"><a href="#" class="text-decoration-none">Оплатить</a></td>
-                                </tr>
-                                <tr>
-                                    <td>03.2021</td>
-                                    <td class="text-center">5100 руб.</td>
-                                    <td class="text-center"><button type="button" class="btn btn-light border border-secondary  btn-sm">Квитанция</button></td>
-                                    <td class="text-center"><a href="#" class="text-decoration-none">Оплатить</a></td>
-                                </tr>
                             </tbody>
                         </table>
                     </div>

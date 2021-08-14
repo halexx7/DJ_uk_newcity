@@ -896,7 +896,8 @@ class AverageСalculationBuffer(models.Model):
     @staticmethod
     def get_item(user):
         try:
-            buff = AverageСalculationBuffer.objects.filter(user=user)
+            buff = AverageСalculationBuffer.objects.filter(user=user).first()
             return buff
         except:
             return False
+            
