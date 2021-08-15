@@ -10,6 +10,7 @@ from django.utils.timezone import now
 
 from authnapp.models import User
 
+# PERIOD = datetime.datetime.now().date().replace(day=1, month=10)
 
 class PostNews(models.Model):
     title = models.CharField(verbose_name="Заголовок", max_length=128)
@@ -334,6 +335,7 @@ class HouseHistory(models.Model):
 class Standart(models.Model):
     period = models.DateField(verbose_name="Создан", default=datetime.datetime.now().replace(day=1))
     house = models.ForeignKey(House, verbose_name="Дом", null=True, on_delete=SET_NULL)
+    # Значения хранятся на 1 кв.м
     col_water = models.DecimalField(verbose_name="Норматив ХВС", max_digits=6, decimal_places=2)
     hot_water = models.DecimalField(verbose_name="Норматив ХГС", max_digits=6, decimal_places=2)
     electric_day = models.DecimalField(
@@ -484,11 +486,14 @@ class CurrentCounter(models.Model):
 
     @staticmethod
     def get_last_val(user):
-        period=datetime.datetime.now().replace(day=1)
-        obj=CurrentCounter.objects.latest("period")
-        if obj.period == period:
-            return obj
-        else:
+        period=datetime.datetime.now().replace(day=1, month=10)
+        try:
+            obj=CurrentCounter.objects.filter(user=user).latest("period")
+            if obj.period.month == period.month:
+                return obj
+            else:
+                return None
+        except:
             return None
 
 
@@ -538,7 +543,7 @@ class Recalculations(models.Model):
     user = models.ForeignKey(User, verbose_name="Пользователь", null=True, on_delete=SET_NULL)
     period = models.DateField(verbose_name="Создан", default=datetime.datetime.now().replace(day=1))
     service = models.ForeignKey(Services, verbose_name="Услуга", null=True, on_delete=SET_NULL)
-    recalc = models.DecimalField(verbose_name="Сумма", max_digits=7, decimal_places=2, default=0)
+    recalc = models.DecimalField(verbose_name="Сумма", max_digits=10, decimal_places=2, default=0)
     desc = models.TextField(verbose_name="Описание", blank=True, null=True)
 
     created = models.DateTimeField(verbose_name="Создан", auto_now_add=True)
@@ -657,8 +662,8 @@ class VariablePayments(models.Model):
     user = models.ForeignKey(User, verbose_name="Пользователь", on_delete=CASCADE)
     period = models.DateField(verbose_name="Создан", default=datetime.datetime.now().replace(day=1))
     data = JSONField(verbose_name="data")
-    total = models.DecimalField(verbose_name="Итого", max_digits=7, decimal_places=2, default=0)
-    pre_total = models.DecimalField(verbose_name="Итого", max_digits=7, decimal_places=2, default=0)
+    total = models.DecimalField(verbose_name="Итого", max_digits=10, decimal_places=2, default=0)
+    pre_total = models.DecimalField(verbose_name="Итого", max_digits=10, decimal_places=2, default=0)
 
     created = models.DateTimeField(verbose_name="Создан", auto_now_add=True)
     updated = models.DateTimeField(verbose_name="Обновлен", auto_now=True)
@@ -674,7 +679,11 @@ class VariablePayments(models.Model):
 
     @staticmethod
     def get_last_val(user):
-        return VariablePayments.objects.filter(user=user)[0:1]
+        try:
+            value = VariablePayments.objects.filter(user=user).first()
+            return value
+        except:
+            return None
 
     def delete(self):
         self.is_active = False
@@ -734,7 +743,7 @@ class MainBook(models.Model):
     user = models.ForeignKey(User, verbose_name="Пользователь", null=True, on_delete=SET_NULL)
     period = models.DateField(verbose_name="Создан", default=datetime.datetime.now().replace(day=1))
     direction = models.CharField(verbose_name="Направление", max_length=1, choices=DIRECTION_TRAVEL)
-    amount = models.DecimalField(verbose_name="Сумма", max_digits=7, decimal_places=2)
+    amount = models.DecimalField(verbose_name="Сумма", max_digits=12, decimal_places=2)
 
     created = models.DateTimeField(verbose_name="Создан", auto_now_add=True)
     updated = models.DateTimeField(verbose_name="Обновлен", auto_now=True)
@@ -777,15 +786,13 @@ class MainBook(models.Model):
     @receiver(post_save, sender=VariablePayments)
     def procc_accrual_mainbook(sender, instance, **kwargs):
         user = instance.user
-        const_total = ConstantPayments.objects.get(user=user)
-        try:
-            variable = VariablePayments.get_last_val(user=user)[0]
+        variable = VariablePayments.get_last_val(user=user)
+        if variable:
+            const_total = ConstantPayments.objects.get(user=user)
             period = variable.period
             varia_total = VariablePayments.objects.filter(period=period).get(user=user)
             upd_val = {"amount": (const_total.total + varia_total.total)}
             obj, created = MainBook.objects.update_or_create(user=user, period=period, direction="C", defaults=upd_val)
-        except:
-            pass
 
 
 # Начисления (Плетежка)
@@ -824,24 +831,24 @@ class PaymentOrder(models.Model):
         if instance.direction == "C":
             user = instance.user
             period = instance.period
-            header = HeaderData.objects.get_item(user)
             constant = ConstantPayments.objects.get(user=user)
             variable = VariablePayments.objects.filter(period=period).get(user=user)
             upd_val = {
-                "header_data": header.data,
                 "constant_data": constant.data,
                 "variable_data": variable.data,
                 "amount": (constant.total + variable.total),
                 "pre_amount": (constant.pre_total + variable.pre_total),
             }
             obj, created = PaymentOrder.objects.update_or_create(user=user, period=period, defaults=upd_val)
-        else:
-            pass
+
 
     @receiver(post_save, sender=HeaderData)
     def procc_update_headerdata(sender, instance, **kwargs):
         user = instance.user
-        period = datetime.datetime.now().replace(day=1)
+        # period = datetime.datetime.now().replace(day=1)
+        #TODO PERIOD
+        from invoice.views import PERIOD
+        period = PERIOD
         header_data = HeaderData.objects.get(user=user)
         PaymentOrder.objects.filter(user=user, period=period).update(header_data=header_data.data)
 
@@ -885,8 +892,9 @@ class PersonalAccountStatus(models.Model):
 class AverageСalculationBuffer(models.Model):
     """Накапливаем сумму начислений при расчете по общедомовым счетчикам"""
     user = models.OneToOneField(User, verbose_name="Пользователь", on_delete=CASCADE)
-    col_water = models.DecimalField(verbose_name="Буффер холодной воды", max_digits=7, decimal_places=2, null=True, default=None)
-    hot_water = models.DecimalField(verbose_name="Буффер горячей воды", max_digits=7, decimal_places=2, null=True, default=None)
+    col_water = models.DecimalField(verbose_name="Буффер холодной воды", max_digits=10, decimal_places=2, null=True, default=None)
+    hot_water = models.DecimalField(verbose_name="Буффер горячей воды", max_digits=10, decimal_places=2, null=True, default=None)
+    sewage = models.DecimalField(verbose_name="Буффер сточных вод", max_digits=10, decimal_places=2, null=True, default=None)
 
     created = models.DateTimeField(verbose_name="Создан", auto_now_add=True)
     updated = models.DateTimeField(verbose_name="Обновлен", auto_now=True)
@@ -901,4 +909,12 @@ class AverageСalculationBuffer(models.Model):
             return buff
         except:
             return False
+
+    def get_dict(self):
+        data = dict()
+        data["user"] = self.user
+        data["col_water"] = self.col_water
+        data["hot_water"] = self.hot_water
+        data["sewage"] = self.sewage
+        return data
             

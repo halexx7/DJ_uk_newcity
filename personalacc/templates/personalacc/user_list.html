@@ -194,8 +194,8 @@
                             <tbody>
                                 {% for el in order %}
                                 <tr>
-                                    <td>{{ el.period }}</td>
-                                    <td class="text-center">{{ el.amount }} руб.</td>
+                                    <td>{{ el.period|date:"m - Y" }}</td>
+                                    <td class="text-center">{% if el.amount > 0 %}{{el.amount}}{% else %}0{% endif %} руб.</td>
                                     <td class="text-center"><a class="btn btn-light border border-secondary  btn-sm" href="{% url 'invoice:invoice' el.id %}" role="button">Квитанция</a></td>
                                     {% comment %}оплачено или нет? Делать проверку и отображать если не оплачено!{% endcomment %}
                                     <td class="text-center"><a href="#" class="text-decoration-none">Оплатить</a></td>

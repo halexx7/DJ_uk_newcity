@@ -35,7 +35,8 @@ from personalacc.forms import (
     SubsidiesForm,
 )
 
-PERIOD = datetime.datetime.now().date().replace(day=1, month=8)
+
+# PERIOD = datetime.datetime.now().date().replace(day=1, month=10)
 
 class UserPageCreate(LoginRequiredMixin, CreateView):
     model = User
@@ -73,7 +74,8 @@ class UserPageCreate(LoginRequiredMixin, CreateView):
                 post = self.request.POST
                 user = self.request.user
                 # period = datetime.datetime.now().date().replace(day=1)
-                # TODO для проверки работы скрипта
+                #TODO PERIOD
+                from invoice.views import PERIOD
                 period = PERIOD
                 update_values = {
                     "col_water": post.get("col_water"),
@@ -131,7 +133,8 @@ class ManagerPageCreate(LoginRequiredMixin, CreateView):
     def post(self, *args, **kwargs):
         post = self.request.POST
         user = self.request.POST.get("user")
-        # TODO для проверки работы скрипта
+        #TODO PERIOD
+        from invoice.views import PERIOD
         period = PERIOD
         # period = datetime.datetime.now().date().replace(day=1)
         handle = {
