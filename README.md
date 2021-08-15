@@ -23,3 +23,5 @@ docker exec -it uk_djo bash
 
 python3 manage.py migrate
 
+cat dumps/empty_dump_15-08-2021_11_07_30.sql | docker exec -i uk_pdb psql -U post
+

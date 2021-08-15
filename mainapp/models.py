@@ -694,8 +694,8 @@ class HeaderData(models.Model):
         verbose_name_plural = "Начисления"
 
     @staticmethod
-    def get_items(user):
-        return HeaderData.objects.filter(user=user)
+    def get_item(user):
+        return HeaderData.objects.filter(user=user).first()
 
     def delete(self):
         self.is_active = False
@@ -824,9 +824,11 @@ class PaymentOrder(models.Model):
         if instance.direction == "C":
             user = instance.user
             period = instance.period
+            header = HeaderData.objects.get_item(user)
             constant = ConstantPayments.objects.get(user=user)
             variable = VariablePayments.objects.filter(period=period).get(user=user)
             upd_val = {
+                "header_data": header.data,
                 "constant_data": constant.data,
                 "variable_data": variable.data,
                 "amount": (constant.total + variable.total),
@@ -841,7 +843,6 @@ class PaymentOrder(models.Model):
         user = instance.user
         period = datetime.datetime.now().replace(day=1)
         header_data = HeaderData.objects.get(user=user)
-        upd_val = {"header_data": header_data}
         PaymentOrder.objects.filter(user=user, period=period).update(header_data=header_data.data)
 
 

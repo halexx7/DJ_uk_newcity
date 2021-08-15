@@ -14,9 +14,9 @@
         <h1 class="section__title  mt-3">Контакты</h1>
 
         <div class="contact__content">
-            <div class="contact__cart-box">
+            <div class="contact__cart-box  my-5">
 
-                <div class="cart  my-5">
+                <div class="cart">
                     <img class="contact__img  img  mb-3" src="{% static 'img/icon/telephone-fill.svg' %}" alt="Telephone">
                     <h2 class="contact__city  mb-3">{{ contact.city }}</h2>
                     <div class="contact__item">
@@ -31,6 +31,9 @@
                         <h3 class="contact__title">АДРЕС</h3>
                         <p class="contact__data">{{ contact.street }}, {{ contact.num_building }}</p>
                     </div>
+                </div>
+                <div class="map  mt-3">
+                    <script  async src="https://api-maps.yandex.ru/services/constructor/1.0/js/?um=constructor%3Ad72508a893ff8a62cb3a3262aa10230d9d2461efeebe2f367f99541fc70545f0&amp;width=670&amp;height=350&amp;lang=ru_RU&amp;scroll=false"></script>
                 </div>
                     
             </div>

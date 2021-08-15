@@ -3,8 +3,6 @@ import decimal
 import json
 import re
 
-from icecream import ic
-
 from django.core.serializers import serialize
 from django.utils.safestring import mark_safe
 from django.views.generic.detail import DetailView
@@ -28,6 +26,8 @@ from mainapp.models import (
     AverageСalculationBuffer,
 )
 
+PERIOD = datetime.datetime.now().date().replace(day=1, month=8)
+
 def main(request):
     pass
 
@@ -40,9 +40,9 @@ class InvoiceViews(DetailView):
         pk = self.kwargs["pk"]
         user = self.request.user
         context = super().get_context_data(**kwargs)
-        context["header"] = mark_safe(serialize("json", HeaderData.objects.filter(user=user)))
-        context["constant"] = mark_safe(serialize("json", ConstantPayments.objects.filter(user=user)))
-        context["variable"] = mark_safe(serialize("json", VariablePayments.get_last_val(user.id)))
+        # context["header"] = mark_safe(serialize("json", HeaderData.objects.filter(user=user)))
+        # context["constant"] = mark_safe(serialize("json", ConstantPayments.objects.filter(user=user)))
+        # context["variable"] = mark_safe(serialize("json", VariablePayments.get_last_val(user.id)))
         context["order"] = mark_safe(serialize("json", PaymentOrder.get_item(pk)))
         context["status"] = mark_safe(serialize("json", PersonalAccountStatus.get_item(user)))
         return context
@@ -109,7 +109,8 @@ def get_calc_variable():
         data = []
         total = 0
         pre_total = 0
-        period = datetime.datetime.now().replace(day=1)
+        # period = datetime.datetime.now().replace(day=1)
+        period = PERIOD
         user_id = User.objects.get(id=user.id)
         appa = Appartament.get_item(user.id)[0]
         stand = Standart.get_last_val(appa.house_id)[0]
@@ -154,6 +155,30 @@ def get_calc_variable():
         }
         obj, created = VariablePayments.objects.update_or_create(user=user_id, period=period, defaults=update_values)
     return (data, total, pre_total)
+
+# Готовит данные для шапки (персональные, реквизиты)
+# TODO повесить сигналы на модели чтоб данные при изменении обновлялись
+def get_head_data():
+    users = User.objects.filter(is_staff=False)
+
+    for user in users:
+        data = dict()
+        appa = Appartament.get_item(user.id)[0]
+        uk = UK.get_item(appa.house.uk_id)
+
+        data["payer"] = user.name  # Плательщик
+        data["address"] = appa
+        data["sq_appart"] = appa.sq_appart  # Площадь квартиры
+        data["num_living"] = appa.num_owner  # Кол-во проживающих
+        data["name_uk"] = UK.get_full_name(uk.id)  # Название, адрес, тел. и т.д. УК
+        data["requisites"] = UK.get_requisites(uk.id)  # Название, адрес, тел. и т.д. УК
+        data["personal_account"] = user.personal_account  # Номер лицевого счета
+
+        update_values = {
+            "data": json.dumps(data, ensure_ascii=False, default=str),
+        }
+        obj, created = HeaderData.objects.update_or_create(user=user, defaults=update_values)
+
 
 # Делает расчет всех полей по Услуге
 def get_calc_service(el, curr, sq_appa, subs, priv, recl):
@@ -211,29 +236,6 @@ def get_calc_service(el, curr, sq_appa, subs, priv, recl):
         + element["recalculation"]
     )
     return element
-
-# Готовит данные для шапки (персональные, реквизиты)
-# TODO повесить сигналы на модели чтоб данные при изменении обновлялись
-def get_head_data():
-    users = User.objects.filter(is_staff=False)
-
-    for user in users:
-        data = dict()
-        appa = Appartament.get_item(user.id)[0]
-        uk = UK.get_item(appa.house.uk_id)
-
-        data["payer"] = user.name  # Плательщик
-        data["address"] = appa
-        data["sq_appart"] = appa.sq_appart  # Площадь квартиры
-        data["num_living"] = appa.num_owner  # Кол-во проживающих
-        data["name_uk"] = UK.get_full_name(uk.id)  # Название, адрес, тел. и т.д. УК
-        data["requisites"] = UK.get_requisites(uk.id)  # Название, адрес, тел. и т.д. УК
-        data["personal_account"] = user.personal_account  # Номер лицевого счета
-
-        update_values = {
-            "data": json.dumps(data, ensure_ascii=False, default=str),
-        }
-        obj, created = HeaderData.objects.update_or_create(user=user, defaults=update_values)
 
 # Возваращает субсидию или льготу при наличии или 0
 def get_sale(name, arr):
