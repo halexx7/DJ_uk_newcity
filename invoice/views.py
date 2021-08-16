@@ -8,8 +8,8 @@ from django.utils.safestring import mark_safe
 from django.views.generic.detail import DetailView
 
 from authnapp.models import User
+from personalacc.models import SiteConfiguration
 from mainapp.models import (
-    UK,
     Appartament,
     ConstantPayments,
     CurrentCounter,
@@ -161,14 +161,14 @@ def get_head_data():
     for user in users:
         data = dict()
         appa = Appartament.get_item(user.id)[0]
-        uk = UK.get_item(appa.house.uk_id)
+        uk = SiteConfiguration.get_solo()
 
         data["payer"] = user.name  # Плательщик
         data["address"] = appa
         data["sq_appart"] = appa.sq_appart  # Площадь квартиры
         data["num_living"] = appa.num_owner  # Кол-во проживающих
-        data["name_uk"] = UK.get_full_name(uk.id)  # Название, адрес, тел. и т.д. УК
-        data["requisites"] = UK.get_requisites(uk.id)  # Название, адрес, тел. и т.д. УК
+        data["name_uk"] = uk.get_full_name()  # Название, адрес, тел. и т.д. УК
+        data["requisites"] = uk.get_requisites()  # Название, адрес, тел. и т.д. УК
         data["personal_account"] = user.personal_account  # Номер лицевого счета
 
         update_values = {

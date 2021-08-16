@@ -1,7 +1,7 @@
-from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import ListView
 
-from mainapp.models import UK, PostNews
+from mainapp.models import PostNews
+from personalacc.models import SiteConfiguration
 
 
 class IndexList(ListView):
@@ -12,17 +12,18 @@ class IndexList(ListView):
         context = super().get_context_data(**kwargs)
         context["title"] = "Главная | ООО Новый город"
         context["news"] = PostNews.get_items()[:4]
+        context["config"] = SiteConfiguration.get_solo()
         return context
 
 
 class ContactList(ListView):
-    model = UK
+    model = PostNews
     template_name = "mainapp/contact.html"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["title"] = "Контакты | ООО Новый город"
-        context["contact"] = UK.get_item(1)
+        context["config"] = SiteConfiguration.get_solo()
         return context
 
 
@@ -35,4 +36,5 @@ class NewstList(ListView):
         context = super().get_context_data(**kwargs)
         context["title"] = "Новости | ООО Новый город"
         context["news"] = PostNews.get_items()
+        context["config"] = SiteConfiguration.get_solo()
         return context
