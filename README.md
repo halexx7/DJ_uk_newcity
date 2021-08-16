@@ -31,10 +31,13 @@ apt update; apt upgrade -y; apt install -y curl; curl -sSL https://get.docker.co
 cp example.env .env
 ```
 ```
-cp fake_db/final_dump_16-08-2021_13_48_35.sql dumps/
+docker-compose up -d
 ```
 ```
-docker-compose up
+cp fake_db/full_dumps_16-08-2021_21_41_53.sql dumps/
+```
+```
+docker-compose down
 ```
 ```
 pipenv install
@@ -43,7 +46,10 @@ pipenv install
 pipenv shell
 ```
 ```
-cat dumps/final_dump_16-08-2021_13_48_35.sql | docker exec -i uk_pdb psql -U post
+docker-compose up -d
+```
+```
+cat dumps/full_dumps_16-08-2021_21_41_53.sql | docker exec -i uk_pdb psql -U post
 ```
 
 Запускаем сервер
