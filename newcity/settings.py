@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     "crispy_forms",
     "directory",
     "invoice",
+    "solo",
 ]
 
 # Auth model
