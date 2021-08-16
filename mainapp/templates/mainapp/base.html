@@ -7,7 +7,6 @@
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-
     <!-- Useful meta tags -->
     <meta http-equiv="x-ua-compatible" content="ie=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -19,14 +18,11 @@
     <meta name="description" content="">
 
     {% block css %}
-
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" type="text/css" href="{% static 'css/bootstrap.min.css' %}">
-
     <!-- Main CSS -->
     <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
     {% endblock css %}
-
 
     <!-- Главная | УК "Новый Город" -->
     <title>
@@ -34,7 +30,6 @@
             {{ title|capfirst }}
         {% endblock title %}
     </title>
-
 </head>
 
 <body>
@@ -48,7 +43,6 @@
                     data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
                     aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span>
                 </button>
-
                 {% block menu %}
                 {% endblock menu %}
             </div>
