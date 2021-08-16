@@ -849,10 +849,10 @@ class PaymentOrder(models.Model):
     @receiver(post_save, sender=HeaderData)
     def procc_update_headerdata(sender, instance, **kwargs):
         user = instance.user
-        # period = datetime.datetime.now().replace(day=1)
+        period = datetime.datetime.now().replace(day=1)
         #TODO PERIOD
-        from invoice.views import PERIOD
-        period = PERIOD
+        # from invoice.views import PERIOD
+        # period = PERIOD
         header_data = HeaderData.objects.get(user=user)
         PaymentOrder.objects.filter(user=user, period=period).update(header_data=header_data.data)
 

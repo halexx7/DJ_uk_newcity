@@ -15,12 +15,13 @@ CRM для работы управляющей компании на Django.
 
 MIT
 
-##get start
+
+## Get start
 ```
-git clone
+git clone https://github.com/halexx7/DJ_uk_newcity.git
 ``` 
 ```
-cd 
+cd DJ_uk_newcity/
 ```
 ```
 su
@@ -30,17 +31,23 @@ apt update; apt upgrade -y; apt install -y curl; curl -sSL https://get.docker.co
 cp example.env .env
 ```
 ```
+cp fake_db/final_dump_16-08-2021_13_48_35.sql dumps/
+```
+
+```
 docker-compose build
 ```
 ```
 docker-compose up
 ```
 ```
+cat dumps/final_dump_16-08-2021_13_48_35.sql | docker exec -i uk_pdb psql -U post
+```
+
+Если напишет, что нужно провести миграции, заходим в контейнер и делаем
+```
 docker exec -it uk_djo bash
 ```
 ````
 python3 manage.py migrate
-```
-```
-cat dumps/news_3_dump_15-08-2021_21_41_00.sql | docker exec -i uk_pdb psql -U post
 ```
