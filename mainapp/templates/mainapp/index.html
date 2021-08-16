@@ -11,21 +11,17 @@
 <!-- Intro Slider -->
 <section class="intro">
     <div class="container">
-
         <div class="intro__img">
             <img src="{% static 'img/slide_1.jpg' %}" class="d-block w-100" alt="...">
         </div>
-
     </div>
 </section>
-
 
 <!-- Content -->
 <section class="content">
     <div class="container  pt-5">
         <div class="content__item  my-5  pb-5">
             <div class="row">
-
                 {% for new in news %}
                 <hr style="color: #000; height: 1px; width: 100%">
                 <div class="row">
@@ -33,7 +29,6 @@
                     <p>{{ new.content }}</p>
                 </div>
                 {% endfor %}
-
             </div>
         </div>
     </div>
