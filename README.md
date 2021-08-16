@@ -15,6 +15,7 @@ CRM для работы управляющей компании на Django.
 
 MIT
 
+
 ## Get start
 ```
 git clone https://github.com/halexx7/DJ_uk_newcity.git
@@ -30,19 +31,27 @@ apt update; apt upgrade -y; apt install -y curl; curl -sSL https://get.docker.co
 cp example.env .env
 ```
 ```
-docker-compose build
+cp fake_db/final_dump_16-08-2021_13_48_35.sql dumps/
 ```
 ```
 docker-compose up
 ```
 ```
+pipenv install
+```
+```
+pipenv shell
+```
+```
 cat dumps/final_dump_16-08-2021_13_48_35.sql | docker exec -i uk_pdb psql -U post
 ```
 
-Если напишет, что нужно провести миграции, заходим в контейнер и делаем
+Запускаем сервер
 ```
-docker exec -it uk_djo bash
+python3 manage.py runserver
 ```
+
+Если напишет, что нужно провести миграции, проводим миграции
 ````
 python3 manage.py migrate
 ```

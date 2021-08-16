@@ -2,7 +2,7 @@ from django.conf import settings
 from django.conf.urls import include
 from django.conf.urls.static import static
 from django.contrib import admin
-from django.urls import path, re_path
+from django.urls import re_path
 
 import mainapp.views as mainapp
 
@@ -12,9 +12,9 @@ urlpatterns = [
     re_path(r"^news/$", mainapp.NewstList.as_view(), name="news"),
     re_path(r"^auth/", include("authnapp.urls", namespace="auth")),
     re_path(r"^directory/", include("directory.urls", namespace="directory")),
-    path("person/", include("personalacc.urls", namespace="person")),
-    path("invoice/", include("invoice.urls", namespace="invoice")),
-    path("admin/", admin.site.urls, name="admin"),
+    re_path(r"^person/", include("personalacc.urls", namespace="person")),
+    re_path(r"^invoice/", include("invoice.urls", namespace="invoice")),
+    re_path(r"^admin/", admin.site.urls, name="admin"),
 ]
 
 

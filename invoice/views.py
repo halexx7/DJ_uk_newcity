@@ -26,7 +26,7 @@ from mainapp.models import (
     AverageСalculationBuffer,
 )
 
-PERIOD = datetime.datetime.now().date().replace(day=1, month=10)
+# PERIOD = datetime.datetime.now().date().replace(day=1, month=10)
 
 def main(request):
     pass
@@ -105,9 +105,9 @@ def get_calc_variable():
         data = []
         total = 0
         pre_total = 0
-        # period = datetime.datetime.now().replace(day=1)
+        period = datetime.datetime.now().replace(day=1)
         #TODO PERIOD
-        period = PERIOD
+        # period = PERIOD
         user = User.objects.get(id=user.id)
         appa = Appartament.get_item(user.id)[0]
         stand = Standart.get_last_val(appa.house_id)[0]
@@ -182,7 +182,7 @@ def get_calc_service(el, curr, sq_appa, subs, priv, recl):
     element = dict()
     water = False
     #TODO PERIOD
-    period = PERIOD
+    # period = PERIOD
     element["service"] = el.name
     element["unit"] = el.unit
     element["standart"] = 0
@@ -202,7 +202,7 @@ def get_calc_service(el, curr, sq_appa, subs, priv, recl):
         element["accured"] = el.rate * element["volume"]
         if curr["buffer"]:
             #TODO PERIOD
-            # period = datetime.datetime.now().replace(day=1)
+            period = datetime.datetime.now().replace(day=1)
             buffer = curr["buffer"].get_dict()
             upd_val = {
                 "user": curr["user"],
@@ -251,18 +251,16 @@ def get_sale(name, arr):
         if el.service.name == name:
             return el.sale
         else:
-            return 0
+            continue
     return 0
 
 # Возваращает перерасчет при наличии или 0
 def get_recl(name, arr):
     for el in arr:
-        print(f"{el} >> {name}")
         if el.service.name == name:
-            print(el.recalc)
             return el.recalc
         else:
-            return 0
+            continue
     return 0
 
 #Обновляет буффер
