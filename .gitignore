@@ -148,6 +148,8 @@ cython_debug/
 
 # Postgres data
 postgress/
+data/
+dumps/
 
 # Temp file
 tmp/
