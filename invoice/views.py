@@ -137,7 +137,7 @@ def get_calc_variable():
 
         subs = Subsidies.get_items(user.id)
         priv = Privileges.get_items(user.id)
-        recl = Recalculations.get_last_val(user.id)
+        recl = Recalculations.get_items(user)
 
         for el in rate:
             calc = get_calc_service(el, curr, sq_appa, subs, priv, recl)
@@ -206,12 +206,11 @@ def get_calc_service(el, curr, sq_appa, subs, priv, recl):
             buffer = curr["buffer"].get_dict()
             upd_val = {
                 "user": curr["user"],
-                "service": el,
                 #TODO В какую сторону перерасчет???
                 "recalc": element["accured"] - buffer[service],
                 "desc": f"Автоматический перерасчет на основании введенных пользователем счетчиков"
             }
-            obj, created = Recalculations.objects.update_or_create(user=curr['user'], period=period, defaults=upd_val)
+            obj, created = Recalculations.objects.update_or_create(user=curr['user'], period=period, service=el, defaults=upd_val)
             if service == "col_water":
                 AverageСalculationBuffer.objects.filter(user=curr["user"]).update(col_water=0)
             elif service == "hot_water":
@@ -258,7 +257,9 @@ def get_sale(name, arr):
 # Возваращает перерасчет при наличии или 0
 def get_recl(name, arr):
     for el in arr:
+        print(f"{el} >> {name}")
         if el.service.name == name:
+            print(el.recalc)
             return el.recalc
         else:
             return 0

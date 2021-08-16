@@ -557,7 +557,11 @@ class Recalculations(models.Model):
     # Перерасчет, когда вносится?
     @staticmethod
     def get_last_val(user):
-        return Recalculations.objects.filter(user=user)[0:1]
+        return Recalculations.objects.filter(user=user).first()
+
+    @staticmethod
+    def get_items(user):
+        return Recalculations.objects.filter(user=user)
 
     @staticmethod
     def get_qty_last_items(qty):
