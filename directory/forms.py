@@ -16,12 +16,24 @@ class ServicesCategoryEditForm(BootstrapStylesMixins, forms.ModelForm):
         fields = ("name", "is_active")
 
 
-class ServicesEditForm(BootstrapStylesMixins, forms.ModelForm):
+class ServicesEditForm(forms.ModelForm):
     field_name = ["category", "name", "unit", "rate", "factor", "const", "is_active"]
 
     class Meta:
         model = Services
         fields = ("category", "name", "unit", "rate", "factor", "const", "is_active")
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_id = "id-ServicesEditForm"
+        self.helper.form_class = "blueForms"
+        self.helper.form_method = "post"
+        self.helper.form_action = "submit_survey"
+
+        self.helper.add_input(
+            Submit("submit", "Сохранить", css_class="form-control  bg-success  text-white  new_category_form--save")
+        )
 
 
 class CityEditForm(BootstrapStylesMixins, forms.ModelForm):

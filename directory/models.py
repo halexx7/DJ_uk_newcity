@@ -11,7 +11,6 @@ from django.dispatch import receiver
 
 from authnapp.models import User
 
-
 # PERIOD = datetime.datetime.now().date().replace(day=1, month=10)
 
 class PostNews(models.Model):
@@ -186,6 +185,7 @@ class House(models.Model):
         self.is_active = False
         self.save()
 
+
 class UserProfile(models.Model):
     SINGLE = "1"
     TWO = "2"
@@ -203,9 +203,9 @@ class UserProfile(models.Model):
     gender = models.CharField(
         verbose_name="Пол", max_length=1, choices=GENDER_CHOICES, blank=True, null=True, default=None
     )
-    type_electric_meter = models.CharField(
-        verbose_name="Тип счетчика", max_length=1, choices=COUNTER_TYPE, blank=True, null=True, default=None
-    )
+    # type_electric_meter = models.CharField(
+    #     verbose_name="Тип счетчика", max_length=1, choices=COUNTER_TYPE, blank=True, null=True, default=None
+    # )
 
     is_active = models.BooleanField(verbose_name="Активный", db_index=True, default=True)
     created = models.DateTimeField(verbose_name="Создан", auto_now_add=True)
@@ -275,7 +275,6 @@ class Subsidies(models.Model):
     is_active = models.BooleanField(verbose_name="Активный", db_index=True, default=True)
     created = models.DateTimeField(verbose_name="Создан", auto_now_add=True)
     updated = models.DateTimeField(verbose_name="Обновлен", auto_now=True)
-    desc = models.TextField(verbose_name="Описание", blank=True, null=True)
 
     class Meta:
         ordering = ("-updated",)
@@ -308,7 +307,6 @@ class Privileges(models.Model):
     is_active = models.BooleanField(verbose_name="Активный", db_index=True, default=True)
     created = models.DateTimeField(verbose_name="Создан", auto_now_add=True)
     updated = models.DateTimeField(verbose_name="Обновлен", auto_now=True)
-    desc = models.TextField(verbose_name="Описание", blank=True, null=True)
 
     class Meta:
         ordering = ("-updated",)
