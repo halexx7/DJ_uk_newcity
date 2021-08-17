@@ -113,31 +113,6 @@ class HouseAdmin(admin.ModelAdmin):
     )
     inlines = [AppartamentInline,]
 
-
-# USERPROFILES
-class SubsidiesInline(admin.TabularInline):
-    model = Subsidies
-
-    def get_extra(self, request, obj=None, **kwargs):
-        """Hook for customizing the number of extra inline forms."""
-        self.extra = 0
-        return self.extra
-
-
-class PrivilegesInline(admin.TabularInline):
-    model = Privileges
-
-    def get_extra(self, request, obj=None, **kwargs):
-        """Hook for customizing the number of extra inline forms."""
-        self.extra = 0
-        return self.extra
-
-class UserProfilesAdmin(admin.ModelAdmin):
-    # list_display = ('city', 'street', 'number', 'updated')
-    # search_fields = ['city', 'street', 'number']
-    # list_filter = ('city', 'street', 'created','updated',)
-    inlines = [SubsidiesInline, PrivilegesInline]
-
 # admin.site.register(User)
 admin.site.register(UserProfile)
 admin.site.register(PostNews)

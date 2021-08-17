@@ -102,7 +102,6 @@ class HouseHistory(models.Model):
         upd_val = {
             "col_water": instance.col_water,
             "hot_water": instance.hot_water,
-            # TODO электричество пока отменяется
             # "electric_day": instance.electric_day,
             # "electric_night": instance.electric_night,
         }
@@ -152,7 +151,6 @@ class Standart(models.Model):
         upd_val = {
             "col_water": (Decimal(instance.col_water) - Decimal(hist.col_water)) / sq,
             "hot_water": (Decimal(instance.hot_water) - Decimal(hist.hot_water)) / sq,
-            # TODO электричество пока отменяется
             # "electric_day": instance.electric_day,
             # "electric_night": instance.electric_night,
         }
@@ -163,9 +161,8 @@ class Standart(models.Model):
 class CurrentCounter(models.Model):
     user = models.ForeignKey(User, verbose_name="Пользователь", on_delete=CASCADE)
     period = models.DateField(verbose_name="Создан", default=datetime.datetime.now().replace(day=1))
-    #TODO DECIMAL
-    col_water = models.PositiveIntegerField(verbose_name="Холодная вода", null=True, default=None)
-    hot_water = models.PositiveIntegerField(verbose_name="Горячая вода", null=True, default=None)
+    col_water = models.DecimalField(verbose_name="Хол.вода", null=True, max_digits=8, decimal_places=3, validators=[MinValueValidator(0.001)])
+    hot_water = models.DecimalField(verbose_name="Гор.вода", null=True, max_digits=8, decimal_places=3, validators=[MinValueValidator(0.001)])
     # electric_day = models.PositiveIntegerField(verbose_name="Электроэнергия день", null=True, blank=True, default=None)
     # electric_night = models.PositiveIntegerField(
     #     verbose_name="Электроэнергия ночь", null=True, blank=True, default=None
@@ -200,9 +197,8 @@ class CurrentCounter(models.Model):
 class HistoryCounter(models.Model):
     user = models.ForeignKey(User, verbose_name="Пользователь", null=True, on_delete=SET_NULL)
     period = models.DateField(verbose_name="Создан", default=datetime.datetime.now().replace(day=1))
-    #TODO DECIMAL
-    col_water = models.PositiveIntegerField(verbose_name="Гор.вода", null=True)
-    hot_water = models.PositiveIntegerField(verbose_name="Хол.вода", null=True)
+    col_water = models.DecimalField(verbose_name="Хол.вода", null=True, max_digits=8, decimal_places=3, validators=[MinValueValidator(0.001)])
+    hot_water = models.DecimalField(verbose_name="Гор.вода", null=True, max_digits=8, decimal_places=3, validators=[MinValueValidator(0.001)])
     # electric_day = models.PositiveIntegerField(verbose_name="Электр.день", null=True, blank=True)
     # electric_night = models.PositiveIntegerField(verbose_name="Электр.ночь", null=True, blank=True)
     # electric_single = models.PositiveIntegerField(verbose_name="Электр.однотариф", null=True, blank=True)
@@ -234,7 +230,6 @@ class HistoryCounter(models.Model):
         upd_val = {
             "col_water": instance.col_water,
             "hot_water": instance.hot_water,
-            # TODO электричество пока отменяется
             # "electric_day": instance.electric_day,
             # "electric_night": instance.electric_night,
         }

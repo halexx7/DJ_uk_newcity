@@ -83,7 +83,6 @@ class UserPageCreate(LoginRequiredMixin, CreateView):
                 update_values = {
                     "col_water": post.get("col_water"),
                     "hot_water": post.get("hot_water"),
-                    # TODO электричество пока отменяется
                     # "electric_day": post.get("electric_day"),
                     # "electric_night": post.get("electric_night"),
                 }
@@ -165,7 +164,6 @@ class ManagerPageCreate(LoginRequiredMixin, CreateView):
         update_values = {
             "col_water": kwargs["post"].get("col_water"),
             "hot_water": kwargs["post"].get("hot_water"),
-            # TODO электричество пока отменяется
             # "electric_day": post.get("electric_day"),
             # "electric_night": post.get("electric_night"),
         }
