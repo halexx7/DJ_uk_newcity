@@ -1,24 +1,23 @@
 {% extends 'personalacc/base.html' %}
 {% load staticfiles %}
-
 {% load crispy_forms_tags %}
+{% load solo_tags %}
+{% load cool_tel %}
 
 {% block menu %}
     {% include 'mainapp/includes/inc_menu.html' %}
 {% endblock menu %}
 
 {% block content %}
+{% get_solo 'personalacc.SiteConfiguration' as site_config %}
 <div class="intro-user  mt-5">
     <div class="container">
         <h2 class="intro-user__title  text-center">Здравствуйте, {{ user.name }}!</h2>
     </div>
 </div>
-
 <div class="user-area">
     <div class="container">
-
         <h4 class="user-area__title  mt-3  mb-3">Кабинет менеджера</h4>
-
     </div>
 </div>
 
@@ -67,47 +66,44 @@
                     </div>
                     <p class="user-area__subtitle  text-700  mb-4">Информация о компании</p>
                     <table class="table table-striped">
-                        {% for item in uk %}
                         <tbody>
                             <tr>
                                 <th scope="row">Наименование</th>
-                                <td>{{ item.name }}</td>
+                                <td>{{ site_config.name }}</td>
                             </tr>
                             <tr>
                                 <th scope="row">Адрес</th>
-                                <td>г.{{ item.city }}, {{ item.street }}, д.{{ item.num_building }}</td>
+                                <td>{{ site_config.city }}, {{ site_config.street }}, {{ site_config.num_building }}</td>
                             </tr>
                             <tr>
                                 <th scope="row">Телефон</th>
-                                <td>{{ item.phone }}</td>
+                                <td>{{ site_config.phone|cool_tel }}</td>
                             </tr>
                             <tr>
                                 <th scope="row">E-mail</th>
-                                <td>{{ item.email }}</td>
+                                <td>{{ site_config.email }}</td>
                             </tr>
-
                             <tr>
                                 <th scope="row">Инн</th>
-                                <td>{{ item.inn }}</td>
+                                <td>{{ site_config.inn }}</td>
                             </tr>
                             <tr>
                                 <th scope="row">р/с</th>
-                                <td>{{ item.ps }}</td>
+                                <td>{{ site_config.ps }}</td>
                             </tr>
                             <tr>
                                 <th scope="row">БИК</th>
-                                <td>{{ item.bik }}</td>
+                                <td>{{ site_config.bik }}</td>
                             </tr>
                             <tr>
                                 <th scope="row">к/с</th>
-                                <td>{{ item.ks }}</td>
+                                <td>{{ site_config.ks }}</td>
                             </tr>
                             <tr>
                                 <th scope="row">Банк</th>
-                                <td>{{ item.bank }}</td>
+                                <td>{{ site_config.bank }}</td>
                             </tr>
                         </tbody>
-                        {% endfor %}
                     </table>
                 </div>
 

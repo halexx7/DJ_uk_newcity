@@ -41,11 +41,11 @@ class StreetEditForm(BootstrapStylesMixins, forms.ModelForm):
 
 
 class HouseEditForm(BootstrapStylesMixins, forms.ModelForm):
-    field_name = ["city", "street", "number", "add_number", "sq_home", "uk", "category_rate", "is_active"]
+    field_name = ["city", "street", "number", "add_number", "sq_home", "category_rate", "is_active"]
 
     class Meta:
         model = House
-        fields = ("city", "street", "number", "add_number", "sq_home", "uk", "category_rate", "is_active")
+        fields = ("city", "street", "number", "add_number", "sq_home", "category_rate", "is_active")
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -60,9 +60,8 @@ class HouseEditForm(BootstrapStylesMixins, forms.ModelForm):
                 css_class="form-row",
             ),
             Row(
-                Column("sq_home", css_class="form-group col-md-3 mb-0"),
-                Column("uk", css_class="form-group col-md-5 mb-0"),
-                Column("category_rate", css_class="form-group col-md-4 mb-0"),
+                Column("sq_home", css_class="form-group col-md-6 mb-0"),
+                Column("category_rate", css_class="form-group col-md-6 mb-0"),
                 css_class="form-row",
             ),
             "is_active",

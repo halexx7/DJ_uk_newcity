@@ -1,12 +1,15 @@
 import datetime
+from decimal import Decimal
 
 from django.contrib.postgres.fields import JSONField
+from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models.deletion import CASCADE, SET_NULL
 from django.db.models.signals import post_save, pre_delete
 from django.dispatch import receiver
 from django.utils.translation import gettext_lazy as _
 from django.utils.timezone import now
+from django.core.validators import MinValueValidator
 
 from authnapp.models import User
 
@@ -81,7 +84,7 @@ class Services(models.Model):
     )
     name = models.CharField(verbose_name="Услуга", max_length=256)
     unit = models.ForeignKey(Metrics, verbose_name="Единицы", related_name="unit", on_delete=models.CASCADE)
-    rate = models.DecimalField(verbose_name="Тариф", max_digits=7, decimal_places=3, default=0)
+    rate = models.DecimalField(verbose_name="Тариф", max_digits=7, decimal_places=3, default=0, validators=[MinValueValidator(0.001)])
     factor = models.DecimalField(verbose_name="Коэфициент", max_digits=3, decimal_places=2, default=1)
     const = models.BooleanField(verbose_name="Константа", db_index=True, default=True)
 
@@ -154,72 +157,12 @@ class Street(models.Model):
         self.save()
 
 
-class UK(models.Model):
-    name = models.CharField(verbose_name="Название", max_length=128)
-    city = models.ForeignKey(City, verbose_name="Город", null=True, on_delete=SET_NULL)
-    street = models.ForeignKey(Street, verbose_name="Улица", null=True, on_delete=SET_NULL)
-    num_building = models.CharField(verbose_name="Номер здания", max_length=3)
-    phone = models.CharField(
-        verbose_name="Телефон", max_length=11, null=True, blank=True, help_text="Номер телефона в формате - 79823212334"
-    )
-    email = models.EmailField(verbose_name="e-mail")
-    inn = models.CharField(verbose_name="ИНН", max_length=10)
-    ps = models.CharField(verbose_name="Расчетный счет", max_length=20)
-    bik = models.CharField(verbose_name="БИК", max_length=10)
-    ks = models.CharField(verbose_name="Кор.счет", max_length=20)
-    bank = models.CharField(verbose_name="Банк", max_length=128)
-    web_addr = models.CharField(verbose_name="Сайт", max_length=128)
-
-    is_active = models.BooleanField(verbose_name="Активный", db_index=True, default=True)
-    created = models.DateTimeField(verbose_name="Создан", auto_now_add=True)
-    updated = models.DateTimeField(verbose_name="Обновлен", auto_now=True)
-
-    class Meta:
-        verbose_name = "Управляющая компания"
-        verbose_name_plural = "006 Управляющие компании"
-
-    @staticmethod
-    def get_item(uk):
-        return UK.objects.get(id=uk)
-
-    @staticmethod
-    def get_full_name(uk):
-        uk = UK.objects.get(id=uk)
-        name = {
-            "name": uk.name,
-            "address": f"{uk.street}, д.{uk.num_building}",
-            "phone": f"тел.{uk.phone}",
-            "web": uk.web_addr,
-        }
-        return name
-
-    @staticmethod
-    def get_requisites(uk):
-        uk = UK.objects.get(id=uk)
-        requis = {
-            "inn": uk.inn,
-            "check_acc": uk.ps,
-            "bik": uk.bik,
-            "corr_acc": uk.ks,
-            "bank": uk.bank,
-        }
-        return requis
-
-    def __str__(self):
-        return self.name
-
-    def delete(self):
-        self.is_active = False
-        self.save()
-
-
 class House(models.Model):
     city = models.ForeignKey(City, verbose_name="Город", null=True, on_delete=SET_NULL)
     street = models.ForeignKey(Street, verbose_name="Улица", null=True, on_delete=SET_NULL)
     number = models.CharField(verbose_name="Номер", max_length=3)
     add_number = models.CharField(verbose_name="Корпус", max_length=3, blank=True, default="-")
     sq_home = models.DecimalField(verbose_name="Площадь", max_digits=7, decimal_places=2)
-    uk = models.ForeignKey(UK, verbose_name="Управляющая компания", null=True, on_delete=SET_NULL)
     category_rate = models.ForeignKey(
         ServicesCategory, verbose_name="Категория", null=True, on_delete=SET_NULL, default=1
     )
@@ -249,10 +192,10 @@ class House(models.Model):
 class HouseCurrent(models.Model):
     period = models.DateField(verbose_name="Создан", default=datetime.datetime.now().replace(day=1))
     house = models.ForeignKey(House, verbose_name="Дом", null=True, on_delete=SET_NULL)
-    col_water = models.PositiveIntegerField(verbose_name="Хол.вода", null=True, default=None)
-    hot_water = models.PositiveIntegerField(verbose_name="Гор.вода", null=True, default=None)
-    electric_day = models.PositiveIntegerField(verbose_name="Электр.день", null=True, default=None)
-    electric_night = models.PositiveIntegerField(verbose_name="Электр.ночь", null=True, default=None)
+    col_water = models.DecimalField(verbose_name="Хол.вода", null=True, default=None, max_digits=8, decimal_places=3, validators=[MinValueValidator(0.001)])
+    hot_water = models.DecimalField(verbose_name="Гор.вода", null=True, default=None, max_digits=8, decimal_places=3, validators=[MinValueValidator(0.001)])
+    # electric_day = models.PositiveIntegerField(verbose_name="Электр.день", null=True, default=None)
+    # electric_night = models.PositiveIntegerField(verbose_name="Электр.ночь", null=True, default=None)
 
     created = models.DateTimeField(verbose_name="Создан", auto_now_add=True)
     updated = models.DateTimeField(verbose_name="Обновлен", auto_now=True)
@@ -262,6 +205,10 @@ class HouseCurrent(models.Model):
         verbose_name = "Домовой счетчик (текущий)"
         verbose_name_plural = "Домовые счетчики (текущие)"
         # unique_together = ('house',)
+    
+    def clean(self):
+        if self.col_water < 0.01 or self.hot_water < 0.01:
+            raise ValidationError("Допустимы только положительные числа!")
 
     def __str__(self):
         return f"Период - {self.period}, ул.{self.house.street.street}, Дом №{self.house.number}, к.{self.house.add_number}"
@@ -283,10 +230,11 @@ class HouseCurrent(models.Model):
 class HouseHistory(models.Model):
     period = models.DateField(verbose_name="Создан", default=datetime.datetime.now().replace(day=1))
     house = models.ForeignKey(House, verbose_name="Дом", null=True, on_delete=SET_NULL)
-    col_water = models.PositiveIntegerField(verbose_name="Хол.вода", null=True)
-    hot_water = models.PositiveIntegerField(verbose_name="Гор.вода", null=True)
-    electric_day = models.PositiveIntegerField(verbose_name="Электр.день", null=True)
-    electric_night = models.PositiveIntegerField(verbose_name="Электр.ночь", null=True)
+    col_water = models.DecimalField(verbose_name="Хол.вода", null=True, max_digits=8, decimal_places=3, validators=[MinValueValidator(0.001)])
+    hot_water = models.DecimalField(verbose_name="Гор.вода", null=True, max_digits=8, decimal_places=3, validators=[MinValueValidator(0.001)])
+    # electric_day = models.PositiveIntegerField(verbose_name="Электр.день", null=True, default=None)
+    # electric_day = models.PositiveIntegerField(verbose_name="Электр.день", null=True)
+    # electric_night = models.PositiveIntegerField(verbose_name="Электр.ночь", null=True)
 
     created = models.DateTimeField(verbose_name="Создан", auto_now_add=True)
     updated = models.DateTimeField(verbose_name="Обновлен", auto_now=True)
@@ -322,6 +270,7 @@ class HouseHistory(models.Model):
     def copy_arhive_current_to_history_house(sender, instance, **kwargs):
         house = instance.house_id
         period = instance.period
+        print(type(instance.col_water))
         upd_val = {
             "col_water": instance.col_water,
             "hot_water": instance.hot_water,
@@ -336,14 +285,14 @@ class Standart(models.Model):
     period = models.DateField(verbose_name="Создан", default=datetime.datetime.now().replace(day=1))
     house = models.ForeignKey(House, verbose_name="Дом", null=True, on_delete=SET_NULL)
     # Значения хранятся на 1 кв.м
-    col_water = models.DecimalField(verbose_name="Норматив ХВС", max_digits=6, decimal_places=2)
-    hot_water = models.DecimalField(verbose_name="Норматив ХГС", max_digits=6, decimal_places=2)
-    electric_day = models.DecimalField(
-        verbose_name="Норматив ЭЛ.День", max_digits=6, decimal_places=2, null=True, default=None
-    )
-    electric_night = models.DecimalField(
-        verbose_name="Нориматив ЭЛ.Ночь", max_digits=6, decimal_places=2, null=True, default=None
-    )
+    col_water = models.DecimalField(verbose_name="Норматив ХВС", max_digits=11, decimal_places=6)
+    hot_water = models.DecimalField(verbose_name="Норматив ХГС", max_digits=11, decimal_places=6)
+    # electric_day = models.DecimalField(
+    #     verbose_name="Норматив ЭЛ.День", max_digits=6, decimal_places=2, null=True, default=None
+    # )
+    # electric_night = models.DecimalField(
+    #     verbose_name="Нориматив ЭЛ.Ночь", max_digits=6, decimal_places=2, null=True, default=None
+    # )
 
     created = models.DateTimeField(verbose_name="Создан", auto_now_add=True)
     updated = models.DateTimeField(verbose_name="Обновлен", auto_now=True)
@@ -372,8 +321,8 @@ class Standart(models.Model):
         hist = HouseHistory.get_last_val(house)[0]
         sq = House.get_item(house)[0].sq_home
         upd_val = {
-            "col_water": ((int(instance.col_water) - int(hist.col_water)) / sq),
-            "hot_water": ((int(instance.hot_water) - int(hist.hot_water)) / sq),
+            "col_water": (Decimal(instance.col_water) - Decimal(hist.col_water)) / sq,
+            "hot_water": (Decimal(instance.hot_water) - Decimal(hist.hot_water)) / sq,
             # TODO электричество пока отменяется
             # "electric_day": instance.electric_day,
             # "electric_night": instance.electric_night,
@@ -709,28 +658,6 @@ class HeaderData(models.Model):
     @staticmethod
     def get_item(user):
         return HeaderData.objects.filter(user=user).first()
-
-    def delete(self):
-        self.is_active = False
-        self.save()
-
-
-# Инфорамация по оплатам
-class Payment(models.Model):
-    user = models.ForeignKey(User, verbose_name="Пользователь", null=True, on_delete=SET_NULL)
-    period = models.DateField(verbose_name="Период")
-    amount_profit = models.DecimalField(verbose_name="Сумма", max_digits=7, decimal_places=2)
-
-    created = models.DateTimeField(verbose_name="Создан", auto_now_add=True)
-    updated = models.DateTimeField(verbose_name="Обновлен", auto_now=True)
-
-    class Meta:
-        ordering = ("-period",)
-        verbose_name = "Оплата"
-        verbose_name_plural = "Оплаты"
-
-    def get_last_val(self):
-        return HistoryCounter.objects.filter(user=self.user)[0:1]
 
     def delete(self):
         self.is_active = False

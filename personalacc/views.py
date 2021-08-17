@@ -8,10 +8,10 @@ from django.template.loader import render_to_string
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, DeleteView, ListView, UpdateView
 
+from personalacc.models import SiteConfiguration
 from authnapp.models import User
 from invoice.views import starter
 from mainapp.models import (
-    UK,
     Appartament,
     CurrentCounter,
     HistoryCounter,
@@ -120,7 +120,7 @@ class ManagerPageCreate(LoginRequiredMixin, CreateView):
         for name, form in self.form_classes.items():
             if name not in context:
                 context[name] = form()
-        context["uk"] = UK.objects.all()
+        context["config"] = SiteConfiguration.get_solo()
         context["house_history"] = HouseHistory.get_qty_last_items(5)
         context["house_current"] = HouseCurrent.get_qty_last_items(5)
         context["house_rec"] = Recalculations.get_qty_last_items(5)

@@ -2,7 +2,6 @@ from django.contrib import admin
 
 from authnapp.models import User
 from mainapp.models import (
-    UK,
     Appartament,
     City,
     ConstantPayments,
@@ -13,7 +12,6 @@ from mainapp.models import (
     HouseHistory,
     MainBook,
     Metrics,
-    Payment,
     PaymentOrder,
     PostNews,
     Privileges,
@@ -183,7 +181,6 @@ admin.site.register(Services)
 admin.site.register(City)
 admin.site.register(Metrics)
 admin.site.register(Street)
-admin.site.register(UK)
 admin.site.register(House)
 admin.site.register(HouseCurrent)
 admin.site.register(HouseHistory)
@@ -197,7 +194,6 @@ admin.site.register(VariablePayments)
 admin.site.register(Subsidies)
 admin.site.register(Privileges)
 admin.site.register(PaymentOrder)
-admin.site.register(Payment)
 admin.site.register(Recalculations)
 admin.site.register(Standart)
 admin.site.register(MainBook)
