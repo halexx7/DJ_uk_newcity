@@ -1,8 +1,6 @@
 from django.db import models
 from solo.models import SingletonModel
 
-from mainapp.models import City, Street
-
 class SiteConfiguration(SingletonModel):
     name = models.CharField(verbose_name="Название", max_length=128, help_text="УК Новый город")
     city = models.CharField(verbose_name="Город", max_length=128, help_text="г.Тюмень")

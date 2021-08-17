@@ -12,181 +12,9 @@ from django.utils.timezone import now
 from django.core.validators import MinValueValidator
 
 from authnapp.models import User
+from directory.models import House, Services
 
 # PERIOD = datetime.datetime.now().date().replace(day=1, month=10)
-
-class PostNews(models.Model):
-    title = models.CharField(verbose_name="Заголовок", max_length=128)
-    content = models.TextField(verbose_name="Описание")
-
-    is_active = models.BooleanField(verbose_name="Активная", db_index=True, default=True)
-    created = models.DateTimeField(verbose_name="Создан", auto_now_add=True)
-    updated = models.DateTimeField(verbose_name="Обновлен", auto_now=True)
-
-    class Meta:
-        ordering = ("-created",)
-        verbose_name = "Новость"
-        verbose_name_plural = "Новости"
-
-    def __str__(self):
-        return f"{self.title} - ({self.updated})"
-
-    @staticmethod
-    def get_items():
-        return PostNews.objects.filter(is_active=True)
-
-    def delete(self):
-        self.is_active = False
-        self.save()
-
-
-class ServicesCategory(models.Model):
-    name = models.CharField(verbose_name="Название", max_length=32)
-
-    is_active = models.BooleanField(verbose_name="Активная", db_index=True, default=True)
-    created = models.DateTimeField(verbose_name="Создан", auto_now_add=True)
-    updated = models.DateTimeField(verbose_name="Обновлен", auto_now=True)
-
-    class Meta:
-        verbose_name = "Категория услуг"
-        verbose_name_plural = "004 Категории услуг"
-
-    def __str__(self):
-        return self.name
-
-    def delete(self):
-        self.is_active = False
-        self.save()
-
-
-class Metrics(models.Model):
-    name = models.CharField(verbose_name="Единица измерения", max_length=32)
-
-    is_active = models.BooleanField(verbose_name="Активная", db_index=True, default=True)
-    created = models.DateTimeField(verbose_name="Создан", auto_now_add=True)
-    updated = models.DateTimeField(verbose_name="Обновлен", auto_now=True)
-
-    class Meta:
-        verbose_name = "Единица измерения"
-        verbose_name_plural = "003 Единицы измерения"
-
-    def __str__(self):
-        return self.name
-
-    def delete(self):
-        self.is_active = False
-        self.save()
-
-
-class Services(models.Model):
-    category = models.ForeignKey(
-        ServicesCategory, verbose_name="Категория", related_name="category", on_delete=models.CASCADE, default=1
-    )
-    name = models.CharField(verbose_name="Услуга", max_length=256)
-    unit = models.ForeignKey(Metrics, verbose_name="Единицы", related_name="unit", on_delete=models.CASCADE)
-    rate = models.DecimalField(verbose_name="Тариф", max_digits=7, decimal_places=3, default=0, validators=[MinValueValidator(0.001)])
-    factor = models.DecimalField(verbose_name="Коэфициент", max_digits=3, decimal_places=2, default=1)
-    const = models.BooleanField(verbose_name="Константа", db_index=True, default=True)
-
-    is_active = models.BooleanField(verbose_name="Активная", db_index=True, default=True)
-    created = models.DateTimeField(verbose_name="Создан", auto_now_add=True)
-    updated = models.DateTimeField(verbose_name="Обновлен", auto_now=True)
-
-    class Meta:
-        verbose_name = "Услугу"
-        verbose_name_plural = "005 Услуги"
-
-    def __str__(self):
-        return f"{self.name} ({self.category.name})"
-
-    @staticmethod
-    def get_const_payments(category):
-        """Возвращает константные статьи (которые зависят от тарифа)"""
-        return Services.objects.filter(is_active=True, const=True, category=category)
-
-    @staticmethod
-    def get_varybose_payments(category):
-        """Возвращает переменные статьи (которые зависят от подачи показаний)"""
-        return Services.objects.filter(is_active=True, const=False, category=category)
-
-    @staticmethod
-    def get_items():
-        return Services.objects.filter(is_active=True)
-
-    def delete(self):
-        self.is_active = False
-        self.save()
-
-
-class City(models.Model):
-    city = models.CharField(verbose_name="Город", max_length=128)
-
-    is_active = models.BooleanField(verbose_name="Активный", db_index=True, default=True)
-    created = models.DateTimeField(verbose_name="Создан", auto_now_add=True)
-    updated = models.DateTimeField(verbose_name="Обновлен", auto_now=True)
-
-    class Meta:
-        verbose_name = "Город"
-        verbose_name_plural = "001 Города"
-
-    def __str__(self):
-        return self.city
-
-    def delete(self):
-        self.is_active = False
-        self.save()
-
-
-class Street(models.Model):
-    city = models.ForeignKey(City, verbose_name="Город", on_delete=CASCADE)
-    street = models.CharField(verbose_name="Улица", max_length=128)
-
-    is_active = models.BooleanField(verbose_name="Активный", db_index=True, default=True)
-    created = models.DateTimeField(verbose_name="Создан", auto_now_add=True)
-    updated = models.DateTimeField(verbose_name="Обновлен", auto_now=True)
-
-    class Meta:
-        verbose_name = "Улица"
-        verbose_name_plural = "002 Улицы"
-
-    def __str__(self):
-        return f"ул.{self.street}"
-
-    def delete(self):
-        self.is_active = False
-        self.save()
-
-
-class House(models.Model):
-    city = models.ForeignKey(City, verbose_name="Город", null=True, on_delete=SET_NULL)
-    street = models.ForeignKey(Street, verbose_name="Улица", null=True, on_delete=SET_NULL)
-    number = models.CharField(verbose_name="Номер", max_length=3)
-    add_number = models.CharField(verbose_name="Корпус", max_length=3, blank=True, default="-")
-    sq_home = models.DecimalField(verbose_name="Площадь", max_digits=7, decimal_places=2)
-    category_rate = models.ForeignKey(
-        ServicesCategory, verbose_name="Категория", null=True, on_delete=SET_NULL, default=1
-    )
-
-    is_active = models.BooleanField(verbose_name="Активный", db_index=True, default=True)
-    created = models.DateTimeField(verbose_name="Создан", auto_now_add=True)
-    updated = models.DateTimeField(verbose_name="Обновлен", auto_now=True)
-
-    class Meta:
-        ordering = ("-updated",)
-        verbose_name = "Дом"
-        verbose_name_plural = "007 Дома"
-
-    def __str__(self):
-        return f"ул.{self.street.street}, д.{self.number}, к.{self.add_number}"
-
-    @staticmethod
-    def get_item(house):
-        return House.objects.filter(id=house)[0:1]
-
-    def delete(self):
-        self.is_active = False
-        self.save()
-
 
 # Общедомовой счетчик (ТЕКУЩИЕ показания)
 class HouseCurrent(models.Model):
@@ -281,6 +109,7 @@ class HouseHistory(models.Model):
         obj, created = HouseHistory.objects.update_or_create(house_id=house, period=period, defaults=upd_val)
 
 
+# Среднедомовой показатель
 class Standart(models.Model):
     period = models.DateField(verbose_name="Создан", default=datetime.datetime.now().replace(day=1))
     house = models.ForeignKey(House, verbose_name="Дом", null=True, on_delete=SET_NULL)
@@ -330,97 +159,18 @@ class Standart(models.Model):
         obj, created = Standart.objects.update_or_create(house_id=house, period=period, defaults=upd_val)
 
 
-class UserProfile(models.Model):
-    SINGLE = "1"
-    TWO = "2"
-    MULTI = "3"
-
-    MALE = "M"
-    FEMALE = "W"
-
-    COUNTER_TYPE = ((SINGLE, "однотарифный"), (TWO, "двухтарифный"))
-    GENDER_CHOICES = ((MALE, "М"), (FEMALE, "Ж"))
-
-    user = models.OneToOneField(
-        User, verbose_name="Пользоваель", null=False, db_index=True, on_delete=models.CASCADE, related_name="profiles"
-    )
-    gender = models.CharField(
-        verbose_name="Пол", max_length=1, choices=GENDER_CHOICES, blank=True, null=True, default=None
-    )
-    type_electric_meter = models.CharField(
-        verbose_name="Тип счетчика", max_length=1, choices=COUNTER_TYPE, blank=True, null=True, default=None
-    )
-
-    is_active = models.BooleanField(verbose_name="Активный", db_index=True, default=True)
-    created = models.DateTimeField(verbose_name="Создан", auto_now_add=True)
-    updated = models.DateTimeField(verbose_name="Обновлен", auto_now=True)
-
-    class Meta:
-        ordering = ("updated",)
-        verbose_name = "Профиль"
-        verbose_name_plural = "009 Профили"
-
-    def __str__(self):
-        return f'{self.user.personal_account} - {self.user.name} ({"Менеджер" if self.user.is_staff else "Клиент"})'
-
-    @receiver(post_save, sender=User)
-    def create_user_profile(sender, instance, created, **kwargs):
-        if created:
-            UserProfile.objects.create(user=instance)
-
-    @receiver(post_save, sender=User)
-    def save_user_profile(sender, instance, **kwargs):
-        instance.profiles.save()
-
-    def delete(self):
-        self.is_active = False
-        self.save()
-
-
-class Appartament(models.Model):
-    user = models.ForeignKey(
-        User, verbose_name="Жилец", related_name="appartament", null=True, blank=True, on_delete=SET_NULL
-    )
-    house = models.ForeignKey(House, verbose_name="Дом", on_delete=CASCADE)
-    number = models.CharField(verbose_name="Номер квартиры", max_length=3)
-    add_number = models.PositiveIntegerField(verbose_name="Комната", default=0)
-    sq_appart = models.DecimalField(
-        verbose_name="Площадь", max_digits=5, decimal_places=2, null=True, blank=True, default=0
-    )
-    num_owner = models.PositiveIntegerField(verbose_name="Кол-во проживающих", null=True, blank=True, default=0)
-
-    is_active = models.BooleanField(verbose_name="Активный", db_index=True, default=True)
-    created = models.DateTimeField(verbose_name="Создан", auto_now_add=True)
-    updated = models.DateTimeField(verbose_name="Обновлен", auto_now=True)
-
-    class Meta:
-        verbose_name = "Квартира"
-        verbose_name_plural = "008 Квартиры"
-        unique_together = ("house", "number", "add_number")
-
-    def __str__(self):
-        return f"ул.{self.house.street.street}, д.{self.house.number}, кв.{self.number}, комн.{self.add_number}"
-
-    @staticmethod
-    def get_item(user):
-        return Appartament.objects.filter(user=user)
-
-    def delete(self):
-        self.is_active = False
-        self.save()
-
-
 # Текущие показания счетчиков (индивидуальные)
 class CurrentCounter(models.Model):
     user = models.ForeignKey(User, verbose_name="Пользователь", on_delete=CASCADE)
     period = models.DateField(verbose_name="Создан", default=datetime.datetime.now().replace(day=1))
+    #TODO DECIMAL
     col_water = models.PositiveIntegerField(verbose_name="Холодная вода", null=True, default=None)
     hot_water = models.PositiveIntegerField(verbose_name="Горячая вода", null=True, default=None)
-    electric_day = models.PositiveIntegerField(verbose_name="Электроэнергия день", null=True, blank=True, default=None)
-    electric_night = models.PositiveIntegerField(
-        verbose_name="Электроэнергия ночь", null=True, blank=True, default=None
-    )
-    electric_single = models.PositiveIntegerField(verbose_name="Электроэнергия", null=True, blank=True, default=None)
+    # electric_day = models.PositiveIntegerField(verbose_name="Электроэнергия день", null=True, blank=True, default=None)
+    # electric_night = models.PositiveIntegerField(
+    #     verbose_name="Электроэнергия ночь", null=True, blank=True, default=None
+    # )
+    # electric_single = models.PositiveIntegerField(verbose_name="Электроэнергия", null=True, blank=True, default=None)
 
     created = models.DateTimeField(verbose_name="Создан", auto_now_add=True)
     updated = models.DateTimeField(verbose_name="Обновлен", auto_now=True)
@@ -431,7 +181,7 @@ class CurrentCounter(models.Model):
         verbose_name_plural = "Индивид. счетчики (текущие)"
 
     def __str__(self):
-        return f"ул.{self.street.street}, д.{self.number}, кв.{self.number}"
+        return f"({self.user.personal_accaunt}) - {self.user.name} ({self.period})"
 
     @staticmethod
     def get_last_val(user):
@@ -450,11 +200,12 @@ class CurrentCounter(models.Model):
 class HistoryCounter(models.Model):
     user = models.ForeignKey(User, verbose_name="Пользователь", null=True, on_delete=SET_NULL)
     period = models.DateField(verbose_name="Создан", default=datetime.datetime.now().replace(day=1))
+    #TODO DECIMAL
     col_water = models.PositiveIntegerField(verbose_name="Гор.вода", null=True)
     hot_water = models.PositiveIntegerField(verbose_name="Хол.вода", null=True)
-    electric_day = models.PositiveIntegerField(verbose_name="Электр.день", null=True, blank=True)
-    electric_night = models.PositiveIntegerField(verbose_name="Электр.ночь", null=True, blank=True)
-    electric_single = models.PositiveIntegerField(verbose_name="Электр.однотариф", null=True, blank=True)
+    # electric_day = models.PositiveIntegerField(verbose_name="Электр.день", null=True, blank=True)
+    # electric_night = models.PositiveIntegerField(verbose_name="Электр.ночь", null=True, blank=True)
+    # electric_single = models.PositiveIntegerField(verbose_name="Электр.однотариф", null=True, blank=True)
 
     created = models.DateTimeField(verbose_name="Создан", auto_now_add=True)
     updated = models.DateTimeField(verbose_name="Обновлен", auto_now=True)
@@ -463,6 +214,9 @@ class HistoryCounter(models.Model):
         ordering = ("-period",)
         verbose_name = "Индивид. счетчик (история)"
         verbose_name_plural = "Индивид. счетчики (история)"
+
+    def __str__(self):
+        return f"({self.user.personal_accaunt}) - {self.user.name} ({self.period})"
 
     @staticmethod
     def get_last_val(user):
@@ -503,6 +257,9 @@ class Recalculations(models.Model):
         verbose_name = "Перерасчет"
         verbose_name_plural = "Перерасчеты"
 
+    def __str__(self):
+        return f"({self.user.personal_accaunt}) - {self.service} ({self.period})"
+
     # Перерасчет, когда вносится?
     @staticmethod
     def get_last_val(user):
@@ -515,72 +272,6 @@ class Recalculations(models.Model):
     @staticmethod
     def get_qty_last_items(qty):
         return Recalculations.objects.all()[:qty]
-
-    def delete(self):
-        self.is_active = False
-        self.save()
-
-
-# Cубсидии
-class Subsidies(models.Model):
-    user = models.ForeignKey(User, verbose_name="Пользователь", on_delete=CASCADE)
-    service = models.ForeignKey(Services, verbose_name="Услуга", on_delete=CASCADE)
-    sale = models.PositiveIntegerField(verbose_name="Субсидии", default=0)
-    desc = models.TextField(verbose_name="Описание", blank=True, null=True)
-
-    is_active = models.BooleanField(verbose_name="Активный", db_index=True, default=True)
-    created = models.DateTimeField(verbose_name="Создан", auto_now_add=True)
-    updated = models.DateTimeField(verbose_name="Обновлен", auto_now=True)
-    desc = models.TextField(verbose_name="Описание", blank=True, null=True)
-
-    class Meta:
-        ordering = ("-updated",)
-        verbose_name = "Субсидия"
-        verbose_name_plural = "010 Субсидии"
-
-    def __str__(self):
-        return f"{self.user.user.name} ({self.user.user.personal_account}) - {self.service.name}"
-
-    @staticmethod
-    def get_items(user):
-        return Subsidies.objects.filter(user=user)
-
-    @staticmethod
-    def get_qty_last_items(qty):
-        return Subsidies.objects.all()[:qty]
-
-    def delete(self):
-        self.is_active = False
-        self.save()
-
-
-# Льготы
-class Privileges(models.Model):
-    user = models.ForeignKey(User, verbose_name="Пользователь", on_delete=CASCADE)
-    service = models.ForeignKey(Services, verbose_name="Услуга", related_name="service", on_delete=CASCADE)
-    sale = models.PositiveIntegerField(verbose_name="Льготы", default=0)
-    desc = models.TextField(verbose_name="Описание", blank=True, null=True)
-
-    is_active = models.BooleanField(verbose_name="Активный", db_index=True, default=True)
-    created = models.DateTimeField(verbose_name="Создан", auto_now_add=True)
-    updated = models.DateTimeField(verbose_name="Обновлен", auto_now=True)
-    desc = models.TextField(verbose_name="Описание", blank=True, null=True)
-
-    class Meta:
-        ordering = ("-updated",)
-        verbose_name = "Льгота"
-        verbose_name_plural = "011 Льготы"
-
-    def __str__(self):
-        return f"{self.user.user.name} ({self.user.user.personal_account}) - {self.service.name}"
-
-    @staticmethod
-    def get_items(user):
-        return Privileges.objects.filter(user=user)
-
-    @staticmethod
-    def get_qty_last_items(qty):
-        return Privileges.objects.all()[:qty]
 
     def delete(self):
         self.is_active = False
@@ -600,6 +291,9 @@ class ConstantPayments(models.Model):
     class Meta:
         verbose_name = "Платеж (постоянные)"
         verbose_name_plural = "Платежи (постоянные)"
+
+    def __str__(self):
+        return f"({self.user.personal_accaunt}) - {self.user.name}"
 
     @staticmethod
     def get_item(user):
@@ -625,6 +319,9 @@ class VariablePayments(models.Model):
         ordering = ("-period",)
         verbose_name = "Платеж (перепенные)"
         verbose_name_plural = "Платежи (переменные)"
+
+    def __str__(self):
+        return f"({self.user.personal_accaunt}) - {self.user.name} ({self.period})"
 
     @staticmethod
     def get_items(user):
@@ -655,6 +352,9 @@ class HeaderData(models.Model):
         verbose_name = "Начисление"
         verbose_name_plural = "Начисления"
 
+    def __str__(self):
+        return f"({self.user.personal_accaunt}) - {self.user.name}"
+
     @staticmethod
     def get_item(user):
         return HeaderData.objects.filter(user=user).first()
@@ -683,6 +383,9 @@ class MainBook(models.Model):
         ordering = ("-period",)
         verbose_name = "Главная книга"
         verbose_name_plural = "Главная книга"
+
+    def __str__(self):
+        return f"({self.user.personal_accaunt}) - {self.user.name}, {self.direction} ({self.period})"
 
     @staticmethod
     def get_user_debit(user):
@@ -746,12 +449,15 @@ class PaymentOrder(models.Model):
         verbose_name = "Начисление"
         verbose_name_plural = "Начисления"
 
+    def __str__(self):
+        return f"({self.user.personal_accaunt}) - {self.user.name} ({self.period})"
+
     def get_last_val(self):
         return PaymentOrder.objects.filter(user=self.user)[0:1]
 
     @staticmethod
-    def get_item(id):
-        return PaymentOrder.objects.filter(id=id)
+    def get_item(order_id):
+        return PaymentOrder.objects.filter(id=order_id)
 
     def delete(self):
         self.is_active = False
@@ -797,6 +503,9 @@ class PersonalAccountStatus(models.Model):
         verbose_name = "Состояние счета"
         verbose_name_plural = "Состояния счетов"
 
+    def __str__(self):
+        return f"({self.user.personal_accaunt}) - {self.user.name} ({self.amount})"
+
     # Перерасчет, когда вносится?
     @staticmethod
     def get_item(user):
@@ -832,6 +541,9 @@ class AverageСalculationBuffer(models.Model):
 
     class Meta:
         verbose_name = "Буффер средних начислений"
+
+    def __str__(self):
+        return f"({self.user.personal_accaunt}) - {self.user.name}"
 
     @staticmethod
     def get_item(user):

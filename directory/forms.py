@@ -5,7 +5,7 @@ from django.forms.models import inlineformset_factory
 
 from authnapp.admin import UserCreationForm
 from authnapp.forms import BootstrapStylesMixins
-from mainapp.models import Appartament, City, House, Services, ServicesCategory, Street
+from directory.models import Appartament, City, House, Services, ServicesCategory, Street
 
 
 class ServicesCategoryEditForm(BootstrapStylesMixins, forms.ModelForm):

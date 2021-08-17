@@ -14,7 +14,7 @@ from django.contrib.auth.models import Group
 from django.forms import fields, models
 from django.forms.models import BaseInlineFormSet, inlineformset_factory
 
-from mainapp.models import Appartament, UserProfile
+from directory.models import Appartament, UserProfile
 
 from .models import User
 

@@ -8,8 +8,10 @@ from mainapp.models import (
     HouseCurrent,
     HouseHistory,
     MainBook,
-    Privileges,
     Recalculations,
+)
+from directory.models import (
+    Privileges,
     Services,
     Subsidies,
 )

@@ -12,7 +12,6 @@ from personalacc.models import SiteConfiguration
 from authnapp.models import User
 from invoice.views import starter
 from mainapp.models import (
-    Appartament,
     CurrentCounter,
     HistoryCounter,
     HouseCurrent,
@@ -20,11 +19,15 @@ from mainapp.models import (
     MainBook,
     PaymentOrder,
     PersonalAccountStatus,
-    Privileges,
     Recalculations,
+)
+from directory.models import (
+    Appartament,
+    Privileges,
     Subsidies,
     UserProfile,
 )
+
 from personalacc.forms import (
     CurrentCounterForm,
     HomeCurrentCounterForm,

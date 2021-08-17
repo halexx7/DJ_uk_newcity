@@ -1,6 +1,6 @@
 from django.views.generic import ListView
 
-from mainapp.models import PostNews
+from directory.models import PostNews
 from personalacc.models import SiteConfiguration
 
 

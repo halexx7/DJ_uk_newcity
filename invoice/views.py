@@ -10,20 +10,22 @@ from django.views.generic.detail import DetailView
 from authnapp.models import User
 from personalacc.models import SiteConfiguration
 from mainapp.models import (
-    Appartament,
     ConstantPayments,
     CurrentCounter,
     HeaderData,
     HistoryCounter,
     PaymentOrder,
     PersonalAccountStatus,
-    Privileges,
     Recalculations,
-    Services,
     Standart,
-    Subsidies,
     VariablePayments,
     AverageСalculationBuffer,
+)
+from directory.models import (
+    Appartament,
+    Privileges,
+    Services,
+    Subsidies,
 )
 
 # PERIOD = datetime.datetime.now().date().replace(day=1, month=10)

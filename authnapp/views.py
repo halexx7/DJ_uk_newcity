@@ -20,7 +20,7 @@ from authnapp.forms import (
     UserRegisterForm,
 )
 from authnapp.models import User
-from mainapp.models import Appartament, UserProfile
+from directory.models import Appartament, UserProfile
 
 
 def login(request):

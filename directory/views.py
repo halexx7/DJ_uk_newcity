@@ -16,7 +16,7 @@ from directory.forms import (
     ServicesEditForm,
     StreetEditForm,
 )
-from mainapp.models import Appartament, City, House, Services, ServicesCategory, Street
+from .models import Appartament, City, House, Services, ServicesCategory, Street
 
 
 class DirectoryList(LoginRequiredMixin, ListView):
