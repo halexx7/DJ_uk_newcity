@@ -182,7 +182,7 @@ class CurrentCounter(models.Model):
 
     @staticmethod
     def get_last_val(user):
-        period=datetime.datetime.now().replace(day=1, month=10)
+        period=datetime.datetime.now().replace(day=1, month=11)
         try:
             obj=CurrentCounter.objects.filter(user=user).latest("period")
             if obj.period.month == period.month:
@@ -255,7 +255,6 @@ class Recalculations(models.Model):
     def __str__(self):
         return f"({self.user.personal_accaunt}) - {self.service} ({self.period})"
 
-    # Перерасчет, когда вносится?
     @staticmethod
     def get_last_val(user):
         return Recalculations.objects.filter(user=user).first()
@@ -263,6 +262,10 @@ class Recalculations(models.Model):
     @staticmethod
     def get_items(user):
         return Recalculations.objects.filter(user=user)
+
+    def get_sum_period(self, period):
+        recalc = Recalculations.objects.filter(user=self.user, period=period)
+        return sum(abs(el.recalc) for el in recalc)
 
     @staticmethod
     def get_qty_last_items(qty):
@@ -518,12 +521,29 @@ class PersonalAccountStatus(models.Model):
     @receiver(post_save, sender=MainBook)
     def get_update_data(sender, instance, **kwargs):
         user = instance.user
-        debit = MainBook.get_user_debit(user=user)
-        credit = MainBook.get_user_credit(user=user)
+        debit = sender.get_user_debit(user=user)
+        credit = sender.get_user_credit(user=user)
         debit_sum = sum(abs(d.amount) for d in debit)
         credit_sum = sum(abs(c.amount) for c in credit)
         upd_val = {
             "amount": (credit_sum - debit_sum),
+        }
+        obj, created = PersonalAccountStatus.objects.update_or_create(user=user, defaults=upd_val)
+
+    @receiver(post_save, sender=Recalculations)
+    def get_update_recalc(sender, instance, **kwargs):
+        user = instance.user
+        # period = datetime.datetime.now().replace(day=1)
+        #TODO PERIOD
+        from invoice.views import PERIOD
+        period = PERIOD
+        debit = sender.get_user_debit(user=user)
+        credit = sender.get_user_credit(user=user)
+        debit_sum = sum(abs(d.amount) for d in debit)
+        credit_sum = sum(abs(c.amount) for c in credit)
+        recalc = sender.get_sum_period(period)
+        upd_val = {
+            "amount": (credit_sum - debit_sum) + recalc,
         }
         obj, created = PersonalAccountStatus.objects.update_or_create(user=user, defaults=upd_val)
 
