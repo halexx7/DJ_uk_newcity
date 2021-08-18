@@ -14,6 +14,7 @@ from mainapp.models import (
     CurrentCounter,
     HeaderData,
     HistoryCounter,
+    MainBook,
     PaymentOrder,
     PersonalAccountStatus,
     Recalculations,
@@ -28,7 +29,7 @@ from directory.models import (
     Subsidies,
 )
 
-# PERIOD = datetime.datetime.now().date().replace(day=1, month=10)
+PERIOD = datetime.datetime.now().date().replace(day=1, month=11)
 
 def main(request):
     pass
@@ -40,9 +41,11 @@ class InvoiceViews(DetailView):
     def get_context_data(self, **kwargs):
         pk = self.kwargs["pk"]
         user = self.request.user
+        pay_order = PaymentOrder.get_item(pk)
         context = super().get_context_data(**kwargs)
-        context["order"] = mark_safe(serialize("json", PaymentOrder.get_item(pk)))
+        context["order"] = mark_safe(serialize("json", pay_order))
         context["status"] = mark_safe(serialize("json", PersonalAccountStatus.get_item(user)))
+        context["paid"] = MainBook.get_user_period_item(user, pay_order[0].period)
         return context
 
 def starter():
@@ -107,14 +110,14 @@ def get_calc_variable():
         data = []
         total = 0
         pre_total = 0
-        period = datetime.datetime.now().replace(day=1)
+        # period = datetime.datetime.now().replace(day=1)
         #TODO PERIOD
-        # period = PERIOD
+        period = PERIOD
         user = User.objects.get(id=user.id)
         appa = Appartament.get_item(user.id)[0]
-        stand = Standart.get_last_val(appa.house_id)[0]
+        stand = Standart.get_last_val(appa.house_id)
         sq_appa = appa.sq_appart
-        hist = HistoryCounter.get_last_val(user.id)[0]
+        hist = HistoryCounter.get_last_val(user.id)
         curr = {
             "user": user,
             "standart": False,
@@ -184,7 +187,7 @@ def get_calc_service(el, curr, sq_appa, subs, priv, recl):
     element = dict()
     water = False
     #TODO PERIOD
-    # period = PERIOD
+    period = PERIOD
     element["service"] = el.name
     element["unit"] = el.unit
     element["standart"] = 0
@@ -204,7 +207,7 @@ def get_calc_service(el, curr, sq_appa, subs, priv, recl):
         element["accured"] = el.rate * element["volume"]
         if curr["buffer"]:
             #TODO PERIOD
-            period = datetime.datetime.now().replace(day=1)
+            # period = datetime.datetime.now().replace(day=1)
             buffer = curr["buffer"].get_dict()
             upd_val = {
                 "user": curr["user"],

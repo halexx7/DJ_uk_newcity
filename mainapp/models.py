@@ -135,7 +135,7 @@ class Standart(models.Model):
 
     @staticmethod
     def get_last_val(house):
-        return Standart.objects.filter(house=house)[0:1]
+        return Standart.objects.filter(house=house).first()
 
     def delete(self):
         self.is_active = False
@@ -212,11 +212,11 @@ class HistoryCounter(models.Model):
         verbose_name_plural = "Индивид. счетчики (история)"
 
     def __str__(self):
-        return f"({self.user.personal_accaunt}) - {self.user.name} ({self.period})"
+        return f"({self.user.personal_account}) - {self.user.name} ({self.period})"
 
     @staticmethod
     def get_last_val(user):
-        return HistoryCounter.objects.filter(user=user)[0:1]
+        return HistoryCounter.objects.filter(user=user).first()
 
     def delete(self):
         self.is_active = False
@@ -400,6 +400,11 @@ class MainBook(models.Model):
         """ Возвращает все НАЧИСЛЕНИЯ co счета ВСЕ"""
         return MainBook.objects.filter(direction="C")
 
+    def get_user_period_item(user, period):
+        """ Возвращает оплаты за указанный месяц """
+        debit = MainBook.objects.filter(user=user, period=period, direction="D")
+        return sum(abs(d.amount) for d in debit)
+
     @staticmethod
     def get_qty_last_items(qty):
         return MainBook.objects.filter(direction="D").order_by(
@@ -477,10 +482,10 @@ class PaymentOrder(models.Model):
     @receiver(post_save, sender=HeaderData)
     def procc_update_headerdata(sender, instance, **kwargs):
         user = instance.user
-        period = datetime.datetime.now().replace(day=1)
+        # period = datetime.datetime.now().replace(day=1)
         #TODO PERIOD
-        # from invoice.views import PERIOD
-        # period = PERIOD
+        from invoice.views import PERIOD
+        period = PERIOD
         header_data = HeaderData.objects.get(user=user)
         PaymentOrder.objects.filter(user=user, period=period).update(header_data=header_data.data)
 
