@@ -8,8 +8,9 @@ from django.utils.safestring import mark_safe
 from django.views.generic.detail import DetailView
 
 from authnapp.models import User
-from personalacc.models import SiteConfiguration
+from directory.models import Appartament, Privileges, Services, Subsidies
 from mainapp.models import (
+    AverageСalculationBuffer,
     ConstantPayments,
     CurrentCounter,
     HeaderData,
@@ -20,19 +21,15 @@ from mainapp.models import (
     Recalculations,
     Standart,
     VariablePayments,
-    AverageСalculationBuffer,
 )
-from directory.models import (
-    Appartament,
-    Privileges,
-    Services,
-    Subsidies,
-)
+from personalacc.models import SiteConfiguration
 
 PERIOD = datetime.datetime.now().date().replace(day=1, month=11)
 
+
 def main(request):
     pass
+
 
 class InvoiceViews(DetailView):
     model = PaymentOrder
@@ -48,11 +45,13 @@ class InvoiceViews(DetailView):
         context["paid"] = MainBook.get_user_period_item(user, pay_order[0].period)
         return context
 
+
 def starter():
     """Расчитываем все платежки"""
     get_calc_const()
     get_calc_variable()
     get_head_data()
+
 
 # Расчет КОНСТАНТНЫХ платежей (по сигналу когда идут изменения в таблице Services)
 def get_calc_const():
@@ -100,6 +99,7 @@ def get_calc_const():
         obj, created = ConstantPayments.objects.update_or_create(user=user_id, defaults=update_values)
     return (data, total)
 
+
 # Расчет ПЕРЕМЕННЫХ платежей (по сигналу)
 # TODO Пока реализовано нажитием кнопки расчитать у менеджера!
 def get_calc_variable():
@@ -111,7 +111,7 @@ def get_calc_variable():
         total = 0
         pre_total = 0
         # period = datetime.datetime.now().replace(day=1)
-        #TODO PERIOD
+        # TODO PERIOD
         period = PERIOD
         user = User.objects.get(id=user.id)
         appa = Appartament.get_item(user.id)[0]
@@ -127,8 +127,8 @@ def get_calc_variable():
         if object_curr:
             # Если счетчики введены, считаем объем
             curr["period"] = object_curr.period
-            curr["volume_col"] = (object_curr.col_water - hist.col_water)
-            curr["volume_hot"] = (object_curr.hot_water - hist.hot_water)
+            curr["volume_col"] = object_curr.col_water - hist.col_water
+            curr["volume_hot"] = object_curr.hot_water - hist.hot_water
             curr["volume_sewage"] = curr["volume_col"] + curr["volume_hot"]
             # Проверяем наличие данных в буфере накопительных платежей для перерасчета
             curr["buffer"] = AverageСalculationBuffer.get_item(user)
@@ -158,6 +158,7 @@ def get_calc_variable():
         obj, created = VariablePayments.objects.update_or_create(user=user, period=period, defaults=update_values)
     return (data, total, pre_total)
 
+
 # Готовит данные для шапки (персональные, реквизиты)
 # TODO повесить сигналы на модели чтоб данные при изменении обновлялись
 def get_head_data():
@@ -186,7 +187,7 @@ def get_head_data():
 def get_calc_service(el, curr, sq_appa, subs, priv, recl):
     element = dict()
     water = False
-    #TODO PERIOD
+    # TODO PERIOD
     period = PERIOD
     element["service"] = el.name
     element["unit"] = el.unit
@@ -206,16 +207,18 @@ def get_calc_service(el, curr, sq_appa, subs, priv, recl):
     if not curr["standart"]:
         element["accured"] = el.rate * element["volume"]
         if curr["buffer"]:
-            #TODO PERIOD
+            # TODO PERIOD
             # period = datetime.datetime.now().replace(day=1)
             buffer = curr["buffer"].get_dict()
             upd_val = {
                 "user": curr["user"],
-                #TODO В какую сторону перерасчет???
+                # TODO В какую сторону перерасчет???
                 "recalc": element["accured"] - buffer[service],
-                "desc": f"Автоматический перерасчет на основании введенных пользователем счетчиков"
+                "desc": f"Автоматический перерасчет на основании введенных пользователем счетчиков",
             }
-            obj, created = Recalculations.objects.update_or_create(user=curr['user'], period=period, service=el, defaults=upd_val)
+            obj, created = Recalculations.objects.update_or_create(
+                user=curr["user"], period=period, service=el, defaults=upd_val
+            )
             if service == "col_water":
                 AverageСalculationBuffer.objects.filter(user=curr["user"]).update(col_water=0)
             elif service == "hot_water":
@@ -225,10 +228,10 @@ def get_calc_service(el, curr, sq_appa, subs, priv, recl):
 
     elif curr["standart"]:
         element["accured"] = el.rate * decimal.Decimal(element["volume"])
-        obj = AverageСalculationBuffer.get_item(curr['user'])
+        obj = AverageСalculationBuffer.get_item(curr["user"])
         if not obj:
-            AverageСalculationBuffer.objects.create(user=curr['user'])
-            obj = AverageСalculationBuffer.get_item(curr['user'])
+            AverageСalculationBuffer.objects.create(user=curr["user"])
+            obj = AverageСalculationBuffer.get_item(curr["user"])
         upd_bufer(obj, el.name, element["accured"])
 
     # TODO Электирчество кончилось... Кина не будет
@@ -250,6 +253,7 @@ def get_calc_service(el, curr, sq_appa, subs, priv, recl):
     )
     return element
 
+
 # Возваращает субсидию или льготу при наличии или 0
 def get_sale(name, arr):
     for el in arr:
@@ -258,6 +262,7 @@ def get_sale(name, arr):
         else:
             continue
     return 0
+
 
 # Возваращает перерасчет при наличии или 0
 def get_recl(name, arr):
@@ -268,8 +273,9 @@ def get_recl(name, arr):
             continue
     return 0
 
-#Обновляет буффер
-def upd_bufer(obj, name_srv,  accured):
+
+# Обновляет буффер
+def upd_bufer(obj, name_srv, accured):
     if re.search(r"холодная", name_srv.lower()):
         new_volume = obj.col_water + accured if obj.col_water else accured
         volume_rec = new_volume.quantize(decimal.Decimal("1.00"))

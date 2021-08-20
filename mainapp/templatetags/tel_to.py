@@ -5,6 +5,7 @@ from django.utils.safestring import mark_safe
 
 register = template.Library()
 
+
 @register.filter(name="tel_to")
 def tel_to(np):
     """

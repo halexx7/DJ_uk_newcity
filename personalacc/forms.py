@@ -3,18 +3,8 @@ from dal import autocomplete
 from django import forms
 
 from authnapp.models import User
-from mainapp.models import (
-    CurrentCounter,
-    HouseCurrent,
-    HouseHistory,
-    MainBook,
-    Recalculations,
-)
-from directory.models import (
-    Privileges,
-    Services,
-    Subsidies,
-)
+from directory.models import Privileges, Services, Subsidies
+from mainapp.models import CurrentCounter, HouseCurrent, HouseHistory, MainBook, Recalculations
 
 
 class MultipleForm(forms.Form):

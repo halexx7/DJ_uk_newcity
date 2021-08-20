@@ -11,5 +11,3 @@ def isLastWeek(date):
     date_inst = date.replace(tzinfo=None)
     result = (date_now - date_inst).days < 14
     return result
-
-

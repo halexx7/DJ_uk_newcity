@@ -1,25 +1,19 @@
-import datetime
-from decimal import Decimal
-
+from django.core.validators import MinValueValidator
 from django.db import models
 from django.db.models.deletion import CASCADE, SET_NULL
-from django.utils.translation import gettext_lazy as _
-from django.core.validators import MinValueValidator
-from django.db.models.deletion import CASCADE, SET_NULL
-from django.db.models.signals import post_save, pre_delete
+from django.db.models.signals import post_save
 from django.dispatch import receiver
+from django.utils.translation import gettext_lazy as _
 
 from authnapp.models import User
+from mainapp.mixins.utils import ActiveMixin, CreateUpdateMixin
 
 # PERIOD = datetime.datetime.now().date().replace(day=1, month=10)
 
-class PostNews(models.Model):
+
+class PostNews(ActiveMixin):
     title = models.CharField(verbose_name="Заголовок", max_length=128)
     content = models.TextField(verbose_name="Описание")
-
-    is_active = models.BooleanField(verbose_name="Активная", db_index=True, default=True)
-    created = models.DateTimeField(verbose_name="Создан", auto_now_add=True)
-    updated = models.DateTimeField(verbose_name="Обновлен", auto_now=True)
 
     class Meta:
         ordering = ("-created",)
@@ -33,17 +27,9 @@ class PostNews(models.Model):
     def get_items():
         return PostNews.objects.filter(is_active=True)
 
-    def delete(self):
-        self.is_active = False
-        self.save()
 
-
-class ServicesCategory(models.Model):
+class ServicesCategory(ActiveMixin):
     name = models.CharField(verbose_name="Название", max_length=32)
-
-    is_active = models.BooleanField(verbose_name="Активная", db_index=True, default=True)
-    created = models.DateTimeField(verbose_name="Создан", auto_now_add=True)
-    updated = models.DateTimeField(verbose_name="Обновлен", auto_now=True)
 
     class Meta:
         verbose_name = "Категория услуг"
@@ -52,17 +38,9 @@ class ServicesCategory(models.Model):
     def __str__(self):
         return self.name
 
-    def delete(self):
-        self.is_active = False
-        self.save()
 
-
-class Metrics(models.Model):
+class Metrics(ActiveMixin):
     name = models.CharField(verbose_name="Единица измерения", max_length=32)
-
-    is_active = models.BooleanField(verbose_name="Активная", db_index=True, default=True)
-    created = models.DateTimeField(verbose_name="Создан", auto_now_add=True)
-    updated = models.DateTimeField(verbose_name="Обновлен", auto_now=True)
 
     class Meta:
         verbose_name = "Единица измерения"
@@ -71,24 +49,18 @@ class Metrics(models.Model):
     def __str__(self):
         return self.name
 
-    def delete(self):
-        self.is_active = False
-        self.save()
 
-
-class Services(models.Model):
+class Services(ActiveMixin):
     category = models.ForeignKey(
         ServicesCategory, verbose_name="Категория", related_name="category", on_delete=models.CASCADE, default=1
     )
     name = models.CharField(verbose_name="Услуга", max_length=256)
     unit = models.ForeignKey(Metrics, verbose_name="Единицы", related_name="unit", on_delete=models.CASCADE)
-    rate = models.DecimalField(verbose_name="Тариф", max_digits=7, decimal_places=3, default=0, validators=[MinValueValidator(0.001)])
+    rate = models.DecimalField(
+        verbose_name="Тариф", max_digits=7, decimal_places=3, default=0, validators=[MinValueValidator(0.001)]
+    )
     factor = models.DecimalField(verbose_name="Коэфициент", max_digits=3, decimal_places=2, default=1)
     const = models.BooleanField(verbose_name="Константа", db_index=True, default=True)
-
-    is_active = models.BooleanField(verbose_name="Активная", db_index=True, default=True)
-    created = models.DateTimeField(verbose_name="Создан", auto_now_add=True)
-    updated = models.DateTimeField(verbose_name="Обновлен", auto_now=True)
 
     class Meta:
         verbose_name = "Услугу"
@@ -111,17 +83,9 @@ class Services(models.Model):
     def get_items():
         return Services.objects.filter(is_active=True)
 
-    def delete(self):
-        self.is_active = False
-        self.save()
 
-
-class City(models.Model):
+class City(ActiveMixin):
     city = models.CharField(verbose_name="Город", max_length=128)
-
-    is_active = models.BooleanField(verbose_name="Активный", db_index=True, default=True)
-    created = models.DateTimeField(verbose_name="Создан", auto_now_add=True)
-    updated = models.DateTimeField(verbose_name="Обновлен", auto_now=True)
 
     class Meta:
         verbose_name = "Город"
@@ -130,18 +94,10 @@ class City(models.Model):
     def __str__(self):
         return self.city
 
-    def delete(self):
-        self.is_active = False
-        self.save()
 
-
-class Street(models.Model):
+class Street(ActiveMixin):
     city = models.ForeignKey(City, verbose_name="Город", on_delete=CASCADE)
     street = models.CharField(verbose_name="Улица", max_length=128)
-
-    is_active = models.BooleanField(verbose_name="Активный", db_index=True, default=True)
-    created = models.DateTimeField(verbose_name="Создан", auto_now_add=True)
-    updated = models.DateTimeField(verbose_name="Обновлен", auto_now=True)
 
     class Meta:
         verbose_name = "Улица"
@@ -150,12 +106,8 @@ class Street(models.Model):
     def __str__(self):
         return f"ул.{self.street}"
 
-    def delete(self):
-        self.is_active = False
-        self.save()
 
-
-class House(models.Model):
+class House(ActiveMixin):
     city = models.ForeignKey(City, verbose_name="Город", null=True, on_delete=SET_NULL)
     street = models.ForeignKey(Street, verbose_name="Улица", null=True, on_delete=SET_NULL)
     number = models.CharField(verbose_name="Номер", max_length=3)
@@ -164,10 +116,6 @@ class House(models.Model):
     category_rate = models.ForeignKey(
         ServicesCategory, verbose_name="Категория", null=True, on_delete=SET_NULL, default=1
     )
-
-    is_active = models.BooleanField(verbose_name="Активный", db_index=True, default=True)
-    created = models.DateTimeField(verbose_name="Создан", auto_now_add=True)
-    updated = models.DateTimeField(verbose_name="Обновлен", auto_now=True)
 
     class Meta:
         ordering = ("-updated",)
@@ -181,12 +129,8 @@ class House(models.Model):
     def get_item(house):
         return House.objects.filter(id=house)[0:1]
 
-    def delete(self):
-        self.is_active = False
-        self.save()
 
-
-class UserProfile(models.Model):
+class UserProfile(ActiveMixin):
     SINGLE = "1"
     TWO = "2"
     MULTI = "3"
@@ -203,13 +147,6 @@ class UserProfile(models.Model):
     gender = models.CharField(
         verbose_name="Пол", max_length=1, choices=GENDER_CHOICES, blank=True, null=True, default=None
     )
-    # type_electric_meter = models.CharField(
-    #     verbose_name="Тип счетчика", max_length=1, choices=COUNTER_TYPE, blank=True, null=True, default=None
-    # )
-
-    is_active = models.BooleanField(verbose_name="Активный", db_index=True, default=True)
-    created = models.DateTimeField(verbose_name="Создан", auto_now_add=True)
-    updated = models.DateTimeField(verbose_name="Обновлен", auto_now=True)
 
     class Meta:
         ordering = ("updated",)
@@ -228,12 +165,8 @@ class UserProfile(models.Model):
     def save_user_profile(sender, instance, **kwargs):
         instance.profiles.save()
 
-    def delete(self):
-        self.is_active = False
-        self.save()
 
-
-class Appartament(models.Model):
+class Appartament(ActiveMixin):
     user = models.ForeignKey(
         User, verbose_name="Жилец", related_name="appartament", null=True, blank=True, on_delete=SET_NULL
     )
@@ -244,10 +177,6 @@ class Appartament(models.Model):
         verbose_name="Площадь", max_digits=5, decimal_places=2, null=True, blank=True, default=0
     )
     num_owner = models.PositiveIntegerField(verbose_name="Кол-во проживающих", null=True, blank=True, default=0)
-
-    is_active = models.BooleanField(verbose_name="Активный", db_index=True, default=True)
-    created = models.DateTimeField(verbose_name="Создан", auto_now_add=True)
-    updated = models.DateTimeField(verbose_name="Обновлен", auto_now=True)
 
     class Meta:
         verbose_name = "Квартира"
@@ -261,20 +190,13 @@ class Appartament(models.Model):
     def get_item(user):
         return Appartament.objects.filter(user=user)
 
-    def delete(self):
-        self.is_active = False
-        self.save()
 
 # Cубсидии
-class Subsidies(models.Model):
+class Subsidies(ActiveMixin):
     user = models.ForeignKey(User, verbose_name="Пользователь", on_delete=CASCADE)
     service = models.ForeignKey(Services, verbose_name="Услуга", on_delete=CASCADE)
     sale = models.PositiveIntegerField(verbose_name="Субсидии", default=0)
     desc = models.TextField(verbose_name="Описание", blank=True, null=True)
-
-    is_active = models.BooleanField(verbose_name="Активный", db_index=True, default=True)
-    created = models.DateTimeField(verbose_name="Создан", auto_now_add=True)
-    updated = models.DateTimeField(verbose_name="Обновлен", auto_now=True)
 
     class Meta:
         ordering = ("-updated",)
@@ -292,21 +214,13 @@ class Subsidies(models.Model):
     def get_qty_last_items(qty):
         return Subsidies.objects.all()[:qty]
 
-    def delete(self):
-        self.is_active = False
-        self.save()
-
 
 # Льготы
-class Privileges(models.Model):
+class Privileges(ActiveMixin):
     user = models.ForeignKey(User, verbose_name="Пользователь", on_delete=CASCADE)
     service = models.ForeignKey(Services, verbose_name="Услуга", related_name="service", on_delete=CASCADE)
     sale = models.PositiveIntegerField(verbose_name="Льготы", default=0)
     desc = models.TextField(verbose_name="Описание", blank=True, null=True)
-
-    is_active = models.BooleanField(verbose_name="Активный", db_index=True, default=True)
-    created = models.DateTimeField(verbose_name="Создан", auto_now_add=True)
-    updated = models.DateTimeField(verbose_name="Обновлен", auto_now=True)
 
     class Meta:
         ordering = ("-updated",)
@@ -323,7 +237,3 @@ class Privileges(models.Model):
     @staticmethod
     def get_qty_last_items(qty):
         return Privileges.objects.all()[:qty]
-
-    def delete(self):
-        self.is_active = False
-        self.save()

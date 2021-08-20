@@ -1,4 +1,5 @@
 import datetime
+
 from dal import autocomplete
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core import serializers
@@ -8,8 +9,8 @@ from django.template.loader import render_to_string
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, DeleteView, ListView, UpdateView
 
-from personalacc.models import SiteConfiguration
 from authnapp.models import User
+from directory.models import Appartament, Privileges, Subsidies, UserProfile
 from invoice.views import starter
 from mainapp.models import (
     CurrentCounter,
@@ -21,13 +22,6 @@ from mainapp.models import (
     PersonalAccountStatus,
     Recalculations,
 )
-from directory.models import (
-    Appartament,
-    Privileges,
-    Subsidies,
-    UserProfile,
-)
-
 from personalacc.forms import (
     CurrentCounterForm,
     HomeCurrentCounterForm,
@@ -37,9 +31,10 @@ from personalacc.forms import (
     RecalculationsForm,
     SubsidiesForm,
 )
-
+from personalacc.models import SiteConfiguration
 
 # PERIOD = datetime.datetime.now().date().replace(day=1, month=8)
+
 
 class UserPageCreate(LoginRequiredMixin, CreateView):
     model = User
@@ -77,8 +72,9 @@ class UserPageCreate(LoginRequiredMixin, CreateView):
                 post = self.request.POST
                 user = self.request.user
                 # period = datetime.datetime.now().date().replace(day=1)
-                #TODO PERIOD
+                # TODO PERIOD
                 from invoice.views import PERIOD
+
                 period = PERIOD
                 update_values = {
                     "col_water": post.get("col_water"),
@@ -135,8 +131,9 @@ class ManagerPageCreate(LoginRequiredMixin, CreateView):
     def post(self, *args, **kwargs):
         post = self.request.POST
         user = self.request.POST.get("user")
-        #TODO PERIOD
+        # TODO PERIOD
         from invoice.views import PERIOD
+
         period = PERIOD
         # period = datetime.datetime.now().date().replace(day=1)
         handle = {

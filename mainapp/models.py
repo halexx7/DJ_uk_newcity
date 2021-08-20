@@ -8,32 +8,24 @@ from django.db.models.deletion import CASCADE, SET_NULL
 from django.db.models.signals import post_save, pre_delete
 from django.dispatch import receiver
 from django.utils.translation import gettext_lazy as _
-from django.utils.timezone import now
-from django.core.validators import MinValueValidator
 
 from authnapp.models import User
 from directory.models import House, Services
+from mainapp.mixins.utils import ActiveMixin, CreateUpdateMixin, WaterCounterMixin
 
 # PERIOD = datetime.datetime.now().date().replace(day=1, month=10)
 
 # Общедомовой счетчик (ТЕКУЩИЕ показания)
-class HouseCurrent(models.Model):
+class HouseCurrent(WaterCounterMixin):
     period = models.DateField(verbose_name="Создан", default=datetime.datetime.now().replace(day=1))
     house = models.ForeignKey(House, verbose_name="Дом", null=True, on_delete=SET_NULL)
-    col_water = models.DecimalField(verbose_name="Хол.вода", null=True, default=None, max_digits=8, decimal_places=3, validators=[MinValueValidator(0.001)])
-    hot_water = models.DecimalField(verbose_name="Гор.вода", null=True, default=None, max_digits=8, decimal_places=3, validators=[MinValueValidator(0.001)])
-    # electric_day = models.PositiveIntegerField(verbose_name="Электр.день", null=True, default=None)
-    # electric_night = models.PositiveIntegerField(verbose_name="Электр.ночь", null=True, default=None)
-
-    created = models.DateTimeField(verbose_name="Создан", auto_now_add=True)
-    updated = models.DateTimeField(verbose_name="Обновлен", auto_now=True)
 
     class Meta:
         ordering = ("-updated",)
         verbose_name = "Домовой счетчик (текущий)"
         verbose_name_plural = "Домовые счетчики (текущие)"
         # unique_together = ('house',)
-    
+
     def clean(self):
         if self.col_water < 0.01 or self.hot_water < 0.01:
             raise ValidationError("Допустимы только положительные числа!")
@@ -49,23 +41,11 @@ class HouseCurrent(models.Model):
     def get_qty_last_items(qty):
         return HouseCurrent.objects.all()[:qty]
 
-    def delete(self):
-        self.is_active = False
-        self.save()
-
 
 # Общедомовой счетчик (ИСТОРИЯ показания)
-class HouseHistory(models.Model):
+class HouseHistory(WaterCounterMixin):
     period = models.DateField(verbose_name="Создан", default=datetime.datetime.now().replace(day=1))
     house = models.ForeignKey(House, verbose_name="Дом", null=True, on_delete=SET_NULL)
-    col_water = models.DecimalField(verbose_name="Хол.вода", null=True, max_digits=8, decimal_places=3, validators=[MinValueValidator(0.001)])
-    hot_water = models.DecimalField(verbose_name="Гор.вода", null=True, max_digits=8, decimal_places=3, validators=[MinValueValidator(0.001)])
-    # electric_day = models.PositiveIntegerField(verbose_name="Электр.день", null=True, default=None)
-    # electric_day = models.PositiveIntegerField(verbose_name="Электр.день", null=True)
-    # electric_night = models.PositiveIntegerField(verbose_name="Электр.ночь", null=True)
-
-    created = models.DateTimeField(verbose_name="Создан", auto_now_add=True)
-    updated = models.DateTimeField(verbose_name="Обновлен", auto_now=True)
 
     class Meta:
         ordering = ("-updated",)
@@ -89,10 +69,6 @@ class HouseHistory(models.Model):
     def get_qty_last_items(qty):
         return HouseCurrent.objects.all()[:qty]
 
-    def delete(self):
-        self.is_active = False
-        self.save()
-
     # При удалении ловим и сохраняем объект ДОМОВЫЕ ПОКАЗАНИЯ
     @receiver(pre_delete, sender=HouseCurrent)
     def copy_arhive_current_to_history_house(sender, instance, **kwargs):
@@ -109,21 +85,12 @@ class HouseHistory(models.Model):
 
 
 # Среднедомовой показатель
-class Standart(models.Model):
+class Standart(ActiveMixin):
     period = models.DateField(verbose_name="Создан", default=datetime.datetime.now().replace(day=1))
     house = models.ForeignKey(House, verbose_name="Дом", null=True, on_delete=SET_NULL)
     # Значения хранятся на 1 кв.м
     col_water = models.DecimalField(verbose_name="Норматив ХВС", max_digits=11, decimal_places=6)
     hot_water = models.DecimalField(verbose_name="Норматив ХГС", max_digits=11, decimal_places=6)
-    # electric_day = models.DecimalField(
-    #     verbose_name="Норматив ЭЛ.День", max_digits=6, decimal_places=2, null=True, default=None
-    # )
-    # electric_night = models.DecimalField(
-    #     verbose_name="Нориматив ЭЛ.Ночь", max_digits=6, decimal_places=2, null=True, default=None
-    # )
-
-    created = models.DateTimeField(verbose_name="Создан", auto_now_add=True)
-    updated = models.DateTimeField(verbose_name="Обновлен", auto_now=True)
 
     class Meta:
         ordering = ("-period",)
@@ -137,10 +104,6 @@ class Standart(models.Model):
     def get_last_val(house):
         return Standart.objects.filter(house=house).first()
 
-    def delete(self):
-        self.is_active = False
-        self.save()
-
     # При изменении текущих домовых показаний перещитываем норматив
     @receiver(post_save, sender=HouseCurrent)
     def calculation_of_standart_to_house_current(sender, instance, **kwargs):
@@ -151,26 +114,14 @@ class Standart(models.Model):
         upd_val = {
             "col_water": (Decimal(instance.col_water) - Decimal(hist.col_water)) / sq,
             "hot_water": (Decimal(instance.hot_water) - Decimal(hist.hot_water)) / sq,
-            # "electric_day": instance.electric_day,
-            # "electric_night": instance.electric_night,
         }
         obj, created = Standart.objects.update_or_create(house_id=house, period=period, defaults=upd_val)
 
 
 # Текущие показания счетчиков (индивидуальные)
-class CurrentCounter(models.Model):
+class CurrentCounter(WaterCounterMixin):
     user = models.ForeignKey(User, verbose_name="Пользователь", on_delete=CASCADE)
     period = models.DateField(verbose_name="Создан", default=datetime.datetime.now().replace(day=1))
-    col_water = models.DecimalField(verbose_name="Хол.вода", null=True, max_digits=8, decimal_places=3, validators=[MinValueValidator(0.001)])
-    hot_water = models.DecimalField(verbose_name="Гор.вода", null=True, max_digits=8, decimal_places=3, validators=[MinValueValidator(0.001)])
-    # electric_day = models.PositiveIntegerField(verbose_name="Электроэнергия день", null=True, blank=True, default=None)
-    # electric_night = models.PositiveIntegerField(
-    #     verbose_name="Электроэнергия ночь", null=True, blank=True, default=None
-    # )
-    # electric_single = models.PositiveIntegerField(verbose_name="Электроэнергия", null=True, blank=True, default=None)
-
-    created = models.DateTimeField(verbose_name="Создан", auto_now_add=True)
-    updated = models.DateTimeField(verbose_name="Обновлен", auto_now=True)
 
     class Meta:
         ordering = ("-period",)
@@ -182,9 +133,9 @@ class CurrentCounter(models.Model):
 
     @staticmethod
     def get_last_val(user):
-        period=datetime.datetime.now().replace(day=1, month=11)
+        period = datetime.datetime.now().replace(day=1, month=11)
         try:
-            obj=CurrentCounter.objects.filter(user=user).latest("period")
+            obj = CurrentCounter.objects.filter(user=user).latest("period")
             if obj.period.month == period.month:
                 return obj
             else:
@@ -194,17 +145,9 @@ class CurrentCounter(models.Model):
 
 
 # История показания счетчиков (индивидуальные)
-class HistoryCounter(models.Model):
+class HistoryCounter(WaterCounterMixin):
     user = models.ForeignKey(User, verbose_name="Пользователь", null=True, on_delete=SET_NULL)
     period = models.DateField(verbose_name="Создан", default=datetime.datetime.now().replace(day=1))
-    col_water = models.DecimalField(verbose_name="Хол.вода", null=True, max_digits=8, decimal_places=3, validators=[MinValueValidator(0.001)])
-    hot_water = models.DecimalField(verbose_name="Гор.вода", null=True, max_digits=8, decimal_places=3, validators=[MinValueValidator(0.001)])
-    # electric_day = models.PositiveIntegerField(verbose_name="Электр.день", null=True, blank=True)
-    # electric_night = models.PositiveIntegerField(verbose_name="Электр.ночь", null=True, blank=True)
-    # electric_single = models.PositiveIntegerField(verbose_name="Электр.однотариф", null=True, blank=True)
-
-    created = models.DateTimeField(verbose_name="Создан", auto_now_add=True)
-    updated = models.DateTimeField(verbose_name="Обновлен", auto_now=True)
 
     class Meta:
         ordering = ("-period",)
@@ -217,10 +160,6 @@ class HistoryCounter(models.Model):
     @staticmethod
     def get_last_val(user):
         return HistoryCounter.objects.filter(user=user).first()
-
-    def delete(self):
-        self.is_active = False
-        self.save()
 
     # При удалении ловим и сохраняем объект ИНДИВИДУАЛЬНЫЕ ПОКАЗАНИЯ
     @receiver(pre_delete, sender=CurrentCounter)
@@ -237,15 +176,12 @@ class HistoryCounter(models.Model):
 
 
 # Перерасчеты
-class Recalculations(models.Model):
+class Recalculations(ActiveMixin):
     user = models.ForeignKey(User, verbose_name="Пользователь", null=True, on_delete=SET_NULL)
     period = models.DateField(verbose_name="Создан", default=datetime.datetime.now().replace(day=1))
     service = models.ForeignKey(Services, verbose_name="Услуга", null=True, on_delete=SET_NULL)
     recalc = models.DecimalField(verbose_name="Сумма", max_digits=10, decimal_places=2, default=0)
     desc = models.TextField(verbose_name="Описание", blank=True, null=True)
-
-    created = models.DateTimeField(verbose_name="Создан", auto_now_add=True)
-    updated = models.DateTimeField(verbose_name="Обновлен", auto_now=True)
 
     class Meta:
         ordering = ("-updated",)
@@ -271,20 +207,13 @@ class Recalculations(models.Model):
     def get_qty_last_items(qty):
         return Recalculations.objects.all()[:qty]
 
-    def delete(self):
-        self.is_active = False
-        self.save()
-
 
 # Постоянные платежи (расчет по формуле = const*rate или = const)
-class ConstantPayments(models.Model):
+class ConstantPayments(ActiveMixin):
     user = models.ForeignKey(User, verbose_name="Пользователь", on_delete=CASCADE)
     data = JSONField(verbose_name="data")
     total = models.DecimalField(verbose_name="Сумма", max_digits=8, decimal_places=3)
     pre_total = models.DecimalField(verbose_name="Сумма", max_digits=8, decimal_places=3)
-
-    created = models.DateTimeField(verbose_name="Создан", auto_now_add=True)
-    updated = models.DateTimeField(verbose_name="Обновлен", auto_now=True)
 
     class Meta:
         verbose_name = "Платеж (постоянные)"
@@ -297,21 +226,14 @@ class ConstantPayments(models.Model):
     def get_item(user):
         return ConstantPayments.objects.filter(user=user)
 
-    def delete(self):
-        self.is_active = False
-        self.save()
-
 
 # Переменные платежи (зависящие от счетчиков)
-class VariablePayments(models.Model):
+class VariablePayments(ActiveMixin):
     user = models.ForeignKey(User, verbose_name="Пользователь", on_delete=CASCADE)
     period = models.DateField(verbose_name="Создан", default=datetime.datetime.now().replace(day=1))
     data = JSONField(verbose_name="data")
     total = models.DecimalField(verbose_name="Итого", max_digits=10, decimal_places=2, default=0)
     pre_total = models.DecimalField(verbose_name="Итого", max_digits=10, decimal_places=2, default=0)
-
-    created = models.DateTimeField(verbose_name="Создан", auto_now_add=True)
-    updated = models.DateTimeField(verbose_name="Обновлен", auto_now=True)
 
     class Meta:
         ordering = ("-period",)
@@ -333,18 +255,11 @@ class VariablePayments(models.Model):
         except:
             return None
 
-    def delete(self):
-        self.is_active = False
-        self.save()
-
 
 # Данные для шапки платежки
-class HeaderData(models.Model):
+class HeaderData(CreateUpdateMixin):
     user = models.ForeignKey(User, verbose_name="Пользователь", null=True, on_delete=SET_NULL)
     data = JSONField(verbose_name="Данные")
-
-    created = models.DateTimeField(verbose_name="Создан", auto_now_add=True)
-    updated = models.DateTimeField(verbose_name="Обновлен", auto_now=True)
 
     class Meta:
         verbose_name = "Начисление"
@@ -357,13 +272,9 @@ class HeaderData(models.Model):
     def get_item(user):
         return HeaderData.objects.filter(user=user).first()
 
-    def delete(self):
-        self.is_active = False
-        self.save()
-
 
 # Главная книга (дебет / кредит)
-class MainBook(models.Model):
+class MainBook(ActiveMixin):
     DEBIT = "D"
     CREDIT = "C"
 
@@ -373,9 +284,6 @@ class MainBook(models.Model):
     period = models.DateField(verbose_name="Создан", default=datetime.datetime.now().replace(day=1))
     direction = models.CharField(verbose_name="Направление", max_length=1, choices=DIRECTION_TRAVEL)
     amount = models.DecimalField(verbose_name="Сумма", max_digits=12, decimal_places=2)
-
-    created = models.DateTimeField(verbose_name="Создан", auto_now_add=True)
-    updated = models.DateTimeField(verbose_name="Обновлен", auto_now=True)
 
     class Meta:
         ordering = ("-period",)
@@ -414,10 +322,6 @@ class MainBook(models.Model):
             "-updated",
         )[:qty]
 
-    def delete(self):
-        self.is_active = False
-        self.save()
-
     # При изменении константных или переменных расчетов, обновляем данные
     @receiver(post_save, sender=ConstantPayments)
     @receiver(post_save, sender=VariablePayments)
@@ -433,7 +337,7 @@ class MainBook(models.Model):
 
 
 # Начисления (Плетежка)
-class PaymentOrder(models.Model):
+class PaymentOrder(ActiveMixin):
     user = models.ForeignKey(User, verbose_name="Пользователь", null=True, on_delete=SET_NULL)
     period = models.DateField(verbose_name="Создан", default=datetime.datetime.now().replace(day=1))
     header_data = JSONField(verbose_name="Данные для шапки", null=True, default=None)
@@ -443,9 +347,6 @@ class PaymentOrder(models.Model):
     amount = models.DecimalField(verbose_name="Чистая_сумма", max_digits=7, decimal_places=2)
     # Грязная сумма - до вычетов
     pre_amount = models.DecimalField(verbose_name="Грязная сумма", max_digits=7, decimal_places=2)
-
-    created = models.DateTimeField(verbose_name="Создан", auto_now_add=True)
-    updated = models.DateTimeField(verbose_name="Обновлен", auto_now=True)
 
     class Meta:
         ordering = ("-period",)
@@ -462,10 +363,6 @@ class PaymentOrder(models.Model):
     def get_item(order_id):
         return PaymentOrder.objects.filter(id=order_id)
 
-    def delete(self):
-        self.is_active = False
-        self.save()
-
     @receiver(post_save, sender=MainBook)
     def procc_update_data(sender, instance, **kwargs):
         if instance.direction == "C":
@@ -481,25 +378,22 @@ class PaymentOrder(models.Model):
             }
             obj, created = PaymentOrder.objects.update_or_create(user=user, period=period, defaults=upd_val)
 
-
     @receiver(post_save, sender=HeaderData)
     def procc_update_headerdata(sender, instance, **kwargs):
         user = instance.user
         # period = datetime.datetime.now().replace(day=1)
-        #TODO PERIOD
+        # TODO PERIOD
         from invoice.views import PERIOD
+
         period = PERIOD
         header_data = HeaderData.objects.get(user=user)
         PaymentOrder.objects.filter(user=user, period=period).update(header_data=header_data.data)
 
 
 # Текущее состояние счета
-class PersonalAccountStatus(models.Model):
+class PersonalAccountStatus(CreateUpdateMixin):
     user = models.OneToOneField(User, verbose_name="Пользователь", on_delete=CASCADE)
     amount = models.DecimalField(verbose_name="Состояние", max_digits=8, decimal_places=2)
-
-    created = models.DateTimeField(verbose_name="Создан", auto_now_add=True)
-    updated = models.DateTimeField(verbose_name="Обновлен", auto_now=True)
 
     class Meta:
         ordering = ("amount",)
@@ -513,10 +407,6 @@ class PersonalAccountStatus(models.Model):
     @staticmethod
     def get_item(user):
         return PersonalAccountStatus.objects.filter(user=user)
-
-    def delete(self):
-        self.is_active = False
-        self.save()
 
     @receiver(post_save, sender=MainBook)
     def get_update_data(sender, instance, **kwargs):
@@ -534,8 +424,9 @@ class PersonalAccountStatus(models.Model):
     def get_update_recalc(sender, instance, **kwargs):
         user = instance.user
         # period = datetime.datetime.now().replace(day=1)
-        #TODO PERIOD
+        # TODO PERIOD
         from invoice.views import PERIOD
+
         period = PERIOD
         debit = sender.get_user_debit(user=user)
         credit = sender.get_user_credit(user=user)
@@ -549,15 +440,19 @@ class PersonalAccountStatus(models.Model):
 
 
 # Накопительный БУФФЕР средних начислений
-class AverageСalculationBuffer(models.Model):
+class AverageСalculationBuffer(CreateUpdateMixin):
     """Накапливаем сумму начислений при расчете по общедомовым счетчикам"""
-    user = models.OneToOneField(User, verbose_name="Пользователь", on_delete=CASCADE)
-    col_water = models.DecimalField(verbose_name="Буффер холодной воды", max_digits=10, decimal_places=2, null=True, default=None)
-    hot_water = models.DecimalField(verbose_name="Буффер горячей воды", max_digits=10, decimal_places=2, null=True, default=None)
-    sewage = models.DecimalField(verbose_name="Буффер сточных вод", max_digits=10, decimal_places=2, null=True, default=None)
 
-    created = models.DateTimeField(verbose_name="Создан", auto_now_add=True)
-    updated = models.DateTimeField(verbose_name="Обновлен", auto_now=True)
+    user = models.OneToOneField(User, verbose_name="Пользователь", on_delete=CASCADE)
+    col_water = models.DecimalField(
+        verbose_name="Буффер холодной воды", max_digits=10, decimal_places=3, null=True, default=None
+    )
+    hot_water = models.DecimalField(
+        verbose_name="Буффер горячей воды", max_digits=10, decimal_places=3, null=True, default=None
+    )
+    sewage = models.DecimalField(
+        verbose_name="Буффер сточных вод", max_digits=10, decimal_places=3, null=True, default=None
+    )
 
     class Meta:
         verbose_name = "Буффер средних начислений"
@@ -580,4 +475,3 @@ class AverageСalculationBuffer(models.Model):
         data["hot_water"] = self.hot_water
         data["sewage"] = self.sewage
         return data
-            
