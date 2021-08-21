@@ -66,7 +66,7 @@ class RecalculationsForm(forms.ModelForm):
 
     class Meta:
         model = Recalculations
-        exclude = ("period", "created", "updated")
+        exclude = ("period", "is_auto", "created", "updated")
         widgets = {
             "user": autocomplete.ModelSelect2(
                 url="dal_user/",

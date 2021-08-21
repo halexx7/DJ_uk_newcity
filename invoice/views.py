@@ -4,6 +4,7 @@ import json
 import re
 
 from django.core.serializers import serialize
+from django.utils import tree
 from django.utils.safestring import mark_safe
 from django.views.generic.detail import DetailView
 
@@ -23,12 +24,7 @@ from mainapp.models import (
     VariablePayments,
 )
 from personalacc.models import SiteConfiguration
-
-PERIOD = datetime.datetime.now().date().replace(day=1, month=11)
-
-
-def main(request):
-    pass
+from mainapp.mixins.utils import PERIOD
 
 
 class InvoiceViews(DetailView):
@@ -108,8 +104,7 @@ def get_calc_variable():
 
     for user in users:
         data = []
-        total = 0
-        pre_total = 0
+        total, pre_total = 0, 0
         # period = datetime.datetime.now().replace(day=1)
         # TODO PERIOD
         period = PERIOD
@@ -118,11 +113,7 @@ def get_calc_variable():
         stand = Standart.get_last_val(appa.house_id)
         sq_appa = appa.sq_appart
         hist = HistoryCounter.get_last_val(user.id)
-        curr = {
-            "user": user,
-            "standart": False,
-        }
-
+        curr = {"user": user, "standart": False}
         object_curr = CurrentCounter.get_last_val(user)
         if object_curr:
             # Если счетчики введены, считаем объем
@@ -186,7 +177,7 @@ def get_head_data():
 # Делает расчет всех полей по Услуге
 def get_calc_service(el, curr, sq_appa, subs, priv, recl):
     element = dict()
-    water = False
+    const = False
     # TODO PERIOD
     period = PERIOD
     element["service"] = el.name
@@ -196,51 +187,40 @@ def get_calc_service(el, curr, sq_appa, subs, priv, recl):
 
     if re.search(r"холодная", el.name.lower()):
         element["volume"] = curr["volume_col"]
-        service = "col_water"
+        const = "col_water"
     elif re.search(r"горячая", el.name.lower()):
         element["volume"] = curr["volume_hot"]
-        service = "hot_water"
+        const = "hot_water"
     elif re.search(r"водоотведение", el.name.lower()):
         element["volume"] = curr["volume_sewage"]
-        service = "sewage"
+        const = "sewage"
 
     if not curr["standart"]:
-        element["accured"] = el.rate * element["volume"]
+        element["accured"] = el.rate * decimal.Decimal(element["volume"])
         if curr["buffer"]:
             # TODO PERIOD
             # period = datetime.datetime.now().replace(day=1)
-            buffer = curr["buffer"].get_dict()
+            buffer = AverageСalculationBuffer.get_sum_average_buffer(curr["user"])
             upd_val = {
                 "user": curr["user"],
                 # TODO В какую сторону перерасчет???
-                "recalc": element["accured"] - buffer[service],
+                "recalc": element["accured"] - buffer[const],
                 "desc": f"Автоматический перерасчет на основании введенных пользователем счетчиков",
             }
             obj, created = Recalculations.objects.update_or_create(
-                user=curr["user"], period=period, service=el, defaults=upd_val
+                user=curr["user"], period=period, service=el, is_auto=True, defaults=upd_val
             )
-            if service == "col_water":
+            if const == "col_water":
                 AverageСalculationBuffer.objects.filter(user=curr["user"]).update(col_water=0)
-            elif service == "hot_water":
+            elif const == "hot_water":
                 AverageСalculationBuffer.objects.filter(user=curr["user"]).update(hot_water=0)
-            elif service == "sewage":
+            elif const == "sewage":
                 AverageСalculationBuffer.objects.filter(user=curr["user"]).update(sewage=0)
 
     elif curr["standart"]:
         element["accured"] = el.rate * decimal.Decimal(element["volume"])
-        obj = AverageСalculationBuffer.get_item(curr["user"])
-        if not obj:
-            AverageСalculationBuffer.objects.create(user=curr["user"])
-            obj = AverageСalculationBuffer.get_item(curr["user"])
+        obj, create = AverageСalculationBuffer.objects.get_or_create(user=curr["user"], period=period)
         upd_bufer(obj, el.name, element["accured"])
-
-    # TODO Электирчество кончилось... Кина не будет
-    # if el.name == "Электроэнергия (день)" and prof.type_electric_meter == 2:
-    #     accured = el.rate * (curr.electric_day - hist.hist_electric_day)
-    # elif el.name == "Электроэнергия (ночь)" and prof.type_electric_meter == 2:
-    #     accured = el.rate * (curr.electric_night - hist.hist_electric_night)
-    # elif el.name == "Электроэнергия" and prof.type_electric_meter == 1:
-    #     accured = el.rate * curr.electric_single
     element["coefficient"] = el.factor if el.factor > 0 else 1
     element["pre_total"] = element["accured"] * element["coefficient"]
     element["subsidies"] = element["pre_total"] * decimal.Decimal(get_sale(el.name, subs) / 100)
@@ -266,6 +246,7 @@ def get_sale(name, arr):
 
 # Возваращает перерасчет при наличии или 0
 def get_recl(name, arr):
+    # TODO Если несколько записей, т.е. авто и не авто, то возвращать нужно сумму.
     for el in arr:
         if el.service.name == name:
             return el.recalc
@@ -276,15 +257,10 @@ def get_recl(name, arr):
 
 # Обновляет буффер
 def upd_bufer(obj, name_srv, accured):
+    volume_rec = accured.quantize(decimal.Decimal("1.00"))
     if re.search(r"холодная", name_srv.lower()):
-        new_volume = obj.col_water + accured if obj.col_water else accured
-        volume_rec = new_volume.quantize(decimal.Decimal("1.00"))
         AverageСalculationBuffer.objects.filter(user=obj.user).update(col_water=volume_rec)
     elif re.search(r"горячая", name_srv.lower()):
-        new_volume = obj.hot_water + accured if obj.hot_water else accured
-        volume_rec = new_volume.quantize(decimal.Decimal("1.00"))
         AverageСalculationBuffer.objects.filter(user=obj.user).update(hot_water=volume_rec)
     elif re.search(r"водоотведение", name_srv.lower()):
-        new_volume = obj.sewage + accured if obj.sewage else accured
-        volume_rec = new_volume.quantize(decimal.Decimal("1.00"))
         AverageСalculationBuffer.objects.filter(user=obj.user).update(sewage=volume_rec)

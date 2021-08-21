@@ -11,13 +11,12 @@ from django.utils.translation import gettext_lazy as _
 
 from authnapp.models import User
 from directory.models import House, Services
-from mainapp.mixins.utils import ActiveMixin, CreateUpdateMixin, WaterCounterMixin
+from mainapp.mixins.utils import ActiveMixin, CreateUpdateMixin, WaterCounterMixin, PERIOD
 
-# PERIOD = datetime.datetime.now().date().replace(day=1, month=10)
 
 # Общедомовой счетчик (ТЕКУЩИЕ показания)
 class HouseCurrent(WaterCounterMixin):
-    period = models.DateField(verbose_name="Создан", default=datetime.datetime.now().replace(day=1))
+    period = models.DateField(verbose_name="Период", default=datetime.datetime.now().replace(day=1))
     house = models.ForeignKey(House, verbose_name="Дом", null=True, on_delete=SET_NULL)
 
     class Meta:
@@ -44,13 +43,13 @@ class HouseCurrent(WaterCounterMixin):
 
 # Общедомовой счетчик (ИСТОРИЯ показания)
 class HouseHistory(WaterCounterMixin):
-    period = models.DateField(verbose_name="Создан", default=datetime.datetime.now().replace(day=1))
+    period = models.DateField(verbose_name="Период", default=datetime.datetime.now().replace(day=1))
     house = models.ForeignKey(House, verbose_name="Дом", null=True, on_delete=SET_NULL)
 
     class Meta:
         ordering = ("-updated",)
         verbose_name = "Домовой счетчик (история)"
-        verbose_name_plural = "Домовые счетчики (история)"
+        verbose_name_plural = "01 Домовые счетчики (история)"
         # unique_together = ('period', 'house',)
 
     def __str__(self):
@@ -86,7 +85,7 @@ class HouseHistory(WaterCounterMixin):
 
 # Среднедомовой показатель
 class Standart(ActiveMixin):
-    period = models.DateField(verbose_name="Создан", default=datetime.datetime.now().replace(day=1))
+    period = models.DateField(verbose_name="Период", default=datetime.datetime.now().replace(day=1))
     house = models.ForeignKey(House, verbose_name="Дом", null=True, on_delete=SET_NULL)
     # Значения хранятся на 1 кв.м
     col_water = models.DecimalField(verbose_name="Норматив ХВС", max_digits=11, decimal_places=6)
@@ -121,19 +120,21 @@ class Standart(ActiveMixin):
 # Текущие показания счетчиков (индивидуальные)
 class CurrentCounter(WaterCounterMixin):
     user = models.ForeignKey(User, verbose_name="Пользователь", on_delete=CASCADE)
-    period = models.DateField(verbose_name="Создан", default=datetime.datetime.now().replace(day=1))
+    period = models.DateField(verbose_name="Период", default=datetime.datetime.now().replace(day=1))
 
     class Meta:
         ordering = ("-period",)
-        verbose_name = "Индивид. счетчик (текущий)"
-        verbose_name_plural = "Индивид. счетчики (текущие)"
+        verbose_name = "Индивидуальный счетчик (текущий)"
+        verbose_name_plural = "Индивидуальные счетчики (текущие)"
 
     def __str__(self):
         return f"({self.user.personal_accaunt}) - {self.user.name} ({self.period})"
 
     @staticmethod
     def get_last_val(user):
-        period = datetime.datetime.now().replace(day=1, month=11)
+        # period = datetime.datetime.now().replace(day=1, month=11)
+        # TODO PERIOD
+        period = PERIOD
         try:
             obj = CurrentCounter.objects.filter(user=user).latest("period")
             if obj.period.month == period.month:
@@ -147,12 +148,12 @@ class CurrentCounter(WaterCounterMixin):
 # История показания счетчиков (индивидуальные)
 class HistoryCounter(WaterCounterMixin):
     user = models.ForeignKey(User, verbose_name="Пользователь", null=True, on_delete=SET_NULL)
-    period = models.DateField(verbose_name="Создан", default=datetime.datetime.now().replace(day=1))
+    period = models.DateField(verbose_name="Период", default=datetime.datetime.now().replace(day=1))
 
     class Meta:
         ordering = ("-period",)
-        verbose_name = "Индивид. счетчик (история)"
-        verbose_name_plural = "Индивид. счетчики (история)"
+        verbose_name = "Индивидуальный счетчик (история)"
+        verbose_name_plural = "02 Индивидуальные счетчики (история)"
 
     def __str__(self):
         return f"({self.user.personal_account}) - {self.user.name} ({self.period})"
@@ -178,10 +179,11 @@ class HistoryCounter(WaterCounterMixin):
 # Перерасчеты
 class Recalculations(ActiveMixin):
     user = models.ForeignKey(User, verbose_name="Пользователь", null=True, on_delete=SET_NULL)
-    period = models.DateField(verbose_name="Создан", default=datetime.datetime.now().replace(day=1))
+    period = models.DateField(verbose_name="Период", default=datetime.datetime.now().replace(day=1))
     service = models.ForeignKey(Services, verbose_name="Услуга", null=True, on_delete=SET_NULL)
     recalc = models.DecimalField(verbose_name="Сумма", max_digits=10, decimal_places=2, default=0)
     desc = models.TextField(verbose_name="Описание", blank=True, null=True)
+    is_auto = models.BooleanField(verbose_name="Автоматический", default=False)
 
     class Meta:
         ordering = ("-updated",)
@@ -230,7 +232,7 @@ class ConstantPayments(ActiveMixin):
 # Переменные платежи (зависящие от счетчиков)
 class VariablePayments(ActiveMixin):
     user = models.ForeignKey(User, verbose_name="Пользователь", on_delete=CASCADE)
-    period = models.DateField(verbose_name="Создан", default=datetime.datetime.now().replace(day=1))
+    period = models.DateField(verbose_name="Период", default=datetime.datetime.now().replace(day=1))
     data = JSONField(verbose_name="data")
     total = models.DecimalField(verbose_name="Итого", max_digits=10, decimal_places=2, default=0)
     pre_total = models.DecimalField(verbose_name="Итого", max_digits=10, decimal_places=2, default=0)
@@ -262,8 +264,8 @@ class HeaderData(CreateUpdateMixin):
     data = JSONField(verbose_name="Данные")
 
     class Meta:
-        verbose_name = "Начисление"
-        verbose_name_plural = "Начисления"
+        verbose_name = "(Платежка) данные шапки"
+        verbose_name_plural = "(Платежка) данные шапок"
 
     def __str__(self):
         return f"({self.user.personal_accaunt}) - {self.user.name}"
@@ -281,7 +283,7 @@ class MainBook(ActiveMixin):
     DIRECTION_TRAVEL = ((DEBIT, "Оплата"), (CREDIT, "Начисление"))
 
     user = models.ForeignKey(User, verbose_name="Пользователь", null=True, on_delete=SET_NULL)
-    period = models.DateField(verbose_name="Создан", default=datetime.datetime.now().replace(day=1))
+    period = models.DateField(verbose_name="Период", default=datetime.datetime.now().replace(day=1))
     direction = models.CharField(verbose_name="Направление", max_length=1, choices=DIRECTION_TRAVEL)
     amount = models.DecimalField(verbose_name="Сумма", max_digits=12, decimal_places=2)
 
@@ -312,7 +314,7 @@ class MainBook(ActiveMixin):
         return MainBook.objects.filter(direction="C")
 
     def get_user_period_item(user, period):
-        """ Возвращает оплаты за указанный месяц """
+        """ Возвращает оплаты за указанный месяц"""
         debit = MainBook.objects.filter(user=user, period=period, direction="D")
         return sum(abs(d.amount) for d in debit)
 
@@ -339,7 +341,7 @@ class MainBook(ActiveMixin):
 # Начисления (Плетежка)
 class PaymentOrder(ActiveMixin):
     user = models.ForeignKey(User, verbose_name="Пользователь", null=True, on_delete=SET_NULL)
-    period = models.DateField(verbose_name="Создан", default=datetime.datetime.now().replace(day=1))
+    period = models.DateField(verbose_name="Период", default=datetime.datetime.now().replace(day=1))
     header_data = JSONField(verbose_name="Данные для шапки", null=True, default=None)
     constant_data = JSONField(verbose_name="Постоянная часть")
     variable_data = JSONField(verbose_name="Переменная часть")
@@ -350,8 +352,8 @@ class PaymentOrder(ActiveMixin):
 
     class Meta:
         ordering = ("-period",)
-        verbose_name = "Начисление"
-        verbose_name_plural = "Начисления"
+        verbose_name = "Платежка)"
+        verbose_name_plural = "(Платежка)"
 
     def __str__(self):
         return f"({self.user.personal_accaunt}) - {self.user.name} ({self.period})"
@@ -383,8 +385,6 @@ class PaymentOrder(ActiveMixin):
         user = instance.user
         # period = datetime.datetime.now().replace(day=1)
         # TODO PERIOD
-        from invoice.views import PERIOD
-
         period = PERIOD
         header_data = HeaderData.objects.get(user=user)
         PaymentOrder.objects.filter(user=user, period=period).update(header_data=header_data.data)
@@ -408,33 +408,16 @@ class PersonalAccountStatus(CreateUpdateMixin):
     def get_item(user):
         return PersonalAccountStatus.objects.filter(user=user)
 
+    @receiver(post_save, sender=Recalculations)
     @receiver(post_save, sender=MainBook)
     def get_update_data(sender, instance, **kwargs):
         user = instance.user
-        debit = sender.get_user_debit(user=user)
-        credit = sender.get_user_credit(user=user)
+        debit = MainBook.get_user_debit(user=user)
+        credit = MainBook.get_user_credit(user=user)
         debit_sum = sum(abs(d.amount) for d in debit)
         credit_sum = sum(abs(c.amount) for c in credit)
         upd_val = {
             "amount": (credit_sum - debit_sum),
-        }
-        obj, created = PersonalAccountStatus.objects.update_or_create(user=user, defaults=upd_val)
-
-    @receiver(post_save, sender=Recalculations)
-    def get_update_recalc(sender, instance, **kwargs):
-        user = instance.user
-        # period = datetime.datetime.now().replace(day=1)
-        # TODO PERIOD
-        from invoice.views import PERIOD
-
-        period = PERIOD
-        debit = sender.get_user_debit(user=user)
-        credit = sender.get_user_credit(user=user)
-        debit_sum = sum(abs(d.amount) for d in debit)
-        credit_sum = sum(abs(c.amount) for c in credit)
-        recalc = sender.get_sum_period(period)
-        upd_val = {
-            "amount": (credit_sum - debit_sum) + recalc,
         }
         obj, created = PersonalAccountStatus.objects.update_or_create(user=user, defaults=upd_val)
 
@@ -443,7 +426,8 @@ class PersonalAccountStatus(CreateUpdateMixin):
 class AverageСalculationBuffer(CreateUpdateMixin):
     """Накапливаем сумму начислений при расчете по общедомовым счетчикам"""
 
-    user = models.OneToOneField(User, verbose_name="Пользователь", on_delete=CASCADE)
+    user = models.ForeignKey(User, verbose_name="Пользователь", on_delete=CASCADE)
+    period = models.DateField(verbose_name="Период", default=datetime.datetime.now().replace(day=1))
     col_water = models.DecimalField(
         verbose_name="Буффер холодной воды", max_digits=10, decimal_places=3, null=True, default=None
     )
@@ -456,6 +440,7 @@ class AverageСalculationBuffer(CreateUpdateMixin):
 
     class Meta:
         verbose_name = "Буффер средних начислений"
+        unique_together = ('user', 'period')
 
     def __str__(self):
         return f"({self.user.personal_accaunt}) - {self.user.name}"
@@ -467,6 +452,16 @@ class AverageСalculationBuffer(CreateUpdateMixin):
             return buff
         except:
             return False
+
+    def get_sum_average_buffer(user):
+        """ Возвращает оплаты за указанный месяц """
+        items = AverageСalculationBuffer.objects.filter(user=user)
+        data = {
+            "user": user,
+            "col_water": sum(abs(el.col_water) for el in items),
+            "hot_water": sum(abs(el.hot_water) for el in items),
+            "sewage": sum(abs(el.sewage) for el in items)}
+        return data
 
     def get_dict(self):
         data = dict()

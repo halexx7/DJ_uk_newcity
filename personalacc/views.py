@@ -32,8 +32,7 @@ from personalacc.forms import (
     SubsidiesForm,
 )
 from personalacc.models import SiteConfiguration
-
-# PERIOD = datetime.datetime.now().date().replace(day=1, month=8)
+from mainapp.mixins.utils import PERIOD
 
 
 class UserPageCreate(LoginRequiredMixin, CreateView):
@@ -73,14 +72,10 @@ class UserPageCreate(LoginRequiredMixin, CreateView):
                 user = self.request.user
                 # period = datetime.datetime.now().date().replace(day=1)
                 # TODO PERIOD
-                from invoice.views import PERIOD
-
                 period = PERIOD
                 update_values = {
                     "col_water": post.get("col_water"),
                     "hot_water": post.get("hot_water"),
-                    # "electric_day": post.get("electric_day"),
-                    # "electric_night": post.get("electric_night"),
                 }
                 obj, created = CurrentCounter.objects.update_or_create(user=user, period=period, defaults=update_values)
                 # При создании новой записи удаляем старую
@@ -132,8 +127,6 @@ class ManagerPageCreate(LoginRequiredMixin, CreateView):
         post = self.request.POST
         user = self.request.POST.get("user")
         # TODO PERIOD
-        from invoice.views import PERIOD
-
         period = PERIOD
         # period = datetime.datetime.now().date().replace(day=1)
         handle = {
@@ -183,6 +176,7 @@ class ManagerPageCreate(LoginRequiredMixin, CreateView):
             user_id=kwargs["user"],
             period=kwargs["period"],
             service_id=kwargs["post"].get("service"),
+            is_auto = False,
             defaults=update_values,
         )
         instance = Recalculations.get_qty_last_items(5)

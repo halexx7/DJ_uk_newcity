@@ -88,8 +88,6 @@ class StreetAdmin(admin.ModelAdmin):
     list_display = ("street", "city", "updated", "is_active")
     search_fields = ["city", "street"]
     list_filter = (
-        "city",
-        "street",
         "created",
         "updated",
     )
@@ -109,11 +107,9 @@ class AppartamentInline(admin.TabularInline):
 
 @admin.register(House)
 class HouseAdmin(admin.ModelAdmin):
-    list_display = ("city", "street", "number", "updated", "is_active")
-    search_fields = ["city", "street", "number"]
+    list_display = ("street", "number", "updated", "is_active")
+    search_fields = ["street", "number"]
     list_filter = (
-        "city",
-        "street",
         "created",
         "updated",
     )
