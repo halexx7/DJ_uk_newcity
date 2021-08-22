@@ -103,7 +103,9 @@ class Standart(ActiveMixin):
     @receiver(post_save, sender=HouseCurrent)
     def calculation_of_standart_to_house_current(sender, instance, **kwargs):
         house = instance.house_id
-        period = instance.period
+        period = PERIOD
+        # # TODO PERIOD
+        # period = instance.period
         hist = HouseHistory.get_last_val(house)[0]
         sq = House.get_item(house)[0].sq_home
         upd_val = {
