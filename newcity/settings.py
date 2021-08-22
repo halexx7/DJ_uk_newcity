@@ -141,7 +141,10 @@ USE_TZ = True
 
 STATIC_URL = "/static/"
 
-STATICFILES_DIRS = (os.path.join(BASE_DIR, "static"),)
+if DEBUG:
+    STATICFILES_DIRS = (os.path.join(BASE_DIR, "static"),)
+else:
+    STATIC_ROOT = os.path.join(BASE_DIR, "static")
 
 
 # Media files
@@ -156,8 +159,10 @@ LOGIN_URL = "authnapp:login"
 
 
 # >---<
-
-DOMAIN_NAME = "http://localhost:8000"
+if not DEBUG:
+    DOMAIN_NAME = "http://31.148.203.110:8000"
+else:
+    DOMAIN_NAME = "http://localhost:8000"
 
 # Read about sending email:
 #   https://docs.djangoproject.com/en/2.2/topics/email/
