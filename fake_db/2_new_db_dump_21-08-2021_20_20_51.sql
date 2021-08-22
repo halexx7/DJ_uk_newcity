@@ -958,12 +958,13 @@ ALTER TABLE public.django_session OWNER TO post;
 
 CREATE TABLE public."mainapp_averageсalculationbuffer" (
     id integer NOT NULL,
-    col_water numeric(10,2),
-    hot_water numeric(10,2),
-    sewage numeric(10,2),
+    col_water numeric(10,3),
+    hot_water numeric(10,3),
+    sewage numeric(10,3),
     created timestamp with time zone NOT NULL,
     updated timestamp with time zone NOT NULL,
-    user_id integer NOT NULL
+    user_id integer NOT NULL,
+    period date NOT NULL
 );
 
 
@@ -1002,7 +1003,8 @@ CREATE TABLE public.mainapp_constantpayments (
     pre_total numeric(8,3) NOT NULL,
     created timestamp with time zone NOT NULL,
     updated timestamp with time zone NOT NULL,
-    user_id integer NOT NULL
+    user_id integer NOT NULL,
+    is_active boolean NOT NULL
 );
 
 
@@ -1041,7 +1043,8 @@ CREATE TABLE public.mainapp_currentcounter (
     hot_water numeric(8,3),
     created timestamp with time zone NOT NULL,
     updated timestamp with time zone NOT NULL,
-    user_id integer NOT NULL
+    user_id integer NOT NULL,
+    is_active boolean NOT NULL
 );
 
 
@@ -1117,7 +1120,8 @@ CREATE TABLE public.mainapp_historycounter (
     hot_water numeric(8,3),
     created timestamp with time zone NOT NULL,
     updated timestamp with time zone NOT NULL,
-    user_id integer
+    user_id integer,
+    is_active boolean NOT NULL
 );
 
 
@@ -1156,7 +1160,8 @@ CREATE TABLE public.mainapp_housecurrent (
     hot_water numeric(8,3),
     created timestamp with time zone NOT NULL,
     updated timestamp with time zone NOT NULL,
-    house_id integer
+    house_id integer,
+    is_active boolean NOT NULL
 );
 
 
@@ -1195,7 +1200,8 @@ CREATE TABLE public.mainapp_househistory (
     hot_water numeric(8,3),
     created timestamp with time zone NOT NULL,
     updated timestamp with time zone NOT NULL,
-    house_id integer
+    house_id integer,
+    is_active boolean NOT NULL
 );
 
 
@@ -1234,7 +1240,8 @@ CREATE TABLE public.mainapp_mainbook (
     amount numeric(12,2) NOT NULL,
     created timestamp with time zone NOT NULL,
     updated timestamp with time zone NOT NULL,
-    user_id integer
+    user_id integer,
+    is_active boolean NOT NULL
 );
 
 
@@ -1276,7 +1283,8 @@ CREATE TABLE public.mainapp_paymentorder (
     pre_amount numeric(7,2) NOT NULL,
     created timestamp with time zone NOT NULL,
     updated timestamp with time zone NOT NULL,
-    user_id integer
+    user_id integer,
+    is_active boolean NOT NULL
 );
 
 
@@ -1353,7 +1361,9 @@ CREATE TABLE public.mainapp_recalculations (
     created timestamp with time zone NOT NULL,
     updated timestamp with time zone NOT NULL,
     service_id integer,
-    user_id integer
+    user_id integer,
+    is_active boolean NOT NULL,
+    is_auto boolean NOT NULL
 );
 
 
@@ -1392,7 +1402,8 @@ CREATE TABLE public.mainapp_standart (
     hot_water numeric(11,6) NOT NULL,
     created timestamp with time zone NOT NULL,
     updated timestamp with time zone NOT NULL,
-    house_id integer
+    house_id integer,
+    is_active boolean NOT NULL
 );
 
 
@@ -1432,7 +1443,8 @@ CREATE TABLE public.mainapp_variablepayments (
     pre_total numeric(10,2) NOT NULL,
     created timestamp with time zone NOT NULL,
     updated timestamp with time zone NOT NULL,
-    user_id integer NOT NULL
+    user_id integer NOT NULL,
+    is_active boolean NOT NULL
 );
 
 
@@ -1995,8 +2007,8 @@ COPY public.authnapp_user (id, is_client, is_staff, personal_account, password, 
 5	t	f	111001	pbkdf2_sha256$150000$RVUW1jc3YZi2$oUWSKMfeqiCdOU8uMumh+24cmQ3JSopgqapsBC7iapU=	Авакимян Татьяна Игнатьевна	avak@mail.com	78987776655	t	f	2021-08-17 22:29:15.464466+00		2021-08-19 22:09:31.591079+00
 6	t	f	111002	pbkdf2_sha256$150000$g6zLJGsmTjon$4Sh11GG7OtbQ6zE7oDzYh8U5/JzB3v92lsAXsufrksw=	Светлая Ирина Ибрагимова	002@user.com	78998988765	t	f	2021-08-17 22:30:03.655444+00		2021-08-19 22:09:31.591079+00
 7	t	f	111003	pbkdf2_sha256$150000$mRYKdui6e60h$chNsEMVT+2oyYau4YQGtysD7+pBmv7K/JnP6LqZRWNc=	Петров Геннадий Александрович	004@mail.com	78909988776	t	f	2021-08-17 22:30:55.925965+00		2021-08-19 22:09:31.591079+00
-1	t	t	BigAdmin	pbkdf2_sha256$150000$EvRGtofVDXov$1zgAB1A4zxcrxSOY8Ph0ip2WZTq3e19nex65m6unTMI=	\N	admin@admin.com	\N	t	t	2021-08-17 22:44:01.831252+00		2021-08-19 21:29:23.47216+00
-2	t	t	777001	pbkdf2_sha256$150000$IZRjyzo3IHu2$Aw9KaqubZfmAC1B9+3xtuWJao49tOtkaJC4GgWEtGvY=	Петров Иван Викторович	001@mail.ru	79873339876	t	f	2021-08-17 22:47:21.950955+00		2021-08-19 22:09:31.591079+00
+2	t	t	777001	pbkdf2_sha256$150000$IZRjyzo3IHu2$Aw9KaqubZfmAC1B9+3xtuWJao49tOtkaJC4GgWEtGvY=	Петров Иван Викторович	001@mail.ru	79873339876	t	f	2021-08-20 21:55:32.860966+00		2021-08-19 22:09:31.591079+00
+1	t	t	BigAdmin	pbkdf2_sha256$150000$EvRGtofVDXov$1zgAB1A4zxcrxSOY8Ph0ip2WZTq3e19nex65m6unTMI=	\N	admin@admin.com	\N	t	t	2021-08-21 19:55:57.794904+00		2021-08-19 21:29:23.47216+00
 \.
 
 
@@ -2095,9 +2107,11 @@ COPY public.directory_privileges (id, sale, is_active, created, updated, "desc",
 COPY public.directory_services (id, name, rate, factor, const, is_active, created, updated, category_id, unit_id) FROM stdin;
 1	Холодная вода	27.320	1.00	f	t	2021-08-17 22:50:52.415115+00	2021-08-17 22:50:52.415143+00	1	2
 2	Горячая вода	45.654	1.00	f	t	2021-08-17 23:04:41.0245+00	2021-08-17 23:12:32.544808+00	1	2
-3	Водоотведение	17.300	1.00	t	t	2021-08-17 23:13:26.173999+00	2021-08-17 23:13:38.066215+00	1	2
 4	Вывоз ТБО	1.620	1.00	t	t	2021-08-17 23:14:04.849887+00	2021-08-17 23:14:04.849909+00	1	1
-5	Содержание и ТО общего имущества	14.060	1.00	t	t	2021-08-17 23:14:55.393448+00	2021-08-17 23:14:55.393472+00	1	1
+6	Капитальный ремонт	7.500	1.00	t	t	2021-08-20 21:57:36.834077+00	2021-08-20 21:57:36.834111+00	1	1
+5	Содержание придомовой территории	14.060	1.00	t	t	2021-08-17 23:14:55.393448+00	2021-08-20 21:58:20.611613+00	1	1
+7	Обслуживание дома	5.000	1.00	t	t	2021-08-20 21:59:37.19637+00	2021-08-20 21:59:37.196398+00	1	1
+3	Водоотведение	17.300	1.00	f	t	2021-08-17 23:13:26.173999+00	2021-08-21 19:56:26.486829+00	1	2
 \.
 
 
@@ -2140,8 +2154,8 @@ COPY public.directory_userprofile (id, gender, is_active, created, updated, user
 5	W	t	2021-08-17 22:14:33.843899+00	2021-08-17 22:29:51.074174+00	5
 6	W	t	2021-08-17 22:14:41.375531+00	2021-08-17 22:30:46.037188+00	6
 7	M	t	2021-08-17 22:14:54.78833+00	2021-08-17 22:32:12.457471+00	7
-1	\N	t	2021-08-17 21:30:47.989554+00	2021-08-17 22:44:01.840633+00	1
-2	\N	t	2021-08-17 22:11:53.290191+00	2021-08-17 22:47:21.955911+00	2
+2	\N	t	2021-08-17 22:11:53.290191+00	2021-08-20 21:55:32.868948+00	2
+1	\N	t	2021-08-17 21:30:47.989554+00	2021-08-21 19:55:57.801406+00	1
 \.
 
 
@@ -2180,6 +2194,12 @@ COPY public.django_admin_log (id, action_time, object_id, object_repr, action_fl
 28	2021-08-17 22:44:47.957422+00	2	Период - 2021-07-01, ул.Пушкинская, Дом №5, к.-	1	[{"added": {}}]	12	1
 29	2021-08-17 22:45:03.727984+00	3	Период - 2021-07-01, ул.Пушкинская, Дом №4, к.-	1	[{"added": {}}]	12	1
 30	2021-08-17 22:45:40.303206+00	4	Период - 2021-07-01, ул.Пушкинская, Дом №3, к.-	1	[{"added": {}}]	12	1
+31	2021-08-21 12:02:47.201217+00	1	(111001) - Авакимян Татьяна Игнатьевна (2021-08-01)	1	[{"added": {}}]	14	1
+32	2021-08-21 12:03:00.417443+00	2	(111002) - Светлая Ирина Ибрагимова (2021-08-01)	1	[{"added": {}}]	14	1
+33	2021-08-21 12:03:16.599496+00	3	(111003) - Петров Геннадий Александрович (2021-07-01)	1	[{"added": {}}]	14	1
+34	2021-08-21 12:03:25.799219+00	1	(111001) - Авакимян Татьяна Игнатьевна (2021-07-01)	2	[{"changed": {"fields": ["period"]}}]	14	1
+35	2021-08-21 12:03:35.667254+00	2	(111002) - Светлая Ирина Ибрагимова (2021-07-01)	2	[{"changed": {"fields": ["period"]}}]	14	1
+36	2021-08-21 19:56:26.492383+00	3	Водоотведение (Базовая)	2	[{"changed": {"fields": ["const"]}}]	24	1
 \.
 
 
@@ -2253,6 +2273,27 @@ COPY public.django_migrations (id, app, name, applied) FROM stdin;
 24	mainapp	0002_auto_20210817_2210	2021-08-17 22:10:18.948337+00
 25	authnapp	0003_auto_20210817_2317	2021-08-17 23:17:19.931946+00
 26	mainapp	0003_auto_20210817_2317	2021-08-17 23:17:20.070309+00
+27	authnapp	0004_auto_20210820_1953	2021-08-20 21:09:56.455471+00
+28	authnapp	0005_auto_20210820_1953	2021-08-20 21:09:56.492397+00
+29	authnapp	0006_auto_20210820_2109	2021-08-20 21:09:56.52099+00
+30	authnapp	0007_auto_20210820_2109	2021-08-20 21:09:56.548833+00
+31	directory	0003_auto_20210820_2109	2021-08-20 21:09:56.676837+00
+32	mainapp	0004_auto_20210820_1953	2021-08-20 21:09:56.815847+00
+33	mainapp	0005_auto_20210820_1953	2021-08-20 21:09:57.017675+00
+34	mainapp	0006_auto_20210820_2109	2021-08-20 21:09:57.565205+00
+35	mainapp	0007_auto_20210820_2109	2021-08-20 21:09:57.822999+00
+36	authnapp	0008_auto_20210820_2222	2021-08-20 22:22:54.795472+00
+37	mainapp	0008_auto_20210820_2222	2021-08-20 22:22:55.026085+00
+38	authnapp	0009_auto_20210821_1132	2021-08-21 11:32:46.605962+00
+39	mainapp	0009_auto_20210821_1132	2021-08-21 11:32:46.787578+00
+40	authnapp	0010_auto_20210821_1950	2021-08-21 19:55:12.688463+00
+41	authnapp	0011_auto_20210821_1955	2021-08-21 19:55:12.723108+00
+42	mainapp	0010_auto_20210821_1950	2021-08-21 19:55:12.904415+00
+43	mainapp	0011_auto_20210821_1955	2021-08-21 19:55:13.066183+00
+44	authnapp	0012_auto_20210821_2007	2021-08-21 20:19:26.281431+00
+45	authnapp	0013_auto_20210821_2019	2021-08-21 20:19:26.315419+00
+46	mainapp	0012_auto_20210821_2007	2021-08-21 20:19:26.589517+00
+47	mainapp	0013_auto_20210821_2019	2021-08-21 20:19:26.760994+00
 \.
 
 
@@ -2261,6 +2302,9 @@ COPY public.django_migrations (id, app, name, applied) FROM stdin;
 --
 
 COPY public.django_session (session_key, session_data, expire_date) FROM stdin;
+s9xk73j0ucjph1az4hihexynbh266aif	ZDA2YzA5MGJlZGNhYmQxYWY1Yzk2NzUwN2ZiZWJiZDE4NzBlYWI0NDp7Il9hdXRoX3VzZXJfaWQiOiIyIiwiX2F1dGhfdXNlcl9iYWNrZW5kIjoiZGphbmdvLmNvbnRyaWIuYXV0aC5iYWNrZW5kcy5Nb2RlbEJhY2tlbmQiLCJfYXV0aF91c2VyX2hhc2giOiI3ZDE5MDQyNjVjZmNmOTdhNTgyOTk3ZWNjYzQ3NmZiYzU2YTQ1MmE3In0=	2021-09-03 21:55:32.871879+00
+ncblhnvd0i2408icyzt9vf2d358a2ohz	ZDg0MGJkZmI5M2EzZTVmNGRjZTc5NDg2NmVjYzVkZDBmMWU4Y2MyYjp7Il9hdXRoX3VzZXJfaWQiOiIxIiwiX2F1dGhfdXNlcl9iYWNrZW5kIjoiZGphbmdvLmNvbnRyaWIuYXV0aC5iYWNrZW5kcy5Nb2RlbEJhY2tlbmQiLCJfYXV0aF91c2VyX2hhc2giOiIyMGQzMWFlZjM5YzBkYTVlMTk1ZWM1ZDA0Yjg4NzlkYzRjZDg5MGQzIn0=	2021-09-04 12:01:31.744961+00
+04k5kkml32xyqo4gqmg37xly5y35fxw2	ZDg0MGJkZmI5M2EzZTVmNGRjZTc5NDg2NmVjYzVkZDBmMWU4Y2MyYjp7Il9hdXRoX3VzZXJfaWQiOiIxIiwiX2F1dGhfdXNlcl9iYWNrZW5kIjoiZGphbmdvLmNvbnRyaWIuYXV0aC5iYWNrZW5kcy5Nb2RlbEJhY2tlbmQiLCJfYXV0aF91c2VyX2hhc2giOiIyMGQzMWFlZjM5YzBkYTVlMTk1ZWM1ZDA0Yjg4NzlkYzRjZDg5MGQzIn0=	2021-09-04 19:55:57.804671+00
 \.
 
 
@@ -2268,7 +2312,7 @@ COPY public.django_session (session_key, session_data, expire_date) FROM stdin;
 -- Data for Name: mainapp_averageсalculationbuffer; Type: TABLE DATA; Schema: public; Owner: post
 --
 
-COPY public."mainapp_averageсalculationbuffer" (id, col_water, hot_water, sewage, created, updated, user_id) FROM stdin;
+COPY public."mainapp_averageсalculationbuffer" (id, col_water, hot_water, sewage, created, updated, user_id, period) FROM stdin;
 \.
 
 
@@ -2276,7 +2320,7 @@ COPY public."mainapp_averageсalculationbuffer" (id, col_water, hot_water, sewag
 -- Data for Name: mainapp_constantpayments; Type: TABLE DATA; Schema: public; Owner: post
 --
 
-COPY public.mainapp_constantpayments (id, data, total, pre_total, created, updated, user_id) FROM stdin;
+COPY public.mainapp_constantpayments (id, data, total, pre_total, created, updated, user_id, is_active) FROM stdin;
 \.
 
 
@@ -2284,7 +2328,7 @@ COPY public.mainapp_constantpayments (id, data, total, pre_total, created, updat
 -- Data for Name: mainapp_currentcounter; Type: TABLE DATA; Schema: public; Owner: post
 --
 
-COPY public.mainapp_currentcounter (id, period, col_water, hot_water, created, updated, user_id) FROM stdin;
+COPY public.mainapp_currentcounter (id, period, col_water, hot_water, created, updated, user_id, is_active) FROM stdin;
 \.
 
 
@@ -2300,7 +2344,10 @@ COPY public.mainapp_headerdata (id, data, created, updated, user_id) FROM stdin;
 -- Data for Name: mainapp_historycounter; Type: TABLE DATA; Schema: public; Owner: post
 --
 
-COPY public.mainapp_historycounter (id, period, col_water, hot_water, created, updated, user_id) FROM stdin;
+COPY public.mainapp_historycounter (id, period, col_water, hot_water, created, updated, user_id, is_active) FROM stdin;
+3	2021-07-01	1000.000	1000.000	2021-08-21 12:03:16.597268+00	2021-08-21 12:03:16.597294+00	7	t
+1	2021-07-01	1000.000	1000.000	2021-08-21 12:02:47.197403+00	2021-08-21 12:03:25.797417+00	5	t
+2	2021-07-01	1000.000	1000.000	2021-08-21 12:03:00.415233+00	2021-08-21 12:03:35.664881+00	6	t
 \.
 
 
@@ -2308,7 +2355,7 @@ COPY public.mainapp_historycounter (id, period, col_water, hot_water, created, u
 -- Data for Name: mainapp_housecurrent; Type: TABLE DATA; Schema: public; Owner: post
 --
 
-COPY public.mainapp_housecurrent (id, period, col_water, hot_water, created, updated, house_id) FROM stdin;
+COPY public.mainapp_housecurrent (id, period, col_water, hot_water, created, updated, house_id, is_active) FROM stdin;
 \.
 
 
@@ -2316,11 +2363,11 @@ COPY public.mainapp_housecurrent (id, period, col_water, hot_water, created, upd
 -- Data for Name: mainapp_househistory; Type: TABLE DATA; Schema: public; Owner: post
 --
 
-COPY public.mainapp_househistory (id, period, col_water, hot_water, created, updated, house_id) FROM stdin;
-1	2021-07-01	1000.000	1000.000	2021-08-17 22:44:33.195982+00	2021-08-17 22:44:33.196005+00	2
-2	2021-07-01	1000.000	1000.000	2021-08-17 22:44:47.953169+00	2021-08-17 22:44:47.95319+00	5
-3	2021-07-01	1000.000	1000.000	2021-08-17 22:45:03.723715+00	2021-08-17 22:45:03.723739+00	4
-4	2021-07-01	1000.000	1000.000	2021-08-17 22:45:40.298835+00	2021-08-17 22:45:40.298889+00	3
+COPY public.mainapp_househistory (id, period, col_water, hot_water, created, updated, house_id, is_active) FROM stdin;
+1	2021-07-01	1000.000	1000.000	2021-08-17 22:44:33.195982+00	2021-08-17 22:44:33.196005+00	2	t
+2	2021-07-01	1000.000	1000.000	2021-08-17 22:44:47.953169+00	2021-08-17 22:44:47.95319+00	5	t
+3	2021-07-01	1000.000	1000.000	2021-08-17 22:45:03.723715+00	2021-08-17 22:45:03.723739+00	4	t
+4	2021-07-01	1000.000	1000.000	2021-08-17 22:45:40.298835+00	2021-08-17 22:45:40.298889+00	3	t
 \.
 
 
@@ -2328,7 +2375,7 @@ COPY public.mainapp_househistory (id, period, col_water, hot_water, created, upd
 -- Data for Name: mainapp_mainbook; Type: TABLE DATA; Schema: public; Owner: post
 --
 
-COPY public.mainapp_mainbook (id, period, direction, amount, created, updated, user_id) FROM stdin;
+COPY public.mainapp_mainbook (id, period, direction, amount, created, updated, user_id, is_active) FROM stdin;
 \.
 
 
@@ -2336,7 +2383,7 @@ COPY public.mainapp_mainbook (id, period, direction, amount, created, updated, u
 -- Data for Name: mainapp_paymentorder; Type: TABLE DATA; Schema: public; Owner: post
 --
 
-COPY public.mainapp_paymentorder (id, period, header_data, constant_data, variable_data, amount, pre_amount, created, updated, user_id) FROM stdin;
+COPY public.mainapp_paymentorder (id, period, header_data, constant_data, variable_data, amount, pre_amount, created, updated, user_id, is_active) FROM stdin;
 \.
 
 
@@ -2352,7 +2399,7 @@ COPY public.mainapp_personalaccountstatus (id, amount, created, updated, user_id
 -- Data for Name: mainapp_recalculations; Type: TABLE DATA; Schema: public; Owner: post
 --
 
-COPY public.mainapp_recalculations (id, period, recalc, "desc", created, updated, service_id, user_id) FROM stdin;
+COPY public.mainapp_recalculations (id, period, recalc, "desc", created, updated, service_id, user_id, is_active, is_auto) FROM stdin;
 \.
 
 
@@ -2360,7 +2407,7 @@ COPY public.mainapp_recalculations (id, period, recalc, "desc", created, updated
 -- Data for Name: mainapp_standart; Type: TABLE DATA; Schema: public; Owner: post
 --
 
-COPY public.mainapp_standart (id, period, col_water, hot_water, created, updated, house_id) FROM stdin;
+COPY public.mainapp_standart (id, period, col_water, hot_water, created, updated, house_id, is_active) FROM stdin;
 \.
 
 
@@ -2368,7 +2415,7 @@ COPY public.mainapp_standart (id, period, col_water, hot_water, created, updated
 -- Data for Name: mainapp_variablepayments; Type: TABLE DATA; Schema: public; Owner: post
 --
 
-COPY public.mainapp_variablepayments (id, period, data, total, pre_total, created, updated, user_id) FROM stdin;
+COPY public.mainapp_variablepayments (id, period, data, total, pre_total, created, updated, user_id, is_active) FROM stdin;
 \.
 
 
@@ -2469,7 +2516,7 @@ SELECT pg_catalog.setval('public.directory_privileges_id_seq', 1, false);
 -- Name: directory_services_id_seq; Type: SEQUENCE SET; Schema: public; Owner: post
 --
 
-SELECT pg_catalog.setval('public.directory_services_id_seq', 5, true);
+SELECT pg_catalog.setval('public.directory_services_id_seq', 7, true);
 
 
 --
@@ -2504,7 +2551,7 @@ SELECT pg_catalog.setval('public.directory_userprofile_id_seq', 7, true);
 -- Name: django_admin_log_id_seq; Type: SEQUENCE SET; Schema: public; Owner: post
 --
 
-SELECT pg_catalog.setval('public.django_admin_log_id_seq', 30, true);
+SELECT pg_catalog.setval('public.django_admin_log_id_seq', 36, true);
 
 
 --
@@ -2518,7 +2565,7 @@ SELECT pg_catalog.setval('public.django_content_type_id_seq', 31, true);
 -- Name: django_migrations_id_seq; Type: SEQUENCE SET; Schema: public; Owner: post
 --
 
-SELECT pg_catalog.setval('public.django_migrations_id_seq', 26, true);
+SELECT pg_catalog.setval('public.django_migrations_id_seq', 47, true);
 
 
 --
@@ -2553,7 +2600,7 @@ SELECT pg_catalog.setval('public.mainapp_headerdata_id_seq', 1, false);
 -- Name: mainapp_historycounter_id_seq; Type: SEQUENCE SET; Schema: public; Owner: post
 --
 
-SELECT pg_catalog.setval('public.mainapp_historycounter_id_seq', 1, false);
+SELECT pg_catalog.setval('public.mainapp_historycounter_id_seq', 3, true);
 
 
 --
@@ -2876,11 +2923,11 @@ ALTER TABLE ONLY public."mainapp_averageсalculationbuffer"
 
 
 --
--- Name: mainapp_averageсalculationbuffer mainapp_averageсalculationbuffer_user_id_key; Type: CONSTRAINT; Schema: public; Owner: post
+-- Name: mainapp_averageсalculationbuffer mainapp_averageсalculationbuffer_user_id_period_09b53eab_uniq; Type: CONSTRAINT; Schema: public; Owner: post
 --
 
 ALTER TABLE ONLY public."mainapp_averageсalculationbuffer"
-    ADD CONSTRAINT "mainapp_averageсalculationbuffer_user_id_key" UNIQUE (user_id);
+    ADD CONSTRAINT "mainapp_averageсalculationbuffer_user_id_period_09b53eab_uniq" UNIQUE (user_id, period);
 
 
 --
@@ -3262,10 +3309,31 @@ CREATE INDEX django_session_session_key_c0390e0f_like ON public.django_session U
 
 
 --
+-- Name: mainapp_averageсalculationbuffer_user_id_0f1ac522; Type: INDEX; Schema: public; Owner: post
+--
+
+CREATE INDEX "mainapp_averageсalculationbuffer_user_id_0f1ac522" ON public."mainapp_averageсalculationbuffer" USING btree (user_id);
+
+
+--
+-- Name: mainapp_constantpayments_is_active_cffa4b46; Type: INDEX; Schema: public; Owner: post
+--
+
+CREATE INDEX mainapp_constantpayments_is_active_cffa4b46 ON public.mainapp_constantpayments USING btree (is_active);
+
+
+--
 -- Name: mainapp_constantpayments_user_id_16c2d464; Type: INDEX; Schema: public; Owner: post
 --
 
 CREATE INDEX mainapp_constantpayments_user_id_16c2d464 ON public.mainapp_constantpayments USING btree (user_id);
+
+
+--
+-- Name: mainapp_currentcounter_is_active_a4756171; Type: INDEX; Schema: public; Owner: post
+--
+
+CREATE INDEX mainapp_currentcounter_is_active_a4756171 ON public.mainapp_currentcounter USING btree (is_active);
 
 
 --
@@ -3283,6 +3351,13 @@ CREATE INDEX mainapp_headerdata_user_id_cb0f87de ON public.mainapp_headerdata US
 
 
 --
+-- Name: mainapp_historycounter_is_active_027bdf3c; Type: INDEX; Schema: public; Owner: post
+--
+
+CREATE INDEX mainapp_historycounter_is_active_027bdf3c ON public.mainapp_historycounter USING btree (is_active);
+
+
+--
 -- Name: mainapp_historycounter_user_id_1354c610; Type: INDEX; Schema: public; Owner: post
 --
 
@@ -3297,10 +3372,31 @@ CREATE INDEX mainapp_housecurrent_house_id_55d087e7 ON public.mainapp_housecurre
 
 
 --
+-- Name: mainapp_housecurrent_is_active_10e7d25c; Type: INDEX; Schema: public; Owner: post
+--
+
+CREATE INDEX mainapp_housecurrent_is_active_10e7d25c ON public.mainapp_housecurrent USING btree (is_active);
+
+
+--
 -- Name: mainapp_househistory_house_id_1b195ca0; Type: INDEX; Schema: public; Owner: post
 --
 
 CREATE INDEX mainapp_househistory_house_id_1b195ca0 ON public.mainapp_househistory USING btree (house_id);
+
+
+--
+-- Name: mainapp_househistory_is_active_cf6f94d4; Type: INDEX; Schema: public; Owner: post
+--
+
+CREATE INDEX mainapp_househistory_is_active_cf6f94d4 ON public.mainapp_househistory USING btree (is_active);
+
+
+--
+-- Name: mainapp_mainbook_is_active_f1191791; Type: INDEX; Schema: public; Owner: post
+--
+
+CREATE INDEX mainapp_mainbook_is_active_f1191791 ON public.mainapp_mainbook USING btree (is_active);
 
 
 --
@@ -3311,10 +3407,24 @@ CREATE INDEX mainapp_mainbook_user_id_96d2e8a4 ON public.mainapp_mainbook USING 
 
 
 --
+-- Name: mainapp_paymentorder_is_active_94bf8e28; Type: INDEX; Schema: public; Owner: post
+--
+
+CREATE INDEX mainapp_paymentorder_is_active_94bf8e28 ON public.mainapp_paymentorder USING btree (is_active);
+
+
+--
 -- Name: mainapp_paymentorder_user_id_dff7020c; Type: INDEX; Schema: public; Owner: post
 --
 
 CREATE INDEX mainapp_paymentorder_user_id_dff7020c ON public.mainapp_paymentorder USING btree (user_id);
+
+
+--
+-- Name: mainapp_recalculations_is_active_2e71d6c4; Type: INDEX; Schema: public; Owner: post
+--
+
+CREATE INDEX mainapp_recalculations_is_active_2e71d6c4 ON public.mainapp_recalculations USING btree (is_active);
 
 
 --
@@ -3336,6 +3446,20 @@ CREATE INDEX mainapp_recalculations_user_id_b5296158 ON public.mainapp_recalcula
 --
 
 CREATE INDEX mainapp_standart_house_id_f506c58e ON public.mainapp_standart USING btree (house_id);
+
+
+--
+-- Name: mainapp_standart_is_active_d670b0a9; Type: INDEX; Schema: public; Owner: post
+--
+
+CREATE INDEX mainapp_standart_is_active_d670b0a9 ON public.mainapp_standart USING btree (is_active);
+
+
+--
+-- Name: mainapp_variablepayments_is_active_82459818; Type: INDEX; Schema: public; Owner: post
+--
+
+CREATE INDEX mainapp_variablepayments_is_active_82459818 ON public.mainapp_variablepayments USING btree (is_active);
 
 
 --
