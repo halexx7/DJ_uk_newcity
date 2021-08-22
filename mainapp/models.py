@@ -23,7 +23,6 @@ class HouseCurrent(WaterCounterMixin):
         ordering = ("-updated",)
         verbose_name = "Домовой счетчик (текущий)"
         verbose_name_plural = "Домовые счетчики (текущие)"
-        # unique_together = ('house',)
 
     def clean(self):
         if self.col_water < 0.01 or self.hot_water < 0.01:
@@ -50,7 +49,6 @@ class HouseHistory(WaterCounterMixin):
         ordering = ("-updated",)
         verbose_name = "Домовой счетчик (история)"
         verbose_name_plural = "01 Домовые счетчики (история)"
-        # unique_together = ('period', 'house',)
 
     def __str__(self):
         return f"Период - {self.period}, ул.{self.house.street.street}, Дом №{self.house.number}, к.{self.house.add_number}"
@@ -77,8 +75,6 @@ class HouseHistory(WaterCounterMixin):
         upd_val = {
             "col_water": instance.col_water,
             "hot_water": instance.hot_water,
-            # "electric_day": instance.electric_day,
-            # "electric_night": instance.electric_night,
         }
         obj, created = HouseHistory.objects.update_or_create(house_id=house, period=period, defaults=upd_val)
 
@@ -170,8 +166,6 @@ class HistoryCounter(WaterCounterMixin):
         upd_val = {
             "col_water": instance.col_water,
             "hot_water": instance.hot_water,
-            # "electric_day": instance.electric_day,
-            # "electric_night": instance.electric_night,
         }
         obj, created = HistoryCounter.objects.update_or_create(user=user, period=period, defaults=upd_val)
 

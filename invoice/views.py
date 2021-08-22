@@ -196,21 +196,22 @@ def get_calc_service(el, curr, sq_appa, subs, priv, recl):
             # TODO PERIOD
             # period = datetime.datetime.now().replace(day=1)
             buffer = AverageСalculationBuffer.get_sum_average_buffer(curr["user"])
-            upd_val = {
-                "user": curr["user"],
-                # TODO В какую сторону перерасчет???
-                "recalc": element["accured"] - buffer[const],
-                "desc": f"Автоматический перерасчет на основании введенных пользователем счетчиков",
-            }
-            obj, created = Recalculations.objects.update_or_create(
-                user=curr["user"], period=period, service=el, is_auto=True, defaults=upd_val
-            )
-            if const == "col_water":
-                AverageСalculationBuffer.objects.filter(user=curr["user"]).update(col_water=0)
-            elif const == "hot_water":
-                AverageСalculationBuffer.objects.filter(user=curr["user"]).update(hot_water=0)
-            elif const == "sewage":
-                AverageСalculationBuffer.objects.filter(user=curr["user"]).update(sewage=0)
+            if buffer[const]:
+                upd_val = {
+                    "user": curr["user"],
+                    # TODO В какую сторону перерасчет???
+                    "recalc": element["accured"] - buffer[const],
+                    "desc": f"Автоматический перерасчет на основании введенных пользователем счетчиков",
+                }
+                obj, created = Recalculations.objects.update_or_create(
+                    user=curr["user"], period=period, service=el, is_auto=True, defaults=upd_val
+                )
+                if const == "col_water":
+                    AverageСalculationBuffer.objects.filter(user=curr["user"]).update(col_water=0)
+                elif const == "hot_water":
+                    AverageСalculationBuffer.objects.filter(user=curr["user"]).update(hot_water=0)
+                elif const == "sewage":
+                    AverageСalculationBuffer.objects.filter(user=curr["user"]).update(sewage=0)
 
     elif curr["standart"]:
         element["accured"] = el.rate * decimal.Decimal(element["volume"])
