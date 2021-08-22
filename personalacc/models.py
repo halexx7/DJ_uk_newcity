@@ -1,7 +1,6 @@
 from django.db import models
 from solo.models import SingletonModel
 
-from mainapp.models import City, Street
 
 class SiteConfiguration(SingletonModel):
     name = models.CharField(verbose_name="Название", max_length=128, help_text="УК Новый город")
@@ -16,10 +15,12 @@ class SiteConfiguration(SingletonModel):
     ps = models.CharField(verbose_name="Расчетный счет", max_length=20, help_text="48800939999000393949")
     bik = models.CharField(verbose_name="БИК", max_length=10, help_text="1009089074")
     ks = models.CharField(verbose_name="Кор.счет", max_length=20, help_text="38700939999000393949")
-    bank = models.CharField(verbose_name="Банк", max_length=128, help_text="ОАО \"Cбербанк\"")
+    bank = models.CharField(verbose_name="Банк", max_length=128, help_text='ОАО "Cбербанк"')
     web_addr = models.CharField(verbose_name="Сайт", max_length=128, help_text="www.uk-newcity.ru")
 
-    key_ya = models.CharField(verbose_name="Api-ключ Яндекса", max_length=128, blank=True, help_text="1888f9f3-1174-48c4-b1b4-fa129bй2345234")
+    key_ya = models.CharField(
+        verbose_name="Api-ключ Яндекса", max_length=128, blank=True, help_text="1888f9f3-1174-48c4-b1b4-fa129bй2345234"
+    )
     lat = models.CharField(verbose_name="Широта", max_length=64, blank=True, help_text="57.167979")
     lon = models.CharField(verbose_name="Долгота", max_length=64, blank=True, help_text="65.564430")
 

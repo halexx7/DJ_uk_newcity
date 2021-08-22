@@ -1,6 +1,7 @@
 {% extends 'mainapp/base.html' %}
 {% load staticfiles %}
 {% load solo_tags %}
+{% load tel_to %}
 
 
 {% block menu %}
@@ -23,7 +24,7 @@
                     <h2 class="contact__city  mb-3">{{ site_config.city }}</h2>
                     <div class="contact__item">
                         <h3 class="contact__title">ТЕЛЕФОН</h3>
-                        <p class="contact__data">{{ site_config.phone }}</p>
+                        <p class="contact__data">{{ site_config.phone|tel_to }}</p>
                     </div>
                     <div class="contact__item  mb-3">
                         <h3 class="contact__title">E-MAIL</h3>

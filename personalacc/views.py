@@ -1,4 +1,5 @@
 import datetime
+
 from dal import autocomplete
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core import serializers
@@ -9,10 +10,9 @@ from django.urls import reverse_lazy
 from django.views.generic import CreateView, DeleteView, ListView, UpdateView
 
 from authnapp.models import User
+from directory.models import Appartament, Privileges, Subsidies, UserProfile
 from invoice.views import starter
 from mainapp.models import (
-    UK,
-    Appartament,
     CurrentCounter,
     HistoryCounter,
     HouseCurrent,
@@ -20,10 +20,7 @@ from mainapp.models import (
     MainBook,
     PaymentOrder,
     PersonalAccountStatus,
-    Privileges,
     Recalculations,
-    Subsidies,
-    UserProfile,
 )
 from personalacc.forms import (
     CurrentCounterForm,
@@ -34,9 +31,9 @@ from personalacc.forms import (
     RecalculationsForm,
     SubsidiesForm,
 )
+from personalacc.models import SiteConfiguration
+from mainapp.mixins.utils import PERIOD
 
-
-# PERIOD = datetime.datetime.now().date().replace(day=1, month=10)
 
 class UserPageCreate(LoginRequiredMixin, CreateView):
     model = User
@@ -73,16 +70,12 @@ class UserPageCreate(LoginRequiredMixin, CreateView):
             if form.is_valid():
                 post = self.request.POST
                 user = self.request.user
-                period = datetime.datetime.now().date().replace(day=1)
-                #TODO PERIOD
-                # from invoice.views import PERIOD
-                # period = PERIOD
+                # period = datetime.datetime.now().date().replace(day=1)
+                # TODO PERIOD
+                period = PERIOD
                 update_values = {
                     "col_water": post.get("col_water"),
                     "hot_water": post.get("hot_water"),
-                    # TODO электричество пока отменяется
-                    # "electric_day": post.get("electric_day"),
-                    # "electric_night": post.get("electric_night"),
                 }
                 obj, created = CurrentCounter.objects.update_or_create(user=user, period=period, defaults=update_values)
                 # При создании новой записи удаляем старую
@@ -120,7 +113,7 @@ class ManagerPageCreate(LoginRequiredMixin, CreateView):
         for name, form in self.form_classes.items():
             if name not in context:
                 context[name] = form()
-        context["uk"] = UK.objects.all()
+        context["config"] = SiteConfiguration.get_solo()
         context["house_history"] = HouseHistory.get_qty_last_items(5)
         context["house_current"] = HouseCurrent.get_qty_last_items(5)
         context["house_rec"] = Recalculations.get_qty_last_items(5)
@@ -133,10 +126,9 @@ class ManagerPageCreate(LoginRequiredMixin, CreateView):
     def post(self, *args, **kwargs):
         post = self.request.POST
         user = self.request.POST.get("user")
-        #TODO PERIOD
-        # from invoice.views import PERIOD
-        # period = PERIOD
-        period = datetime.datetime.now().date().replace(day=1)
+        # TODO PERIOD
+        period = PERIOD
+        # period = datetime.datetime.now().date().replace(day=1)
         handle = {
             "house_count_form": self.house_count_process,
             "recalculations_form": self.recalculations_process,
@@ -162,7 +154,6 @@ class ManagerPageCreate(LoginRequiredMixin, CreateView):
         update_values = {
             "col_water": kwargs["post"].get("col_water"),
             "hot_water": kwargs["post"].get("hot_water"),
-            # TODO электричество пока отменяется
             # "electric_day": post.get("electric_day"),
             # "electric_night": post.get("electric_night"),
         }
@@ -185,6 +176,7 @@ class ManagerPageCreate(LoginRequiredMixin, CreateView):
             user_id=kwargs["user"],
             period=kwargs["period"],
             service_id=kwargs["post"].get("service"),
+            is_auto = False,
             defaults=update_values,
         )
         instance = Recalculations.get_qty_last_items(5)

@@ -3,16 +3,8 @@ from dal import autocomplete
 from django import forms
 
 from authnapp.models import User
-from mainapp.models import (
-    CurrentCounter,
-    HouseCurrent,
-    HouseHistory,
-    MainBook,
-    Privileges,
-    Recalculations,
-    Services,
-    Subsidies,
-)
+from directory.models import Privileges, Services, Subsidies
+from mainapp.models import CurrentCounter, HouseCurrent, HouseHistory, MainBook, Recalculations
 
 
 class MultipleForm(forms.Form):
@@ -74,7 +66,7 @@ class RecalculationsForm(forms.ModelForm):
 
     class Meta:
         model = Recalculations
-        exclude = ("period", "created", "updated")
+        exclude = ("period", "is_auto", "created", "updated")
         widgets = {
             "user": autocomplete.ModelSelect2(
                 url="dal_user/",

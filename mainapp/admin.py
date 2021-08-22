@@ -2,203 +2,189 @@ from django.contrib import admin
 
 from authnapp.models import User
 from mainapp.models import (
-    UK,
-    Appartament,
-    City,
+    AverageСalculationBuffer,
     ConstantPayments,
     CurrentCounter,
+    HeaderData,
     HistoryCounter,
-    House,
     HouseCurrent,
     HouseHistory,
     MainBook,
-    Metrics,
-    Payment,
     PaymentOrder,
-    PostNews,
-    Privileges,
+    PersonalAccountStatus,
     Recalculations,
-    Services,
-    ServicesCategory,
     Standart,
-    Street,
-    Subsidies,
-    UserProfile,
     VariablePayments,
 )
 
 
-class ServicesInline(admin.TabularInline):
-    model = Services
-
-    def get_extra(self, request, obj=None, **kwargs):
-        """Hook for customizing the number of extra inline forms."""
-        self.extra = 0
-        return self.extra
+@admin.register(User)
+class UserAdmin(admin.ModelAdmin):
+    pass
 
 
-class ServiceCategoryAdmin(admin.ModelAdmin):
-    list_display = ("name", "updated")
+@admin.register(HouseCurrent)
+class HouseCurrentAdmin(admin.ModelAdmin):
+    list_display = ("house", "period", "col_water", "hot_water")
+    search_fields = ["house", "period"]
+    list_filter = (
+        "house",
+        "created",
+        "updated",
+    )
+
+
+@admin.register(HouseHistory)
+class HouseHistoryAdmin(admin.ModelAdmin):
+    list_display = ("house", "period", "col_water", "hot_water")
+    search_fields = ["house", "period"]
+    list_filter = (
+        "house",
+        "created",
+        "updated",
+    )
+
+
+@admin.register(Standart)
+class StandartAdmin(admin.ModelAdmin):
+    list_display = ("house", "period", "col_water", "hot_water")
+    search_fields = ["house", "period"]
+    list_filter = (
+        "house",
+        "created",
+        "updated",
+    )
+
+
+@admin.register(CurrentCounter)
+class CurrentCounterAdmin(admin.ModelAdmin):
+    list_display = ("user", "period", "col_water", "hot_water")
+    search_fields = ["user", "period"]
+    list_filter = (
+        "user",
+        "created",
+        "updated",
+    )
+
+
+@admin.register(HistoryCounter)
+class HistoryCounterAdmin(admin.ModelAdmin):
+    list_display = ("user", "period", "col_water", "hot_water")
+    search_fields = ["user", "period"]
+    list_filter = (
+        "user",
+        "created",
+        "updated",
+    )
+
+
+@admin.register(Recalculations)
+class RecalculationsAdmin(admin.ModelAdmin):
+    list_display = ("user", "period", "service", "desc")
+    search_fields = ["user", "period", "service"]
+    list_filter = (
+        "user",
+        "created",
+        "updated",
+    )
+
+
+@admin.register(ConstantPayments)
+class ConstantPaymentsAdmin(admin.ModelAdmin):
+    list_display = ("user", "pre_total")
     search_fields = [
-        "name",
+        "user",
     ]
     list_filter = (
+        "user",
         "created",
         "updated",
     )
-    inlines = [
-        ServicesInline,
-    ]
 
 
-class ServiceAdmin(admin.ModelAdmin):
-    list_display = ("name", "category", "updated")
+@admin.register(VariablePayments)
+class VariablePaymentsAdmin(admin.ModelAdmin):
+    list_display = (
+        "user",
+        "period",
+        "pre_total",
+    )
     search_fields = [
-        "name",
+        "user",
+        "period",
     ]
     list_filter = (
-        "category",
+        "user",
         "created",
         "updated",
     )
 
 
-class StreetInline(admin.TabularInline):
-    model = Street
-
-    def get_extra(self, request, obj=None, **kwargs):
-        """Hook for customizing the number of extra inline forms."""
-        self.extra = 0
-        return self.extra
-
-
-class CityAdmin(admin.ModelAdmin):
-    list_display = ("city", "updated")
+@admin.register(HeaderData)
+class HeaderDataAdmin(admin.ModelAdmin):
+    list_display = ("user", "updated")
     search_fields = [
-        "city",
+        "user",
+        "period",
     ]
     list_filter = (
+        "user",
         "created",
         "updated",
     )
-    inlines = [
-        StreetInline,
+
+
+@admin.register(MainBook)
+class MainBookAdmin(admin.ModelAdmin):
+    list_display = ("user", "period", "direction", "amount")
+    search_fields = [
+        "user",
+        "period",
     ]
-
-
-class AppartamentInline(admin.TabularInline):
-    model = Appartament
-
-    def get_extra(self, request, obj=None, **kwargs):
-        """Hook for customizing the number of extra inline forms."""
-        self.extra = 0
-        return self.extra
-
-
-class HouseCurrentInline(admin.TabularInline):
-    model = HouseCurrent
-
-    def get_extra(self, request, obj=None, **kwargs):
-        """Hook for customizing the number of extra inline forms."""
-        self.extra = 0
-        return self.extra
-
-
-class HouseHistoryInline(admin.TabularInline):
-    model = HouseHistory
-
-    def get_extra(self, request, obj=None, **kwargs):
-        """Hook for customizing the number of extra inline forms."""
-        self.extra = 0
-        return self.extra
-
-
-class HouseAdmin(admin.ModelAdmin):
-    list_display = ("city", "street", "number", "updated")
-    search_fields = ["city", "street", "number"]
     list_filter = (
-        "city",
-        "street",
+        "user",
+        "period",
+        "direction",
+        "updated",
+    )
+
+
+@admin.register(PaymentOrder)
+class PaymentOrderAdmin(admin.ModelAdmin):
+    list_display = ("user", "period", "pre_amount")
+    search_fields = [
+        "user",
+        "period",
+    ]
+    list_filter = (
+        "user",
+        "period",
         "created",
         "updated",
     )
-    inlines = [HouseCurrentInline, AppartamentInline, HouseHistoryInline]
 
 
-# USERPROFILES
-class SubsidiesInline(admin.TabularInline):
-    model = Subsidies
-
-    def get_extra(self, request, obj=None, **kwargs):
-        """Hook for customizing the number of extra inline forms."""
-        self.extra = 0
-        return self.extra
-
-
-class PrivilegesInline(admin.TabularInline):
-    model = Privileges
-
-    def get_extra(self, request, obj=None, **kwargs):
-        """Hook for customizing the number of extra inline forms."""
-        self.extra = 0
-        return self.extra
+@admin.register(PersonalAccountStatus)
+class PersonalAccountStatusAdmin(admin.ModelAdmin):
+    list_display = ("user", "amount")
+    search_fields = [
+        "user",
+    ]
+    list_filter = (
+        "user",
+        "created",
+        "updated",
+    )
 
 
-class CurrentCounterInline(admin.TabularInline):
-    model = CurrentCounter
-
-    def get_extra(self, request, obj=None, **kwargs):
-        """Hook for customizing the number of extra inline forms."""
-        self.extra = 0
-        return self.extra
-
-
-class HistoryCounterInline(admin.TabularInline):
-    model = HistoryCounter
-
-    def get_extra(self, request, obj=None, **kwargs):
-        """Hook for customizing the number of extra inline forms."""
-        self.extra = 0
-        return self.extra
-
-
-class RecalculationsInline(admin.TabularInline):
-    model = Recalculations
-
-    def get_extra(self, request, obj=None, **kwargs):
-        """Hook for customizing the number of extra inline forms."""
-        self.extra = 0
-        return self.extra
-
-
-class UserProfilesAdmin(admin.ModelAdmin):
-    # list_display = ('city', 'street', 'number', 'updated')
-    # search_fields = ['city', 'street', 'number']
-    # list_filter = ('city', 'street', 'created','updated',)
-    inlines = [SubsidiesInline, PrivilegesInline, RecalculationsInline, CurrentCounterInline, HistoryCounterInline]
-
-
-admin.site.register(ServicesCategory)
-admin.site.register(Services)
-admin.site.register(City)
-admin.site.register(Metrics)
-admin.site.register(Street)
-admin.site.register(UK)
-admin.site.register(House)
-admin.site.register(HouseCurrent)
-admin.site.register(HouseHistory)
-admin.site.register(User)
-admin.site.register(Appartament)
-admin.site.register(UserProfile)
-admin.site.register(CurrentCounter)
-admin.site.register(HistoryCounter)
-admin.site.register(ConstantPayments)
-admin.site.register(VariablePayments)
-admin.site.register(Subsidies)
-admin.site.register(Privileges)
-admin.site.register(PaymentOrder)
-admin.site.register(Payment)
-admin.site.register(Recalculations)
-admin.site.register(Standart)
-admin.site.register(MainBook)
-admin.site.register(PostNews)
+@admin.register(AverageСalculationBuffer)
+class AverageСalculationBufferAdmin(admin.ModelAdmin):
+    list_display = ("user", "col_water", "hot_water")
+    search_fields = [
+        "user",
+    ]
+    list_filter = (
+        "user",
+        "created",
+        "updated",
+    )

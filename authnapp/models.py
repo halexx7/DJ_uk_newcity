@@ -16,7 +16,9 @@ from .managers import UserManager
 
 
 class User(AbstractBaseUser, PermissionsMixin):
-    is_client = models.BooleanField(default=True, verbose_name="Пользователь")
+    is_client = models.BooleanField(
+        default=True, verbose_name="Пользователь", help_text="Если это житель поставьте галку."
+    )
     is_staff = models.BooleanField(
         default=False, verbose_name="Менеджер", help_text="Обозначает, что этот пользователь - Администратор"
     )

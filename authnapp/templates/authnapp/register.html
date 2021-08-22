@@ -7,7 +7,7 @@
 
 {% block content %}
 
-<div class="d-flex  justify-content-center  mt-5">
+<div class="d-flex  justify-content-center  my-5">
     <form class="form-horizontal  w-100  main-form" action="{% url 'auth:register' %}" method="post" enctype="multipart/form-data">
         {% csrf_token %}
         {{ register_form.as_p }}

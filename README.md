@@ -49,7 +49,7 @@ pipenv shell
 docker-compose up -d
 ```
 ```
-cat dumps/full_dumps_16-08-2021_21_41_53.sql | docker exec -i uk_pdb psql -U post
+cat dumps/new_db_dump_17-08-2021_23_19_55.sql | docker exec -i uk_pdb psql -U post
 ```
 
 Запускаем сервер

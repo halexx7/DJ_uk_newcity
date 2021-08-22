@@ -1,10 +1,10 @@
-from datetime import datetime, timedelta
+from datetime import datetime
 
 from django import template
 
 register = template.Library()
 
-# Шаблонный фильтр проверки на новизну новости
+# Шаблонный фильтр проверки на новизну новости (а шаблон вешает "new")
 @register.filter(name="isLastWeek")
 def isLastWeek(date):
     date_now = datetime.today().replace(tzinfo=None)

@@ -68,8 +68,8 @@ $('.header__bottom > table').append(
         <td id="subHeaderRecalc">-313,66</td>
         <td id="subHeaderSubsid">414,56</td>
         <td id="subHeaderPrivil">414,56</td>
-        <td>5480,86</td>
-        <td id='subHeaderTotal'></td>
+        <td id="subHeaderPaid">5480,86</td>
+        <td id="subHeaderTotal"></td>
     </tr>`
 );
 
@@ -108,7 +108,7 @@ function drawingTable (object) {
             <td class="pad__table">${item.service}</td>
             <td class="text__center  pad__table">${item.unit}</td>
             <td class="text__right  pad__table">${(item.standart > 0) ? item.standart: ''}</td>
-            <td class="text__right  pad__table">${item.volume}</td>
+            <td class="text__right  pad__table">${(item.volume > 0) ? parseFloat(item.volume).toFixed(3): ''}</td>
             <td class="text__right  pad__table">${item.rate}</td>
             <td class="text__right  pad__table">${Number(item.accured).toFixed(3)}</td>
             <td class="text__right  pad__table">${item.coefficient}</td>
@@ -123,6 +123,7 @@ function drawingTable (object) {
     $('#subHeaderSubsid').text((totalSubs).toFixed(2));
     $('#subHeaderPrivil').text((totalPrivi).toFixed(2));
     $('#subHeaderPre').text((totalPre).toFixed(2));
+    $('#subHeaderPaid').text((paid).toFixed(2));
     return [total, totalPre];
 }
 

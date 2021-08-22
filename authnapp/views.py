@@ -1,14 +1,11 @@
-from django import forms
 from django.conf import settings
 from django.contrib import auth
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.mail import send_mail
 from django.db import transaction
-from django.forms.formsets import formset_factory
-from django.forms.models import BaseInlineFormSet, inlineformset_factory
-from django.shortcuts import HttpResponseRedirect, get_object_or_404, render
+from django.shortcuts import HttpResponseRedirect, render
 from django.urls import reverse, reverse_lazy
-from django.views.generic import CreateView, DeleteView, ListView, UpdateView
+from django.views.generic import UpdateView
 
 from authnapp.forms import (
     AppartamentEditForm,
@@ -20,7 +17,7 @@ from authnapp.forms import (
     UserRegisterForm,
 )
 from authnapp.models import User
-from mainapp.models import Appartament, UserProfile
+from directory.models import Appartament, UserProfile
 
 
 def login(request):
@@ -140,50 +137,6 @@ class ProfileUpdateView(LoginRequiredMixin, UpdateView):
                 formset.save()
 
         return HttpResponseRedirect(self.get_success_url())
-
-    # def post(self, *args, **kwargs):
-    #     if self.request.is_ajax and self.request.method == "POST":
-
-    #         if self.request.POST.get("form_type") == 'houseCounterForm':
-    #             form = self.form_class(self.request.POST)
-    #         elif self.request.POST.get("form_type") == 'recalcForm':
-    #             form = self.second_form_class(self.request.POST)
-
-    #         if form.is_valid():
-    #             post = self.request.POST
-    #             house = post.get('house')
-    #             period = datetime.datetime.now().date().replace(day=1)
-    #             # period = datetime.datetime.now().date().replace(day=1, month=7)
-    #             update_values = {
-    #                 'col_water': post.get('col_water'),
-    #                 'hot_water': post.get('hot_water'),
-    #                 'electric_day': post.get('electric_day'),
-    #                 'electric_night': post.get('electric_night'),
-    #             }
-    #             obj, created = HouseCurrent.objects.update_or_create(house_id=house, period=period, defaults=update_values)
-    #             #При создании новой записи удаляем старую
-    #             if created:
-    #                 previous_month = (period - datetime.timedelta(days=1)).replace(day=1)
-    #                 previous_value = HouseCurrent.objects.filter(house_id=house, period=previous_month)
-    #                 previous_value.delete()
-    #             ser_instance = serializers.serialize('json', [ obj, ])
-    #             return JsonResponse({"instance": ser_instance}, status=200)
-    #         else:
-    #             return JsonResponse({"error": form.errors}, status=400)
-
-    #     return JsonResponse({"error": ""}, status=400)
-
-    # def form_valid(self, form):
-    #     context = self.get_context_data()
-    #     appartaments = context["appartament_form"]
-
-    #     with transaction.atomic():
-    #         self.object = form.save()
-    #         if appartaments.is_valid():
-    #             appartaments.instance = self.object
-    #             appartaments.save()
-
-    #     return super().form_valid(form)
 
     def form_invalid(self, form, formset):
         return self.render_to_response(
