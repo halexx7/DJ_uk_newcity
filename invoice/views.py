@@ -4,7 +4,6 @@ import json
 import re
 
 from django.core.serializers import serialize
-from django.utils import tree
 from django.utils.safestring import mark_safe
 from django.views.generic.detail import DetailView
 
@@ -62,29 +61,27 @@ def get_calc_const():
         user_id = User.objects.get(id=user.id)
         appart = Appartament.objects.get(user=user)
         for el in rate:
-            element = dict()
-            element["service"] = el.name
-            element["unit"] = el.unit
-            element["rate"] = el.rate
-
+            element = {
+                "service": el.name,
+                "unit": el.unit,
+                "rate": el.rate,
+                "standart": "",
+                "volume": "",
+                "coefficient": el.factor if el.factor >= 0 else "",
+                "subsidies": 0,
+                "privileges": 0,
+                "recalculation": 0,
+            }
             if el.unit.name == "м2":
                 element["accured"] = el.rate * appart.sq_appart
             elif el.unit.name == "чел":
                 element["accured"] = el.rate * appart.num_owner
             else:
                 element["accured"] = el.rate
-
-            element["standart"] = ""
-            element["volume"] = ""
-            element["coefficient"] = el.factor if el.factor >= 0 else ""
-            element["subsidies"] = 0
-            element["privileges"] = 0
-            element["recalculation"] = 0
             element["total"] = element["accured"]
             element["pre_total"] = element["accured"]
             pre_total += element["pre_total"]
             total += element["total"]
-
             data.append(element)
 
         update_values = {
@@ -154,20 +151,18 @@ def get_calc_variable():
 # TODO повесить сигналы на модели чтоб данные при изменении обновлялись
 def get_head_data():
     users = User.objects.filter(is_staff=False)
-
     for user in users:
-        data = dict()
         appa = Appartament.get_item(user.id)[0]
         uk = SiteConfiguration.get_solo()
-
-        data["payer"] = user.name  # Плательщик
-        data["address"] = appa
-        data["sq_appart"] = appa.sq_appart  # Площадь квартиры
-        data["num_living"] = appa.num_owner  # Кол-во проживающих
-        data["name_uk"] = uk.get_full_name()  # Название, адрес, тел. и т.д. УК
-        data["requisites"] = uk.get_requisites()  # Название, адрес, тел. и т.д. УК
-        data["personal_account"] = user.personal_account  # Номер лицевого счета
-
+        data = {
+            "payer": user.name,
+            "address": appa,
+            "sq_appart": appa.sq_appart,
+            "num_living": appa.num_owner, # Кол-во проживающих
+            "name_uk": uk.get_full_name(),
+            "requisites": uk.get_requisites(),
+            "personal_account": user.personal_account,
+        }
         update_values = {
             "data": json.dumps(data, ensure_ascii=False, default=str),
         }
