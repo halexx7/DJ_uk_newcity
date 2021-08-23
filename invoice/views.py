@@ -4,7 +4,6 @@ import json
 import re
 
 from django.core.serializers import serialize
-from django.utils import tree
 from django.utils.safestring import mark_safe
 from django.views.generic.detail import DetailView
 
@@ -62,29 +61,27 @@ def get_calc_const():
         user_id = User.objects.get(id=user.id)
         appart = Appartament.objects.get(user=user)
         for el in rate:
-            element = dict()
-            element["service"] = el.name
-            element["unit"] = el.unit
-            element["rate"] = el.rate
-
+            element = {
+                "service": el.name,
+                "unit": el.unit,
+                "rate": el.rate,
+                "standart": "",
+                "volume": "",
+                "coefficient": el.factor if el.factor >= 0 else "",
+                "subsidies": 0,
+                "privileges": 0,
+                "recalculation": 0,
+            }
             if el.unit.name == "м2":
                 element["accured"] = el.rate * appart.sq_appart
             elif el.unit.name == "чел":
                 element["accured"] = el.rate * appart.num_owner
             else:
                 element["accured"] = el.rate
-
-            element["standart"] = ""
-            element["volume"] = ""
-            element["coefficient"] = el.factor if el.factor >= 0 else ""
-            element["subsidies"] = 0
-            element["privileges"] = 0
-            element["recalculation"] = 0
             element["total"] = element["accured"]
             element["pre_total"] = element["accured"]
             pre_total += element["pre_total"]
             total += element["total"]
-
             data.append(element)
 
         update_values = {
@@ -105,8 +102,6 @@ def get_calc_variable():
     for user in users:
         data = []
         total, pre_total = 0, 0
-        # period = datetime.datetime.now().replace(day=1)
-        # TODO PERIOD
         period = PERIOD
         user = User.objects.get(id=user.id)
         appa = Appartament.get_item(user.id)[0]
@@ -122,21 +117,20 @@ def get_calc_variable():
             curr["volume_hot"] = object_curr.hot_water - hist.hot_water
             curr["volume_sewage"] = curr["volume_col"] + curr["volume_hot"]
             # Проверяем наличие данных в буфере накопительных платежей для перерасчета
-            curr["buffer"] = AverageСalculationBuffer.get_item(user)
+            curr["buffer"] = AverageСalculationBuffer.get_sum_average_buffer(user)
         else:
             # Если счетчики не введены, берем общедомовой средний объем
             curr["standart"] = True
             curr["volume_col"] = stand.col_water * sq_appa
             curr["volume_hot"] = stand.hot_water * sq_appa
             curr["volume_sewage"] = curr["volume_col"] + curr["volume_hot"]
-            curr["period"] = period - datetime.timedelta(days=1)
+            curr["period"] = PERIOD - datetime.timedelta(days=1)
 
         subs = Subsidies.get_items(user.id)
         priv = Privileges.get_items(user.id)
-        recl = Recalculations.get_items(user)
 
         for el in rate:
-            calc = get_calc_service(el, curr, sq_appa, subs, priv, recl)
+            calc = get_calc_service(el, curr, subs, priv)
             data.append(calc)
             total += calc["total"]
             pre_total += calc["pre_total"]
@@ -146,7 +140,7 @@ def get_calc_variable():
             "total": decimal.Decimal(total),
             "pre_total": decimal.Decimal(pre_total),
         }
-        obj, created = VariablePayments.objects.update_or_create(user=user, period=period, defaults=update_values)
+        obj, created = VariablePayments.objects.update_or_create(user=user, period=PERIOD, defaults=update_values)
     return (data, total, pre_total)
 
 
@@ -154,20 +148,18 @@ def get_calc_variable():
 # TODO повесить сигналы на модели чтоб данные при изменении обновлялись
 def get_head_data():
     users = User.objects.filter(is_staff=False)
-
     for user in users:
-        data = dict()
         appa = Appartament.get_item(user.id)[0]
         uk = SiteConfiguration.get_solo()
-
-        data["payer"] = user.name  # Плательщик
-        data["address"] = appa
-        data["sq_appart"] = appa.sq_appart  # Площадь квартиры
-        data["num_living"] = appa.num_owner  # Кол-во проживающих
-        data["name_uk"] = uk.get_full_name()  # Название, адрес, тел. и т.д. УК
-        data["requisites"] = uk.get_requisites()  # Название, адрес, тел. и т.д. УК
-        data["personal_account"] = user.personal_account  # Номер лицевого счета
-
+        data = {
+            "payer": user.name,
+            "address": appa,
+            "sq_appart": appa.sq_appart,
+            "num_living": appa.num_owner, # Кол-во проживающих
+            "name_uk": uk.get_full_name(),
+            "requisites": uk.get_requisites(),
+            "personal_account": user.personal_account,
+        }
         update_values = {
             "data": json.dumps(data, ensure_ascii=False, default=str),
         }
@@ -175,11 +167,9 @@ def get_head_data():
 
 
 # Делает расчет всех полей по Услуге
-def get_calc_service(el, curr, sq_appa, subs, priv, recl):
+def get_calc_service(el, curr, subs, priv):
     element = dict()
     const = False
-    # TODO PERIOD
-    period = PERIOD
     element["service"] = el.name
     element["unit"] = el.unit
     element["standart"] = 0
@@ -198,29 +188,29 @@ def get_calc_service(el, curr, sq_appa, subs, priv, recl):
     if not curr["standart"]:
         element["accured"] = el.rate * decimal.Decimal(element["volume"])
         if curr["buffer"]:
-            # TODO PERIOD
-            # period = datetime.datetime.now().replace(day=1)
             buffer = AverageСalculationBuffer.get_sum_average_buffer(curr["user"])
-            upd_val = {
-                "user": curr["user"],
-                # TODO В какую сторону перерасчет???
-                "recalc": element["accured"] - buffer[const],
-                "desc": f"Автоматический перерасчет на основании введенных пользователем счетчиков",
-            }
-            obj, created = Recalculations.objects.update_or_create(
-                user=curr["user"], period=period, service=el, is_auto=True, defaults=upd_val
-            )
-            if const == "col_water":
-                AverageСalculationBuffer.objects.filter(user=curr["user"]).update(col_water=0)
-            elif const == "hot_water":
-                AverageСalculationBuffer.objects.filter(user=curr["user"]).update(hot_water=0)
-            elif const == "sewage":
-                AverageСalculationBuffer.objects.filter(user=curr["user"]).update(sewage=0)
-
+            if buffer[const]:
+                upd_val = {
+                    "user": curr["user"],
+                    # TODO В какую сторону перерасчет???
+                    "recalc": element["accured"] - curr["buffer"][const],
+                    "desc": f"Автоматический перерасчет на основании введенных пользователем счетчиков",
+                }
+                obj, created = Recalculations.objects.update_or_create(
+                    user=curr["user"], period=PERIOD, service=el, is_auto=True, defaults=upd_val
+                )
+                if const == "col_water":
+                    AverageСalculationBuffer.objects.filter(user=curr["user"]).update(col_water=0)
+                elif const == "hot_water":
+                    AverageСalculationBuffer.objects.filter(user=curr["user"]).update(hot_water=0)
+                elif const == "sewage":
+                    AverageСalculationBuffer.objects.filter(user=curr["user"]).update(sewage=0)
+        
     elif curr["standart"]:
         element["accured"] = el.rate * decimal.Decimal(element["volume"])
-        obj, create = AverageСalculationBuffer.objects.get_or_create(user=curr["user"], period=period)
+        obj, create = AverageСalculationBuffer.objects.get_or_create(user=curr["user"], period=PERIOD)
         upd_bufer(obj, el.name, element["accured"])
+    recl = Recalculations.get_items(curr["user"], PERIOD)
     element["coefficient"] = el.factor if el.factor > 0 else 1
     element["pre_total"] = element["accured"] * element["coefficient"]
     element["subsidies"] = element["pre_total"] * decimal.Decimal(get_sale(el.name, subs) / 100)
@@ -259,8 +249,8 @@ def get_recl(name, arr):
 def upd_bufer(obj, name_srv, accured):
     volume_rec = accured.quantize(decimal.Decimal("1.00"))
     if re.search(r"холодная", name_srv.lower()):
-        AverageСalculationBuffer.objects.filter(user=obj.user).update(col_water=volume_rec)
+        AverageСalculationBuffer.objects.filter(user=obj.user, period=PERIOD).update(col_water=volume_rec)
     elif re.search(r"горячая", name_srv.lower()):
-        AverageСalculationBuffer.objects.filter(user=obj.user).update(hot_water=volume_rec)
+        AverageСalculationBuffer.objects.filter(user=obj.user, period=PERIOD).update(hot_water=volume_rec)
     elif re.search(r"водоотведение", name_srv.lower()):
-        AverageСalculationBuffer.objects.filter(user=obj.user).update(sewage=volume_rec)
+        AverageСalculationBuffer.objects.filter(user=obj.user, period=PERIOD).update(sewage=volume_rec)

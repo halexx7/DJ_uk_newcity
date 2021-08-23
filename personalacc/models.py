@@ -1,8 +1,10 @@
 from django.db import models
 from solo.models import SingletonModel
+from mainapp.mixins.utils import ActiveMixin
 
 
-class SiteConfiguration(SingletonModel):
+class SiteConfiguration(SingletonModel, ActiveMixin):
+    image = models.ImageField(verbose_name="Главное изображение", upload_to="Изображение", default="slide_1.jpg", help_text="Изображение которое отображается на главной странице")
     name = models.CharField(verbose_name="Название", max_length=128, help_text="УК Новый город")
     city = models.CharField(verbose_name="Город", max_length=128, help_text="г.Тюмень")
     street = models.CharField(verbose_name="Улица", max_length=256, help_text="ул.Свободы")
@@ -28,10 +30,6 @@ class SiteConfiguration(SingletonModel):
         max_length=256, blank=True, default="Все права защищены © Тюмень 2015 - 2021 гг.", verbose_name="Футер копирайт"
     )
 
-    is_active = models.BooleanField(verbose_name="Активный", db_index=True, default=True)
-    created = models.DateTimeField(verbose_name="Создан", auto_now_add=True)
-    updated = models.DateTimeField(verbose_name="Обновлен", auto_now=True)
-
     def get_full_name(self):
         name = {
             "name": self.name,
@@ -50,9 +48,15 @@ class SiteConfiguration(SingletonModel):
             "bank": self.bank,
         }
         return requis
+    
+    def get_absolute_url(self):
+        return f"/media/{self.image}/"
 
     def __str__(self):
         return "Настройки сайта"
+
+    def delete(self, *args, **kwargs):
+        return super().delete(*args, **kwargs)
 
     class Meta:
         verbose_name = "Настройки сайта"

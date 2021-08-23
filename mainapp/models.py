@@ -23,7 +23,6 @@ class HouseCurrent(WaterCounterMixin):
         ordering = ("-updated",)
         verbose_name = "Домовой счетчик (текущий)"
         verbose_name_plural = "Домовые счетчики (текущие)"
-        # unique_together = ('house',)
 
     def clean(self):
         if self.col_water < 0.01 or self.hot_water < 0.01:
@@ -50,7 +49,6 @@ class HouseHistory(WaterCounterMixin):
         ordering = ("-updated",)
         verbose_name = "Домовой счетчик (история)"
         verbose_name_plural = "01 Домовые счетчики (история)"
-        # unique_together = ('period', 'house',)
 
     def __str__(self):
         return f"Период - {self.period}, ул.{self.house.street.street}, Дом №{self.house.number}, к.{self.house.add_number}"
@@ -77,8 +75,6 @@ class HouseHistory(WaterCounterMixin):
         upd_val = {
             "col_water": instance.col_water,
             "hot_water": instance.hot_water,
-            # "electric_day": instance.electric_day,
-            # "electric_night": instance.electric_night,
         }
         obj, created = HouseHistory.objects.update_or_create(house_id=house, period=period, defaults=upd_val)
 
@@ -107,6 +103,8 @@ class Standart(ActiveMixin):
     @receiver(post_save, sender=HouseCurrent)
     def calculation_of_standart_to_house_current(sender, instance, **kwargs):
         house = instance.house_id
+        # period = PERIOD
+        # # TODO PERIOD
         period = instance.period
         hist = HouseHistory.get_last_val(house)[0]
         sq = House.get_item(house)[0].sq_home
@@ -132,8 +130,6 @@ class CurrentCounter(WaterCounterMixin):
 
     @staticmethod
     def get_last_val(user):
-        # period = datetime.datetime.now().replace(day=1, month=11)
-        # TODO PERIOD
         period = PERIOD
         try:
             obj = CurrentCounter.objects.filter(user=user).latest("period")
@@ -170,8 +166,6 @@ class HistoryCounter(WaterCounterMixin):
         upd_val = {
             "col_water": instance.col_water,
             "hot_water": instance.hot_water,
-            # "electric_day": instance.electric_day,
-            # "electric_night": instance.electric_night,
         }
         obj, created = HistoryCounter.objects.update_or_create(user=user, period=period, defaults=upd_val)
 
@@ -198,8 +192,8 @@ class Recalculations(ActiveMixin):
         return Recalculations.objects.filter(user=user).first()
 
     @staticmethod
-    def get_items(user):
-        return Recalculations.objects.filter(user=user)
+    def get_items(user, period):
+        return Recalculations.objects.filter(user=user, period=period)
 
     def get_sum_period(self, period):
         recalc = Recalculations.objects.filter(user=self.user, period=period)
@@ -378,16 +372,13 @@ class PaymentOrder(ActiveMixin):
                 "amount": (constant.total + variable.total),
                 "pre_amount": (constant.pre_total + variable.pre_total),
             }
-            obj, created = PaymentOrder.objects.update_or_create(user=user, period=period, defaults=upd_val)
+            obj, created = PaymentOrder.objects.update_or_create(user=user, period=PERIOD, defaults=upd_val)
 
     @receiver(post_save, sender=HeaderData)
     def procc_update_headerdata(sender, instance, **kwargs):
         user = instance.user
-        # period = datetime.datetime.now().replace(day=1)
-        # TODO PERIOD
-        period = PERIOD
         header_data = HeaderData.objects.get(user=user)
-        PaymentOrder.objects.filter(user=user, period=period).update(header_data=header_data.data)
+        PaymentOrder.objects.filter(user=user, period=PERIOD).update(header_data=header_data.data)
 
 
 # Текущее состояние счета

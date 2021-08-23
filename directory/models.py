@@ -9,8 +9,6 @@ from mainapp.mixins.validator import check_value_is_digit
 from authnapp.models import User
 from mainapp.mixins.utils import ActiveMixin, CreateUpdateMixin
 
-# PERIOD = datetime.datetime.now().date().replace(day=1, month=10)
-
 
 class PostNews(ActiveMixin):
     title = models.CharField(verbose_name="Заголовок", max_length=128)

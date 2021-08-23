@@ -9,11 +9,12 @@
 
 
 {% block content %}
+{% get_solo 'personalacc.SiteConfiguration' as site_config %}
 <!-- Intro Slider -->
 <section class="intro">
     <div class="container">
         <div class="intro__img">
-            <img src="{% static 'img/slide_1.jpg' %}" class="d-block w-100" alt="...">
+            <img src="{{ site_config.get_absolute_url }}" class="d-block w-100" alt="...">
         </div>
     </div>
 </section>
