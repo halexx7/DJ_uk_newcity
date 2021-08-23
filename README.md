@@ -31,25 +31,19 @@ apt update; apt upgrade -y; apt install -y curl; curl -sSL https://get.docker.co
 cp example.env .env
 ```
 ```
-docker-compose up -d
-```
-```
-cp fake_db/full_dumps_16-08-2021_21_41_53.sql dumps/
-```
-```
-docker-compose down
-```
-```
 pipenv install
 ```
 ```
 pipenv shell
 ```
 ```
+cp fake_db/02_new_db_dump_23-08-2021_21_40_06.sql dumps/
+```
+```
 docker-compose up -d
 ```
 ```
-cat dumps/new_db_dump_17-08-2021_23_19_55.sql | docker exec -i uk_pdb psql -U post
+cat dumps/02_new_db_dump_23-08-2021_21_40_06.sql | docker exec -i uk_pdb psql -U post
 ```
 
 Запускаем сервер
@@ -57,7 +51,7 @@ cat dumps/new_db_dump_17-08-2021_23_19_55.sql | docker exec -i uk_pdb psql -U po
 python3 manage.py runserver
 ```
 
-Если напишет, что нужно провести миграции, проводим миграции
+## ЕСЛИ НАПИШЕТ, что нужно провести миграции, проводим миграции
 ````
 python3 manage.py migrate
 ```
