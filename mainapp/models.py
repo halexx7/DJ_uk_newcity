@@ -103,9 +103,9 @@ class Standart(ActiveMixin):
     @receiver(post_save, sender=HouseCurrent)
     def calculation_of_standart_to_house_current(sender, instance, **kwargs):
         house = instance.house_id
-        period = PERIOD
+        # period = PERIOD
         # # TODO PERIOD
-        # period = instance.period
+        period = instance.period
         hist = HouseHistory.get_last_val(house)[0]
         sq = House.get_item(house)[0].sq_home
         upd_val = {
@@ -130,8 +130,6 @@ class CurrentCounter(WaterCounterMixin):
 
     @staticmethod
     def get_last_val(user):
-        # period = datetime.datetime.now().replace(day=1, month=11)
-        # TODO PERIOD
         period = PERIOD
         try:
             obj = CurrentCounter.objects.filter(user=user).latest("period")
@@ -194,8 +192,8 @@ class Recalculations(ActiveMixin):
         return Recalculations.objects.filter(user=user).first()
 
     @staticmethod
-    def get_items(user):
-        return Recalculations.objects.filter(user=user)
+    def get_items(user, period):
+        return Recalculations.objects.filter(user=user, period=period)
 
     def get_sum_period(self, period):
         recalc = Recalculations.objects.filter(user=self.user, period=period)

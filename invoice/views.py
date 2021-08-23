@@ -128,10 +128,9 @@ def get_calc_variable():
 
         subs = Subsidies.get_items(user.id)
         priv = Privileges.get_items(user.id)
-        recl = Recalculations.get_items(user)
 
         for el in rate:
-            calc = get_calc_service(el, curr, subs, priv, recl)
+            calc = get_calc_service(el, curr, subs, priv)
             data.append(calc)
             total += calc["total"]
             pre_total += calc["pre_total"]
@@ -168,7 +167,7 @@ def get_head_data():
 
 
 # Делает расчет всех полей по Услуге
-def get_calc_service(el, curr, subs, priv, recl):
+def get_calc_service(el, curr, subs, priv):
     element = dict()
     const = False
     element["service"] = el.name
@@ -206,11 +205,12 @@ def get_calc_service(el, curr, subs, priv, recl):
                     AverageСalculationBuffer.objects.filter(user=curr["user"]).update(hot_water=0)
                 elif const == "sewage":
                     AverageСalculationBuffer.objects.filter(user=curr["user"]).update(sewage=0)
-
+        
     elif curr["standart"]:
         element["accured"] = el.rate * decimal.Decimal(element["volume"])
         obj, create = AverageСalculationBuffer.objects.get_or_create(user=curr["user"], period=PERIOD)
         upd_bufer(obj, el.name, element["accured"])
+    recl = Recalculations.get_items(curr["user"], PERIOD)
     element["coefficient"] = el.factor if el.factor > 0 else 1
     element["pre_total"] = element["accured"] * element["coefficient"]
     element["subsidies"] = element["pre_total"] * decimal.Decimal(get_sale(el.name, subs) / 100)

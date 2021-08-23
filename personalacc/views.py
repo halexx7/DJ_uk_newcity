@@ -70,9 +70,9 @@ class UserPageCreate(LoginRequiredMixin, CreateView):
             if form.is_valid():
                 post = self.request.POST
                 user = self.request.user
-                # period = datetime.datetime.now().date().replace(day=1)
+                period = datetime.datetime.now().date().replace(day=1)
                 # TODO PERIOD
-                period = PERIOD
+                # period = PERIOD
                 update_values = {
                     "col_water": post.get("col_water"),
                     "hot_water": post.get("hot_water"),
@@ -127,8 +127,8 @@ class ManagerPageCreate(LoginRequiredMixin, CreateView):
         post = self.request.POST
         user = self.request.POST.get("user")
         # TODO PERIOD
-        period = PERIOD
-        # period = datetime.datetime.now().date().replace(day=1)
+        # period = PERIOD
+        period = datetime.datetime.now().date().replace(day=1)
         handle = {
             "house_count_form": self.house_count_process,
             "recalculations_form": self.recalculations_process,
