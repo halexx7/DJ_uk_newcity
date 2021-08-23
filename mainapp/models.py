@@ -374,16 +374,13 @@ class PaymentOrder(ActiveMixin):
                 "amount": (constant.total + variable.total),
                 "pre_amount": (constant.pre_total + variable.pre_total),
             }
-            obj, created = PaymentOrder.objects.update_or_create(user=user, period=period, defaults=upd_val)
+            obj, created = PaymentOrder.objects.update_or_create(user=user, period=PERIOD, defaults=upd_val)
 
     @receiver(post_save, sender=HeaderData)
     def procc_update_headerdata(sender, instance, **kwargs):
         user = instance.user
-        # period = datetime.datetime.now().replace(day=1)
-        # TODO PERIOD
-        period = PERIOD
         header_data = HeaderData.objects.get(user=user)
-        PaymentOrder.objects.filter(user=user, period=period).update(header_data=header_data.data)
+        PaymentOrder.objects.filter(user=user, period=PERIOD).update(header_data=header_data.data)
 
 
 # Текущее состояние счета
