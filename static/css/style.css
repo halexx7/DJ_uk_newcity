@@ -184,6 +184,11 @@ ul, ol {
     max-width: 600px;
 }
 
+.category_delete--text {
+    font-size: 1.4rem;
+    text-align: center;
+}
+
 
 /* ===============
 === Register Page ===
@@ -210,7 +215,8 @@ ul, ol {
 }
 
 .directory__form {
-    max-width: 600px;
+    margin: 0 auto;
+    min-width: 600px;
 }
 
 .form_is-active {
