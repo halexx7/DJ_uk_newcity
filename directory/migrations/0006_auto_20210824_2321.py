@@ -7,13 +7,18 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('directory', '0005_auto_20210823_2106'),
+        ("directory", "0005_auto_20210823_2106"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='house',
-            name='number',
-            field=models.DecimalField(decimal_places=0, max_digits=3, validators=[django.core.validators.MinValueValidator(0)], verbose_name='Номер'),
+            model_name="house",
+            name="number",
+            field=models.DecimalField(
+                decimal_places=0,
+                max_digits=3,
+                validators=[django.core.validators.MinValueValidator(0)],
+                verbose_name="Номер",
+            ),
         ),
     ]

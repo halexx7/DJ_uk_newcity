@@ -12,27 +12,15 @@ from django.views.generic import CreateView, DeleteView, ListView, UpdateView
 from authnapp.models import User
 from directory.models import Appartament, Privileges, Subsidies, UserProfile
 from invoice.views import starter
-from mainapp.models import (
-    CurrentCounter,
-    HistoryCounter,
-    HouseCurrent,
-    HouseHistory,
-    MainBook,
-    PaymentOrder,
-    PersonalAccountStatus,
-    Recalculations,
-)
-from personalacc.forms import (
-    CurrentCounterForm,
-    HomeCurrentCounterForm,
-    HomeHistoryCounterForm,
-    PaymentsForm,
-    PrivilegesForm,
-    RecalculationsForm,
-    SubsidiesForm,
-)
-from personalacc.models import SiteConfiguration
 from mainapp.mixins.utils import PERIOD
+from mainapp.models import (CurrentCounter, HistoryCounter, HouseCurrent,
+                            HouseHistory, MainBook, PaymentOrder,
+                            PersonalAccountStatus, Recalculations)
+from personalacc.forms import (CurrentCounterForm, HomeCurrentCounterForm,
+                               HomeHistoryCounterForm, PaymentsForm,
+                               PrivilegesForm, RecalculationsForm,
+                               SubsidiesForm)
+from personalacc.models import SiteConfiguration
 
 
 class UserPageCreate(LoginRequiredMixin, CreateView):
@@ -176,7 +164,7 @@ class ManagerPageCreate(LoginRequiredMixin, CreateView):
             user_id=kwargs["user"],
             period=kwargs["period"],
             service_id=kwargs["post"].get("service"),
-            is_auto = False,
+            is_auto=False,
             defaults=update_values,
         )
         instance = Recalculations.get_qty_last_items(5)

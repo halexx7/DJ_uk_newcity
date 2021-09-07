@@ -4,10 +4,9 @@ from django.db.models.deletion import CASCADE, SET_NULL
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.utils.translation import gettext_lazy as _
-from mainapp.mixins.validator import check_value_is_digit
 
 from authnapp.models import User
-from mainapp.mixins.utils import ActiveMixin, CreateUpdateMixin
+from mainapp.mixins.utils import ActiveMixin
 
 
 class PostNews(ActiveMixin):
@@ -55,10 +54,12 @@ class Services(ActiveMixin):
     )
     name = models.CharField(verbose_name="Услуга", max_length=256)
     unit = models.ForeignKey(Metrics, verbose_name="Единицы", related_name="unit", on_delete=models.CASCADE)
-    rate = models.DecimalField(verbose_name="Тариф", max_digits=7, decimal_places=3,
-                               default=0, validators=[MinValueValidator(0.001)])
-    factor = models.DecimalField(verbose_name="Коэфициент", max_digits=3, decimal_places=2,
-                                 default=1, validators=[MinValueValidator(0.01)])
+    rate = models.DecimalField(
+        verbose_name="Тариф", max_digits=7, decimal_places=3, default=0, validators=[MinValueValidator(0.001)]
+    )
+    factor = models.DecimalField(
+        verbose_name="Коэфициент", max_digits=3, decimal_places=2, default=1, validators=[MinValueValidator(0.01)]
+    )
     const = models.BooleanField(verbose_name="Константа", db_index=True, default=True)
 
     class Meta:
@@ -109,13 +110,16 @@ class Street(ActiveMixin):
 class House(ActiveMixin):
     city = models.ForeignKey(City, verbose_name="Город", null=True, on_delete=SET_NULL)
     street = models.ForeignKey(Street, verbose_name="Улица", null=True, on_delete=SET_NULL)
-    number = models.DecimalField(verbose_name="Номер", max_digits=3, 
-                                 decimal_places=0, validators=[MinValueValidator(0)])
+    number = models.DecimalField(
+        verbose_name="Номер", max_digits=3, decimal_places=0, validators=[MinValueValidator(0)]
+    )
     add_number = models.CharField(verbose_name="Корпус", max_length=3, blank=True, default="-")
-    sq_home = models.DecimalField(verbose_name="Площадь", max_digits=7, decimal_places=2,
-                                  validators=[MinValueValidator(0.01)])
-    category_rate = models.ForeignKey(ServicesCategory, verbose_name="Категория", null=True, 
-                                      on_delete=SET_NULL, default=1)
+    sq_home = models.DecimalField(
+        verbose_name="Площадь", max_digits=7, decimal_places=2, validators=[MinValueValidator(0.01)]
+    )
+    category_rate = models.ForeignKey(
+        ServicesCategory, verbose_name="Категория", null=True, on_delete=SET_NULL, default=1
+    )
 
     class Meta:
         ordering = ("-updated",)
@@ -135,10 +139,12 @@ class UserProfile(ActiveMixin):
     FEMALE = "W"
     GENDER_CHOICES = ((MALE, "М"), (FEMALE, "Ж"))
 
-    user = models.OneToOneField(User, verbose_name="Пользоваель", null=False,
-                                db_index=True, on_delete=models.CASCADE, related_name="profiles")
-    gender = models.CharField(verbose_name="Пол", max_length=1, choices=GENDER_CHOICES,
-                              blank=True, null=True, default=None)
+    user = models.OneToOneField(
+        User, verbose_name="Пользоваель", null=False, db_index=True, on_delete=models.CASCADE, related_name="profiles"
+    )
+    gender = models.CharField(
+        verbose_name="Пол", max_length=1, choices=GENDER_CHOICES, blank=True, null=True, default=None
+    )
 
     class Meta:
         ordering = ("updated",)
@@ -159,14 +165,37 @@ class UserProfile(ActiveMixin):
 
 
 class Appartament(ActiveMixin):
-    user = models.ForeignKey(User, verbose_name="Жилец", related_name="appartament", null=True, 
-                             blank=True, on_delete=SET_NULL)
+    user = models.ForeignKey(
+        User, verbose_name="Жилец", related_name="appartament", null=True, blank=True, on_delete=SET_NULL
+    )
     house = models.ForeignKey(House, verbose_name="Дом", on_delete=CASCADE)
-    number = models.CharField(verbose_name="Номер квартиры", max_length=3, validators=[check_value_is_digit, ])
-    add_number = models.CharField(verbose_name="Комната", max_length=3, 
-                                  default=0, validators=[check_value_is_digit, ])
-    sq_appart = models.DecimalField(verbose_name="Площадь", max_digits=5, decimal_places=2, 
-                                    null=True, blank=True, default=0, validators=[MinValueValidator(0.01)])
+    number = models.DecimalField(
+        verbose_name="Номер квартиры",
+        max_digits=3,
+        decimal_places=0,
+        null=True,
+        blank=True,
+        default=0,
+        validators=[MinValueValidator(0)],
+    )
+    add_number = models.DecimalField(
+        verbose_name="Комната",
+        max_digits=3,
+        decimal_places=0,
+        null=True,
+        blank=True,
+        default=0,
+        validators=[MinValueValidator(0)],
+    )
+    sq_appart = models.DecimalField(
+        verbose_name="Площадь",
+        max_digits=5,
+        decimal_places=2,
+        null=True,
+        blank=True,
+        default=0,
+        validators=[MinValueValidator(0.01)],
+    )
     num_owner = models.PositiveIntegerField(verbose_name="Кол-во проживающих", null=True, blank=True, default=0)
 
     class Meta:

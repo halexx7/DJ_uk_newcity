@@ -2,14 +2,9 @@ import hashlib
 import random
 
 from django import forms
-from django.contrib.auth.forms import (
-    AuthenticationForm,
-    PasswordChangeForm,
-    PasswordResetForm,
-    SetPasswordForm,
-    UserChangeForm,
-    UserCreationForm,
-)
+from django.contrib.auth.forms import (AuthenticationForm, PasswordChangeForm,
+                                       PasswordResetForm, SetPasswordForm,
+                                       UserChangeForm, UserCreationForm)
 from django.contrib.auth.models import Group
 from django.forms import fields, models
 from django.forms.models import BaseInlineFormSet, inlineformset_factory

@@ -6,18 +6,13 @@ from django.views.generic import CreateView, DeleteView, ListView, UpdateView
 
 from authnapp.managers import UserManager
 from authnapp.models import User
-from directory.forms import (
-    AppartamentFormSet,
-    AppartamentsEditForm,
-    CityEditForm,
-    HouseEditForm,
-    ResidentsEditForm,
-    ServicesCategoryEditForm,
-    ServicesEditForm,
-    StreetEditForm,
-)
+from directory.forms import (AppartamentFormSet, AppartamentsEditForm,
+                             CityEditForm, HouseEditForm, ResidentsEditForm,
+                             ServicesCategoryEditForm, ServicesEditForm,
+                             StreetEditForm)
 
-from .models import Appartament, City, House, Services, ServicesCategory, Street
+from .models import (Appartament, City, House, Services, ServicesCategory,
+                     Street)
 
 
 class DirectoryList(LoginRequiredMixin, ListView):
