@@ -13,3 +13,9 @@ services:
     ports:
       - '5432:5432'
     restart: always
+  
+  redis:
+    container_name: uk_redis
+    image: redis:alpine
+    ports:
+        - '6379:6379'
