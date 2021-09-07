@@ -6,6 +6,7 @@ from django.db import models
 PERIOD = datetime.datetime.now().replace(day=1)
 # PERIOD = datetime.datetime.now().date().replace(day=1, month=11)
 
+
 class CreateUpdateMixin(models.Model):
     """Примешивает поля даты создания и обновления"""
 

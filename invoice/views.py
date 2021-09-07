@@ -9,21 +9,12 @@ from django.views.generic.detail import DetailView
 
 from authnapp.models import User
 from directory.models import Appartament, Privileges, Services, Subsidies
-from mainapp.models import (
-    AverageСalculationBuffer,
-    ConstantPayments,
-    CurrentCounter,
-    HeaderData,
-    HistoryCounter,
-    MainBook,
-    PaymentOrder,
-    PersonalAccountStatus,
-    Recalculations,
-    Standart,
-    VariablePayments,
-)
-from personalacc.models import SiteConfiguration
 from mainapp.mixins.utils import PERIOD
+from mainapp.models import (AverageСalculationBuffer, ConstantPayments,
+                            CurrentCounter, HeaderData, HistoryCounter,
+                            MainBook, PaymentOrder, PersonalAccountStatus,
+                            Recalculations, Standart, VariablePayments)
+from personalacc.models import SiteConfiguration
 
 
 class InvoiceViews(DetailView):
@@ -155,7 +146,7 @@ def get_head_data():
             "payer": user.name,
             "address": appa,
             "sq_appart": appa.sq_appart,
-            "num_living": appa.num_owner, # Кол-во проживающих
+            "num_living": appa.num_owner,  # Кол-во проживающих
             "name_uk": uk.get_full_name(),
             "requisites": uk.get_requisites(),
             "personal_account": user.personal_account,
@@ -205,7 +196,7 @@ def get_calc_service(el, curr, subs, priv):
                     AverageСalculationBuffer.objects.filter(user=curr["user"]).update(hot_water=0)
                 elif const == "sewage":
                     AverageСalculationBuffer.objects.filter(user=curr["user"]).update(sewage=0)
-        
+
     elif curr["standart"]:
         element["accured"] = el.rate * decimal.Decimal(element["volume"])
         obj, create = AverageСalculationBuffer.objects.get_or_create(user=curr["user"], period=PERIOD)

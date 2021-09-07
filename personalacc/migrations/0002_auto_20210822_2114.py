@@ -6,18 +6,22 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('personalacc', '0001_initial'),
+        ("personalacc", "0001_initial"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='siteconfiguration',
-            name='image',
-            field=models.ImageField(default='slide_1.jpg', help_text='Изображение которое отображается на главной странице', upload_to='Изображение'),
+            model_name="siteconfiguration",
+            name="image",
+            field=models.ImageField(
+                default="slide_1.jpg",
+                help_text="Изображение которое отображается на главной странице",
+                upload_to="Изображение",
+            ),
         ),
         migrations.AlterField(
-            model_name='siteconfiguration',
-            name='is_active',
-            field=models.BooleanField(db_index=True, default=True, verbose_name='Включено'),
+            model_name="siteconfiguration",
+            name="is_active",
+            field=models.BooleanField(db_index=True, default=True, verbose_name="Включено"),
         ),
     ]

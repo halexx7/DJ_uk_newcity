@@ -1,21 +1,11 @@
 from django.contrib import admin
 
 from authnapp.models import User
-from mainapp.models import (
-    AverageСalculationBuffer,
-    ConstantPayments,
-    CurrentCounter,
-    HeaderData,
-    HistoryCounter,
-    HouseCurrent,
-    HouseHistory,
-    MainBook,
-    PaymentOrder,
-    PersonalAccountStatus,
-    Recalculations,
-    Standart,
-    VariablePayments,
-)
+from mainapp.models import (AverageСalculationBuffer, ConstantPayments,
+                            CurrentCounter, HeaderData, HistoryCounter,
+                            HouseCurrent, HouseHistory, MainBook, PaymentOrder,
+                            PersonalAccountStatus, Recalculations, Standart,
+                            VariablePayments)
 
 
 @admin.register(User)

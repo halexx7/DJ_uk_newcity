@@ -4,7 +4,8 @@ from django import forms
 
 from authnapp.models import User
 from directory.models import Privileges, Services, Subsidies
-from mainapp.models import CurrentCounter, HouseCurrent, HouseHistory, MainBook, Recalculations
+from mainapp.models import (CurrentCounter, HouseCurrent, HouseHistory,
+                            MainBook, Recalculations)
 
 
 class MultipleForm(forms.Form):

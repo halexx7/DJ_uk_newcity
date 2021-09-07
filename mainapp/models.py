@@ -11,7 +11,8 @@ from django.utils.translation import gettext_lazy as _
 
 from authnapp.models import User
 from directory.models import House, Services
-from mainapp.mixins.utils import ActiveMixin, CreateUpdateMixin, WaterCounterMixin, PERIOD
+from mainapp.mixins.utils import (PERIOD, ActiveMixin, CreateUpdateMixin,
+                                  WaterCounterMixin)
 
 
 # Общедомовой счетчик (ТЕКУЩИЕ показания)
@@ -104,7 +105,7 @@ class Standart(ActiveMixin):
     def calculation_of_standart_to_house_current(sender, instance, **kwargs):
         house = instance.house_id
         # period = PERIOD
-        # # TODO PERIOD
+        # TODO PERIOD
         period = instance.period
         hist = HouseHistory.get_last_val(house)[0]
         sq = House.get_item(house)[0].sq_home
@@ -431,7 +432,7 @@ class AverageСalculationBuffer(CreateUpdateMixin):
 
     class Meta:
         verbose_name = "Буффер средних начислений"
-        unique_together = ('user', 'period')
+        unique_together = ("user", "period")
 
     def __str__(self):
         return f"({self.user.personal_accaunt}) - {self.user.name}"
@@ -451,7 +452,8 @@ class AverageСalculationBuffer(CreateUpdateMixin):
             "user": user,
             "col_water": sum(abs(el.col_water) for el in items),
             "hot_water": sum(abs(el.hot_water) for el in items),
-            "sewage": sum(abs(el.sewage) for el in items)}
+            "sewage": sum(abs(el.sewage) for el in items),
+        }
         return data
 
     def get_dict(self):
