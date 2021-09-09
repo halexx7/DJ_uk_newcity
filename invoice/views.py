@@ -4,7 +4,7 @@ import json
 import re
 from datetime import timezone
 import calendar
-from celery. import periodic_task
+from newcity.celery import app
 
 from django.core.serializers import serialize
 from django.utils.safestring import mark_safe
@@ -40,12 +40,6 @@ def starter():
     get_calc_const()
     get_calc_variable()
     get_head_data()
-
-
-@periodic_task(run_every=(crontab(hour=23, minute=55)), name="invoice_simulation", ignore_result=True)
-def invoice_simulation():
-    if timezone.now().day == get_last_date():
-        generate_invoice()
 
 
 # Расчет КОНСТАНТНЫХ платежей (по сигналу когда идут изменения в таблице Services)

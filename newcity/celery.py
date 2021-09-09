@@ -9,7 +9,16 @@ REDIS_HOST = os.getenv('REDIS_HOST', 'localhost')
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'newcity.settings')
 
-app = Celery('newcity', backend='redis', broker='redis://{REDIS_HOST}:6379/1')
+app = Celery('newcity', backend='redis', broker='redis://{}:6379/1'.format(REDIS_HOST))
 app.config_from_object('django.conf:settings', namespace='CELERY')
 app.autodiscover_tasks(lambda: settings.INSTALLED_APPS)
 app.now = timezone.now
+
+
+app.conf.beat_schedule = {
+    'generate_invoice': {
+        'task': 'invoice.tasks.starter',
+        'schedule': crontab(hour=23, minute=5),
+    },
+}
+

@@ -25,10 +25,6 @@ class HouseCurrent(WaterCounterMixin):
         verbose_name = "Домовой счетчик (текущий)"
         verbose_name_plural = "Домовые счетчики (текущие)"
 
-    def clean(self):
-        if self.col_water < 0.01 or self.hot_water < 0.01:
-            raise ValidationError("Допустимы только положительные числа!")
-
     def __str__(self):
         return f"Период - {self.period}, ул.{self.house.street.street}, Дом №{self.house.number}, к.{self.house.add_number}"
 
@@ -72,7 +68,6 @@ class HouseHistory(WaterCounterMixin):
     def copy_arhive_current_to_history_house(sender, instance, **kwargs):
         house = instance.house_id
         period = instance.period
-        print(type(instance.col_water))
         upd_val = {
             "col_water": instance.col_water,
             "hot_water": instance.hot_water,

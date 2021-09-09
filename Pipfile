@@ -28,7 +28,7 @@ Pillow = "==8.2.0"
 Pygments = "==2.9.0"
 django-solo = "*"
 flake8 = "*"
-celery = "*"
+celery = {extras = ["redis"], version = "*"}
 
 [dev-packages]
 
