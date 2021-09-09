@@ -2,6 +2,9 @@ import datetime
 import decimal
 import json
 import re
+from datetime import timezone
+import calendar
+from newcity.celery import app
 
 from django.core.serializers import serialize
 from django.utils.safestring import mark_safe
@@ -245,3 +248,12 @@ def upd_bufer(obj, name_srv, accured):
         AverageСalculationBuffer.objects.filter(user=obj.user, period=PERIOD).update(hot_water=volume_rec)
     elif re.search(r"водоотведение", name_srv.lower()):
         AverageСalculationBuffer.objects.filter(user=obj.user, period=PERIOD).update(sewage=volume_rec)
+
+
+def get_last_date():
+    """Возвращает последнюю дату месяца"""
+    today = timezone.now()
+    year = today.year
+    month = today.month
+    last_date = calendar.monthrange(year, month)[1]
+    return str(last_date)
