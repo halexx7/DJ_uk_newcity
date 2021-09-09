@@ -3,16 +3,14 @@ import datetime
 from dal import autocomplete
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core import serializers
-from django.db.models.base import Model
 from django.http import JsonResponse
 from django.template.loader import render_to_string
 from django.urls import reverse_lazy
-from django.views.generic import CreateView, DeleteView, ListView, UpdateView
+from django.views.generic import CreateView, ListView
 
 from authnapp.models import User
 from directory.models import Appartament, Privileges, Subsidies, UserProfile
 from invoice.views import starter
-from mainapp.mixins.utils import PERIOD
 from mainapp.models import (CurrentCounter, HistoryCounter, HouseCurrent,
                             HouseHistory, MainBook, PaymentOrder,
                             PersonalAccountStatus, Recalculations)
@@ -270,7 +268,7 @@ class UserAutocomplete(autocomplete.Select2QuerySetView):
 
 class FormationPayments(LoginRequiredMixin, ListView):
 
-    Model = User
+    model = User
     template_name = "personalacc/formation_payments.html"
     queryset = User.objects.filter(id=1)
 

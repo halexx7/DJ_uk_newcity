@@ -2,12 +2,10 @@ import datetime
 from decimal import Decimal
 
 from django.contrib.postgres.fields import JSONField
-from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models.deletion import CASCADE, SET_NULL
 from django.db.models.signals import post_save, pre_delete
 from django.dispatch import receiver
-from django.utils.translation import gettext_lazy as _
 
 from authnapp.models import User
 from directory.models import House, Services

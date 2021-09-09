@@ -4,7 +4,6 @@ import json
 import re
 from datetime import timezone
 import calendar
-from newcity.celery import app
 
 from django.core.serializers import serialize
 from django.utils.safestring import mark_safe
@@ -96,7 +95,6 @@ def get_calc_variable():
     for user in users:
         data = []
         total, pre_total = 0, 0
-        period = PERIOD
         user = User.objects.get(id=user.id)
         appa = Appartament.get_item(user.id)[0]
         stand = Standart.get_last_val(appa.house_id)
@@ -188,7 +186,7 @@ def get_calc_service(el, curr, subs, priv):
                     "user": curr["user"],
                     # TODO В какую сторону перерасчет???
                     "recalc": element["accured"] - curr["buffer"][const],
-                    "desc": f"Автоматический перерасчет на основании введенных пользователем счетчиков",
+                    "desc": "Автоматический перерасчет на основании введенных пользователем счетчиков",
                 }
                 obj, created = Recalculations.objects.update_or_create(
                     user=curr["user"], period=PERIOD, service=el, is_auto=True, defaults=upd_val
@@ -211,9 +209,9 @@ def get_calc_service(el, curr, subs, priv):
     element["privileges"] = element["pre_total"] * decimal.Decimal(get_sale(el.name, priv) / 100)
     element["recalculation"] = get_recl(el.name, recl)
     element["total"] = (
-        (element["accured"] * element["coefficient"])
-        - (element["subsidies"] + element["privileges"])
-        + element["recalculation"]
+        (element["accured"] * element["coefficient"]) -
+        (element["subsidies"] + element["privileges"]) +
+        element["recalculation"]
     )
     return element
 

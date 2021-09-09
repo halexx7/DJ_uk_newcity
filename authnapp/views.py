@@ -7,11 +7,10 @@ from django.shortcuts import HttpResponseRedirect, render
 from django.urls import reverse, reverse_lazy
 from django.views.generic import UpdateView
 
-from authnapp.forms import (AppartamentEditForm, AppartamentFormset,
-                            ProfileFormset, UserEditForm, UserLoginForm,
-                            UserProfileEditForm, UserRegisterForm)
+
+from authnapp.forms import (ProfileFormset, UserEditForm, UserLoginForm,
+                            UserRegisterForm)
 from authnapp.models import User
-from directory.models import Appartament, UserProfile
 
 
 def login(request):

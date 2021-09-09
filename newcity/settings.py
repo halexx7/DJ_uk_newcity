@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     "directory",
     "invoice",
     "solo",
+    'garpix_qa',
 ]
 
 # Auth model

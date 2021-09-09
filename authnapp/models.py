@@ -109,11 +109,11 @@ class User(AbstractBaseUser, PermissionsMixin):
 @receiver(post_save, sender=User)
 def add_admin_permission(sender, instance, created, **kwargs):
     if created and not instance.is_superuser:
-        if instance.is_client == True:
+        if instance.is_client:
             # Если клиент добавляем в группу "Client"
             grupo = Group.objects.get(name="Client")
             grupo.user_set.add(instance)
-        if instance.is_staff == True:
+        if instance.is_staff:
             # Если Менеджер очищаем от всех групп и добавляем в группу "Manager"
             instance.groups.clear()
             grupo = Group.objects.get(name="Manager")
