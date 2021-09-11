@@ -6,8 +6,7 @@ from django.contrib.auth.forms import (AuthenticationForm, PasswordChangeForm,
                                        PasswordResetForm, SetPasswordForm,
                                        UserChangeForm, UserCreationForm)
 from django.contrib.auth.models import Group
-from django.forms import fields, models
-from django.forms.models import BaseInlineFormSet, inlineformset_factory
+from django.forms.models import inlineformset_factory
 
 from directory.models import Appartament, UserProfile
 

@@ -4,7 +4,7 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-black = "*"
+black = "21.8b0"
 django-autocomplete-light = "*"
 django-crispy-forms = "*"
 gunicorn = "==20.0.4"
@@ -29,6 +29,7 @@ Pygments = "==2.9.0"
 django-solo = "*"
 flake8 = "*"
 celery = {extras = ["redis"], version = "*"}
+garpix-qa = "*"
 
 [dev-packages]
 
