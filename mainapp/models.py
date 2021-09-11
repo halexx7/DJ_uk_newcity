@@ -1,3 +1,4 @@
+import logging
 import datetime
 from decimal import Decimal
 
@@ -11,6 +12,9 @@ from authnapp.models import User
 from directory.models import House, Services
 from mainapp.mixins.utils import (PERIOD, ActiveMixin, CreateUpdateMixin,
                                   WaterCounterMixin)
+
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
 
 
 # Общедомовой счетчик (ТЕКУЩИЕ показания)
@@ -131,7 +135,8 @@ class CurrentCounter(WaterCounterMixin):
                 return obj
             else:
                 return None
-        except:
+        except Exception as e:
+            logger.error(e)
             return None
 
 
@@ -242,7 +247,8 @@ class VariablePayments(ActiveMixin):
         try:
             value = VariablePayments.objects.filter(user=user).first()
             return value
-        except:
+        except Exception as e:
+            logger.error(e)
             return None
 
 
@@ -435,7 +441,8 @@ class AverageСalculationBuffer(CreateUpdateMixin):
         try:
             buff = AverageСalculationBuffer.objects.filter(user=user).first()
             return buff
-        except:
+        except Exception as e:
+            logger.error(e)
             return False
 
     def get_sum_average_buffer(user):
