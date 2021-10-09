@@ -14,9 +14,9 @@ load_dotenv(os.path.join(BASE_DIR, ".env"))
 SECRET_KEY = os.getenv("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.getenv("DEBUG")
+DEBUG = False if os.getenv("DJANGO_PRODUCTION", default=None) else True
 
-ALLOWED_HOSTS = ["*"]
+ALLOWED_HOSTS = ['31.148.203.110', '127.0.0.1', 'localhost']
 # ALLOWED_HOSTS = ['*','127.0.0.1', 'http://localhost:8000']
 
 
@@ -142,6 +142,7 @@ USE_TZ = True
 
 STATIC_URL = "/static/"
 
+
 if DEBUG:
     STATICFILES_DIRS = (os.path.join(BASE_DIR, "static"),)
 else:
@@ -149,7 +150,7 @@ else:
 
 
 # Media files
-MEDIA_URL = "/media/"
+MEDIA_URL = "/media/Изображения/"
 
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 

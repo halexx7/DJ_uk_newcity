@@ -55,3 +55,8 @@ python3 manage.py runserver
 ````
 python3 manage.py migrate
 ```
+
+/home/zbs/.local/share/virtualenvs/DJ_uk_newcity-WR_7qvMz/bin/gunicorn
+
+/home/zbs/DJ_uk_newcity/newcity.sock newcity.wsgi
+unix:/home/django/geekshop/geekshop.sock geekshop.wsgi
