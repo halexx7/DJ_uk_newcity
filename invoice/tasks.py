@@ -5,6 +5,6 @@ from datetime import timezone
 
 @app.task()
 def invoice_simulation():
-    print(get_last_date())
+    # print(get_last_date())
     if timezone.now().day == get_last_date():
         starter()
