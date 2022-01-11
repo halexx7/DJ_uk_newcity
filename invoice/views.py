@@ -5,6 +5,7 @@ import json
 import re
 from datetime import timezone
 import calendar
+from newcity.celery import app
 
 from django.core.serializers import serialize
 from django.utils.safestring import mark_safe

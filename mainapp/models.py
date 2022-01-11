@@ -457,9 +457,10 @@ class AverageСalculationBuffer(CreateUpdateMixin):
         return data
 
     def get_dict(self):
-        data = dict()
-        data["user"] = self.user
-        data["col_water"] = self.col_water
-        data["hot_water"] = self.hot_water
-        data["sewage"] = self.sewage
+        data = {
+            "user": self.user,
+            "col_water": self.col_water,
+            "hot_water": self.hot_water,
+            "sewage": self.sewage
+        }
         return data
