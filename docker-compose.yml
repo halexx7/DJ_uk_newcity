@@ -3,7 +3,7 @@ version: "3"
 services:  
 
   postgres:
-    container_name: uk_pdb
+    container_name: uk_pdb_1
     image: postgres:13-alpine
     env_file:
       - .env
@@ -15,7 +15,7 @@ services:
     restart: always
   
   redis:
-    container_name: uk_redis
+    container_name: uk_redis_1
     image: redis:alpine
     ports:
         - '6379:6379'

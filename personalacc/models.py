@@ -56,7 +56,7 @@ class SiteConfiguration(SingletonModel, ActiveMixin):
         return requis
 
     def get_absolute_url(self):
-        return f"/media/{self.image}/"
+        return f"/media/{self.image}"
 
     def __str__(self):
         return "Настройки сайта"

@@ -1,3 +1,4 @@
+import logging
 import datetime
 import decimal
 import json
@@ -18,6 +19,9 @@ from mainapp.models import (AverageСalculationBuffer, ConstantPayments,
                             MainBook, PaymentOrder, PersonalAccountStatus,
                             Recalculations, Standart, VariablePayments)
 from personalacc.models import SiteConfiguration
+
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
 
 
 class InvoiceViews(DetailView):
@@ -48,42 +52,46 @@ def get_calc_const():
     rate = Services.get_const_payments(1)
 
     for user in users:
-        data = []
-        total = 0
-        pre_total = 0
+        try:
+            data = []
+            total = 0
+            pre_total = 0
 
-        user_id = User.objects.get(id=user.id)
-        appart = Appartament.objects.get(user=user)
-        for el in rate:
-            element = {
-                "service": el.name,
-                "unit": el.unit,
-                "rate": el.rate,
-                "standart": "",
-                "volume": "",
-                "coefficient": el.factor if el.factor >= 0 else "",
-                "subsidies": 0,
-                "privileges": 0,
-                "recalculation": 0,
+            user_id = User.objects.get(id=user.id)
+            appart = Appartament.objects.get(user=user)
+            for el in rate:
+                element = {
+                    "service": el.name,
+                    "unit": el.unit,
+                    "rate": el.rate,
+                    "standart": "",
+                    "volume": "",
+                    "coefficient": el.factor if el.factor >= 0 else "",
+                    "subsidies": 0,
+                    "privileges": 0,
+                    "recalculation": 0,
+                }
+                if el.unit.name == "м2":
+                    element["accured"] = el.rate * appart.sq_appart
+                elif el.unit.name == "чел":
+                    element["accured"] = el.rate * appart.num_owner
+                else:
+                    element["accured"] = el.rate
+                element["total"] = element["accured"]
+                element["pre_total"] = element["accured"]
+                pre_total += element["pre_total"]
+                total += element["total"]
+                data.append(element)
+
+            update_values = {
+                "data": json.dumps(data, ensure_ascii=False, default=str),
+                "total": decimal.Decimal(total),
+                "pre_total": decimal.Decimal(total),
             }
-            if el.unit.name == "м2":
-                element["accured"] = el.rate * appart.sq_appart
-            elif el.unit.name == "чел":
-                element["accured"] = el.rate * appart.num_owner
-            else:
-                element["accured"] = el.rate
-            element["total"] = element["accured"]
-            element["pre_total"] = element["accured"]
-            pre_total += element["pre_total"]
-            total += element["total"]
-            data.append(element)
-
-        update_values = {
-            "data": json.dumps(data, ensure_ascii=False, default=str),
-            "total": decimal.Decimal(total),
-            "pre_total": decimal.Decimal(total),
-        }
-        obj, created = ConstantPayments.objects.update_or_create(user=user_id, defaults=update_values)
+            obj, created = ConstantPayments.objects.update_or_create(user=user_id, defaults=update_values)
+        except Exception as e:
+            logger.error(e)
+            continue
     return (data, total)
 
 
@@ -94,47 +102,50 @@ def get_calc_variable():
     rate = Services.get_varybose_payments(1)
 
     for user in users:
-        data = []
-        total, pre_total = 0, 0
-        period = PERIOD
-        user = User.objects.get(id=user.id)
-        appa = Appartament.get_item(user.id)[0]
-        stand = Standart.get_last_val(appa.house_id)
-        sq_appa = appa.sq_appart
-        hist = HistoryCounter.get_last_val(user.id)
-        curr = {"user": user, "standart": False}
-        object_curr = CurrentCounter.get_last_val(user)
-        if object_curr:
-            # Если счетчики введены, считаем объем
-            curr["period"] = object_curr.period
-            curr["volume_col"] = object_curr.col_water - hist.col_water
-            curr["volume_hot"] = object_curr.hot_water - hist.hot_water
-            curr["volume_sewage"] = curr["volume_col"] + curr["volume_hot"]
-            # Проверяем наличие данных в буфере накопительных платежей для перерасчета
-            curr["buffer"] = AverageСalculationBuffer.get_sum_average_buffer(user)
-        else:
-            # Если счетчики не введены, берем общедомовой средний объем
-            curr["standart"] = True
-            curr["volume_col"] = stand.col_water * sq_appa
-            curr["volume_hot"] = stand.hot_water * sq_appa
-            curr["volume_sewage"] = curr["volume_col"] + curr["volume_hot"]
-            curr["period"] = PERIOD - datetime.timedelta(days=1)
+        try:
+            data = []
+            total, pre_total = 0, 0
+            user = User.objects.get(id=user.id)
+            appa = Appartament.get_item(user.id)[0]
+            stand = Standart.get_last_val(appa.house_id)
+            sq_appa = appa.sq_appart
+            hist = HistoryCounter.get_last_val(user.id)
+            curr = {"user": user, "standart": False}
+            object_curr = CurrentCounter.get_last_val(user)
+            if object_curr:
+                # Если счетчики введены, считаем объем
+                curr["period"] = object_curr.period
+                curr["volume_col"] = object_curr.col_water - hist.col_water
+                curr["volume_hot"] = object_curr.hot_water - hist.hot_water
+                curr["volume_sewage"] = curr["volume_col"] + curr["volume_hot"]
+                # Проверяем наличие данных в буфере накопительных платежей для перерасчета
+                curr["buffer"] = AverageСalculationBuffer.get_sum_average_buffer(user)
+            else:
+                # Если счетчики не введены, берем общедомовой средний объем
+                curr["standart"] = True
+                curr["volume_col"] = stand.col_water * sq_appa
+                curr["volume_hot"] = stand.hot_water * sq_appa
+                curr["volume_sewage"] = curr["volume_col"] + curr["volume_hot"]
+                curr["period"] = PERIOD - datetime.timedelta(days=1)
 
-        subs = Subsidies.get_items(user.id)
-        priv = Privileges.get_items(user.id)
+            subs = Subsidies.get_items(user.id)
+            priv = Privileges.get_items(user.id)
 
-        for el in rate:
-            calc = get_calc_service(el, curr, subs, priv)
-            data.append(calc)
-            total += calc["total"]
-            pre_total += calc["pre_total"]
+            for el in rate:
+                calc = get_calc_service(el, curr, subs, priv)
+                data.append(calc)
+                total += calc["total"]
+                pre_total += calc["pre_total"]
 
-        update_values = {
-            "data": json.dumps(data, ensure_ascii=False, default=str),
-            "total": decimal.Decimal(total),
-            "pre_total": decimal.Decimal(pre_total),
-        }
-        obj, created = VariablePayments.objects.update_or_create(user=user, period=PERIOD, defaults=update_values)
+            update_values = {
+                "data": json.dumps(data, ensure_ascii=False, default=str),
+                "total": decimal.Decimal(total),
+                "pre_total": decimal.Decimal(pre_total),
+            }
+            obj, created = VariablePayments.objects.update_or_create(user=user, period=PERIOD, defaults=update_values)
+        except Exception as e:
+            logger.error(e)
+            continue
     return (data, total, pre_total)
 
 
@@ -186,9 +197,8 @@ def get_calc_service(el, curr, subs, priv):
             if buffer[const]:
                 upd_val = {
                     "user": curr["user"],
-                    # TODO В какую сторону перерасчет???
                     "recalc": element["accured"] - curr["buffer"][const],
-                    "desc": f"Автоматический перерасчет на основании введенных пользователем счетчиков",
+                    "desc": "Автоматический перерасчет на основании введенных пользователем счетчиков",
                 }
                 obj, created = Recalculations.objects.update_or_create(
                     user=curr["user"], period=PERIOD, service=el, is_auto=True, defaults=upd_val
@@ -211,9 +221,9 @@ def get_calc_service(el, curr, subs, priv):
     element["privileges"] = element["pre_total"] * decimal.Decimal(get_sale(el.name, priv) / 100)
     element["recalculation"] = get_recl(el.name, recl)
     element["total"] = (
-        (element["accured"] * element["coefficient"])
-        - (element["subsidies"] + element["privileges"])
-        + element["recalculation"]
+        (element["accured"] * element["coefficient"]) -
+        (element["subsidies"] + element["privileges"]) +
+        element["recalculation"]
     )
     return element
 
