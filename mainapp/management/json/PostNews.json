@@ -1,0 +1,34 @@
+[
+    {
+        "id": 1,
+        "created": "2022-01-26 21:29:20",
+        "updated": "2022-01-26 21:29:20",
+        "is_active": "1",
+        "title": "Мы запустились! УРА!",
+        "content": "Lorem, ipsum dolor sit amet consectetur adipisicing elit. Eum incidunt quibusdam necessitatibus consequatur numquam accusantium, voluptate vitae quae id cumque odit? Expedita qui doloribus vitae odio corrupti molestiae distinctio ipsum. Lorem, ipsum dolor sit amet consectetur adipisicing elit. Eum incidunt quibusdam necessitatibus consequatur numquam accusantium, voluptate vitae quae id cumque odit? Expedita qui doloribus vitae odio corrupti molestiae distinctio ipsum."
+    },
+    {
+        "id": 2,
+        "created": "2022-01-26 21:29:20",
+        "updated": "2022-01-26 21:29:20",
+        "is_active": "1",
+        "title": "Поздравляем всех женщин с 8-м Марта!",
+        "content": "Lorem, ipsum dolor sit amet consectetur adipisicing elit. Eum incidunt quibusdam necessitatibus consequatur numquam accusantium, voluptate vitae quae id cumque odit? Expedita qui doloribus vitae odio corrupti molestiae distinctio ipsum. Lorem, ipsum dolor sit amet consectetur adipisicing elit. Eum incidunt quibusdam necessitatibus consequatur numquam accusantium, voluptate vitae quae id cumque odit? Expedita qui doloribus vitae odio corrupti molestiae distinctio ipsum. Lorem, ipsum dolor sit amet consectetur adipisicing elit. Eum incidunt quibusdam necessitatibus consequatur numquam accusantium, voluptate vitae quae id cumque odit? Expedita qui doloribus vitae odio corrupti molestiae distinctio ipsum."
+    },
+    {
+        "id": 3,
+        "created": "2022-01-26 21:29:20",
+        "updated": "2022-01-26 21:29:20",
+        "is_active": "1",
+        "title": "Мир! Труд! Май!",
+        "content": "Lorem, ipsum dolor sit amet consectetur adipisicing elit. Eum incidunt quibusdam necessitatibus consequatur numquam accusantium, voluptate vitae quae id cumque odit? Expedita qui doloribus vitae odio corrupti molestiae distinctio ipsum."
+    },
+    {
+        "id": 4,
+        "created": "2022-01-26 21:29:20",
+        "updated": "2022-01-26 21:29:20",
+        "is_active": "1",
+        "title": "Ура! Мы повышаем тарифы! ВСЕМ! ВСЕМ! ВСЕМ!",
+        "content": "Lorem, ipsum dolor sit amet consectetur adipisicing elit. Eum incidunt quibusdam necessitatibus consequatur numquam accusantium, voluptate vitae quae id cumque odit? Expedita qui doloribus vitae odio corrupti molestiae distinctio ipsum. Lorem, ipsum dolor sit amet consectetur adipisicing elit. Eum incidunt quibusdam necessitatibus consequatur numquam accusantium, voluptate vitae quae id cumque odit? Expedita qui doloribus vitae odio corrupti molestiae distinctio ipsum. Lorem, ipsum dolor sit amet consectetur adipisicing elit. Eum incidunt quibusdam necessitatibus consequatur numquam accusantium, voluptate vitae quae id cumque odit? Expedita qui doloribus vitae odio corrupti molestiae distinctio ipsum."
+    }
+]

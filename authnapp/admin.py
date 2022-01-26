@@ -1,7 +1,10 @@
+from import_export import resources
+
 from django import forms
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
+from django.contrib.auth.models import Group, Permission
 
 from authnapp.models import User
 from directory.models import Privileges, Subsidies, UserProfile
@@ -143,3 +146,18 @@ admin.site.register(User, UserAdmin)
 # ... and, since we're not using Django's built-in permissions,
 # unregister the Group model from admin.
 # admin.site.unregister(Group)
+
+
+class UserResource(resources.ModelResource):
+    class Meta:
+        model = User
+        
+
+class GroupResource(resources.ModelResource):
+    class Meta:
+        model = Group
+
+
+class PermissionResource(resources.ModelResource):
+    class Meta:
+        model = Permission

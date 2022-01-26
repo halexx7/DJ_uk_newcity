@@ -1,4 +1,5 @@
 from django.contrib import admin
+from import_export import resources
 
 from directory.models import (
     Appartament,
@@ -184,3 +185,59 @@ class PrivilegesAdmin(admin.ModelAdmin):
         "created",
         "updated",
     )
+
+
+## Import-Export
+class UserProfileResource(resources.ModelResource):
+    class Meta:
+        model = UserProfile
+
+
+class SubsidiesResource(resources.ModelResource):
+    class Meta:
+        model = Subsidies
+
+
+class StreetResource(resources.ModelResource):
+    class Meta:
+        model = Street
+
+
+class ServicesCategoryResource(resources.ModelResource):
+    class Meta:
+        model = ServicesCategory
+
+
+class ServicesResource(resources.ModelResource):
+    class Meta:
+        model = Services
+
+
+class PrivilegesResource(resources.ModelResource):
+    class Meta:
+        model = Privileges
+
+
+class PostNewsResource(resources.ModelResource):
+    class Meta:
+        model = PostNews
+
+
+class MetricsResource(resources.ModelResource):
+    class Meta:
+        model = Metrics
+
+
+class HouseResource(resources.ModelResource):
+    class Meta:
+        model = House
+
+
+class CityResource(resources.ModelResource):
+    class Meta:
+        model = City
+
+
+class AppartamentResource(resources.ModelResource):
+    class Meta:
+        model = Appartament

@@ -1,4 +1,5 @@
 from django.contrib import admin
+from import_export import resources
 
 from authnapp.models import User
 from mainapp.models import (
@@ -188,3 +189,69 @@ class AverageСalculationBufferAdmin(admin.ModelAdmin):
         "created",
         "updated",
     )
+
+
+#Import-Export
+class AverageСalculationBufferResource(resources.ModelResource):
+    class Meta:
+        model = AverageСalculationBuffer
+
+
+class ConstantPaymentsResource(resources.ModelResource):
+    class Meta:
+        model = ConstantPayments
+
+
+class CurrentCounterResource(resources.ModelResource):
+    class Meta:
+        model = CurrentCounter
+
+
+class HeaderDataResource(resources.ModelResource):
+    class Meta:
+        model = HeaderData
+
+
+class HistoryCounterResource(resources.ModelResource):
+    class Meta:
+        model = HistoryCounter
+
+
+class HouseCurrentResource(resources.ModelResource):
+    class Meta:
+        model = HouseCurrent
+
+
+class HouseHistoryResource(resources.ModelResource):
+    class Meta:
+        model = HouseHistory
+
+
+class MainBookResource(resources.ModelResource):
+    class Meta:
+        model = MainBook
+
+
+class PaymentOrderResource(resources.ModelResource):
+    class Meta:
+        model = PaymentOrder
+
+
+class PersonalAccountStatusResource(resources.ModelResource):
+    class Meta:
+        model = PersonalAccountStatus
+
+
+class RecalculationsResource(resources.ModelResource):
+    class Meta:
+        model = Recalculations
+
+
+class StandartResource(resources.ModelResource):
+    class Meta:
+        model = Standart
+
+
+class VariablePaymentsResource(resources.ModelResource):
+    class Meta:
+        model = VariablePayments
