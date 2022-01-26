@@ -1,14 +1,11 @@
 import os
-
+from pathlib import Path
 from dotenv import load_dotenv
 
-# Build paths inside the project like this: os.path.join(BASE_DIR, ...)
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+BASE_DIR = Path(__file__).resolve().parent.parent
 load_dotenv(os.path.join(BASE_DIR, ".env"))
 
-
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.getenv("SECRET_KEY")
@@ -17,11 +14,9 @@ SECRET_KEY = os.getenv("SECRET_KEY")
 DEBUG = os.getenv("DEBUG")
 
 ALLOWED_HOSTS = ["*"]
-# ALLOWED_HOSTS = ['*','127.0.0.1', 'http://localhost:8000']
 
 
 # Application definition
-
 INSTALLED_APPS = [
     "dal",
     "dal_select2",
@@ -32,18 +27,20 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    
     "mainapp",
     "authnapp",
     "personalacc",
-    "crispy_forms",
     "directory",
     "invoice",
+    
     "solo",
+    "crispy_forms",
+    "import_export",
 ]
 
 # Auth model
 AUTH_USER_MODEL = "authnapp.User"
-
 
 CRISPY_TEMPLATE_PACK = "bootstrap4"
 
@@ -84,15 +81,22 @@ WSGI_APPLICATION = "newcity.wsgi.application"
 
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
-
-DATABASES = {
-    "default": {
-        "ENGINE": os.getenv("POSTGRES_ENGINE"),
-        "NAME": os.getenv("POSTGRES_DB"),
-        "USER": os.getenv("POSTGRES_USER"),
-        "PASSWORD": os.getenv("POSTGRES_PASSWORD"),
-        "HOST": os.getenv("POSTGRES_HOST"),
-        "PORT": os.getenv("POSTGRES_PORT"),
+if DEBUG:    
+    DATABASES = {
+        "default": {
+            "ENGINE": os.getenv("POSTGRES_ENGINE"),
+            "NAME": os.getenv("POSTGRES_DB"),
+            "USER": os.getenv("POSTGRES_USER"),
+            "PASSWORD": os.getenv("POSTGRES_PASSWORD"),
+            "HOST": os.getenv("POSTGRES_HOST"),
+            "PORT": os.getenv("POSTGRES_PORT"),
+        }
+    }
+else:
+    DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
 
@@ -138,11 +142,14 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
+STATIC_URL = '/static/'
 
-STATIC_URL = "/static/"
+STATICFILES_DIRS = (
+    BASE_DIR / 'static',
+)
 
 if DEBUG:
-    STATICFILES_DIRS = (os.path.join(BASE_DIR, "static"),)
+    STATICFILES_DIRS = (BASE_DIR / 'static',)
 else:
     STATIC_ROOT = os.path.join(BASE_DIR, "static")
 
