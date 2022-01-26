@@ -28,21 +28,16 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     
-    "mainapp",
-    "authnapp",
-    "personalacc",
-    "directory",
-    "invoice",
+    "apps.mainapp",
+    "apps.authnapp",
+    "apps.personalacc",
+    "apps.directory",
+    "apps.invoice",
     
     "solo",
     "crispy_forms",
     "import_export",
 ]
-
-# Auth model
-AUTH_USER_MODEL = "authnapp.User"
-
-CRISPY_TEMPLATE_PACK = "bootstrap4"
 
 
 MIDDLEWARE = [
@@ -60,11 +55,14 @@ ROOT_URLCONF = "newcity.urls"
 CSRF_USE_SESSIONS = False
 COOKIE_HTTPONLY = False
 
+CRISPY_TEMPLATE_PACK = "bootstrap4"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],
-        "APP_DIRS": True,
+        'DIRS': [
+            BASE_DIR / 'templates',
+        ],
+        'APP_DIRS': True,
         "OPTIONS": {
             "context_processors": [
                 "django.template.context_processors.debug",
@@ -128,25 +126,18 @@ else:
 # https://docs.djangoproject.com/en/2.2/topics/i18n/
 
 LANGUAGE_CODE = "ru-RU"
-
 USE_I18N = True
-
 TIME_ZONE = "UTC"
-
 USE_I18N = True
-
 USE_L10N = True
-
 USE_TZ = True
 
 
 # Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/2.2/howto/static-files/
 STATIC_URL = '/static/'
-
-STATICFILES_DIRS = (
-    BASE_DIR / 'static',
-)
+# STATICFILES_DIRS = (
+#     BASE_DIR / 'static',
+# )
 
 if DEBUG:
     STATICFILES_DIRS = (BASE_DIR / 'static',)
@@ -156,12 +147,12 @@ else:
 
 # Media files
 MEDIA_URL = "/media/"
-
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 
 
-# Set login path:
-#   https://docs.djangoproject.com/en/2.2/ref/settings/#login-url
+# Пользователи/Авторизация
+AUTH_USER_MODEL = "authnapp.User"
+LOGIN_ERROR_URL = '/'
 LOGIN_URL = "authnapp:login"
 
 
