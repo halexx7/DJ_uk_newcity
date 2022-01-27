@@ -1,6 +1,6 @@
 window.onload = function() {
 
-    async function saveDataForm(event, formID) {
+    async function saveDataForm(event, formID, reDrawDiv) {
         event.preventDefault();
         
         // Парсит данные с формы и возвращает объект -> {'csrf': token, 'body': body}
@@ -60,7 +60,7 @@ window.onload = function() {
             let say = `Что-то пошло не так! Попробуйте чуть позже!`;
             let time = 15000;
             let typeAlert = `danger`;
-            displayCounterAlert(say, typeAlert, time, e.target.id);
+            displayCounterAlert(say, typeAlert, time, event.target.id);
         }
     }
 

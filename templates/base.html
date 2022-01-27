@@ -20,18 +20,11 @@
     <script src="{% static 'js/jquery/jquery-3.6.0.js' %}"></script>
     <script src="{% static 'js/jquery/jquery.cookie.js' %}"></script>
     <script src="{% static 'js/bootstrap/bootstrap.bundle.min.js' %}"></script>
-    <script src="{% static 'js/paccount/manager.js' %}"></script>
-    <script src="{% static 'js/paccount/form_list.js' %}"></script>
     <script src="{% static 'js/jquery/popper.min.js' %}"></script>
     <script>
         // Enable tooltips everywhere
         $(function () { $('[data-toggle="tooltip"]').tooltip();})
     </script>
-
-
-    <!-- Yandex - maps -->
-    <script src="https://api-maps.yandex.ru/2.1/?lang=ru_RU&amp;apikey=1888f9f3-1174-48c4-b1b4-fa129b355d0d" type="text/javascript"></script>
-    <script src="{% static 'js/ymaps/placemark.js' %}" type="text/javascript"></script>
     {% block js %}{% endblock js %}
 
 

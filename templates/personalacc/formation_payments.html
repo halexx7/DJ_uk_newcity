@@ -17,7 +17,9 @@
         
                         <div class="form-group  d-flex  justify-content-around  mt-5">
                             <button class="btn  btn-danger" action="{% url 'person:formation_payments' %}" type="button" id="formationPayBtn">Cтарт!</button>
-                            <a class="btn  btn-success" role="button" onclick="javascript:history.back(); return false;">отмена</a>
+                            <div>
+                                <a class="btn  btn-success" role="button" onclick="javascript:history.back(); return false;">отмена</a>
+                            </div>
                         </div>
                     </form>
                 </div>
@@ -25,3 +27,7 @@
         </div>
     </div>
 {% endblock content %}
+
+{% block js %}
+    <script src="{% static 'js/paccount/manager.js' %}"></script>
+{% endblock js %}

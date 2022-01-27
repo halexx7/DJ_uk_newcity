@@ -1,67 +1,61 @@
-jQuery(document).ready(function(){
+window.onload = function() {
 
-    function getCookie(name) {
-        var cookieValue = null;
-        if (document.cookie && document.cookie != '') {
-            var cookies = document.cookie.split(';');
-            for (var i = 0; i < cookies.length; i++) {
-                var cookie = jQuery.trim(cookies[i]);
-                // Does this cookie string begin with the name we want?
-                if (cookie.substring(0, name.length + 1) == (name + '=')) {
-                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                    break;
-                }
-            }
-        }
-            return cookieValue;
-    }
-    var csrftoken = getCookie('csrftoken');
+    async function saveDataForm(event, formID) {
+        event.preventDefault();
+        
+        // Парсит данные с формы и возвращает объект -> {'csrf': token, 'body': body}
+        function parceFormData (formData) {
+            let str = '';
+            let token = formData.get("csrfmiddlewaretoken")
+            for(let [name, value] of formData) {
+                str += `${name}=${value}&`};
+            return {'csrf': token, 'body': str.slice(0, -1)}}
+        
+        // Выводим сообщение в соответствующий Alert bootstrap
+        function displayCounterAlert(say, typeAlert, time, target){
+            try {
+                // Если елемента нет пролетаем дальше без ошибки
+                document.querySelector('#successAlert').remove();
+            } catch{ }
 
-    function csrfSafeMethod(method) {
-        // these HTTP methods do not require CSRF protection
-        return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
-    }
+            // Создаем новый div
+            let helper = document.createElement('div');
+            let html = `<div class="flex-fill  alert  alert-${typeAlert}  mt-3  mb-5" id="successAlert"><p>${say}</p></div>`;
+            helper.innerHTML = html;
+            let fff = document.querySelector(`#${formID}`)
+            document.querySelector(`#${formID}`).before(helper);
 
-    $.ajaxSetup({
-        beforeSend: function(xhr, settings) {
-            if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
-                xhr.setRequestHeader("X-CSRFToken", csrftoken);
-            }
-        }
-    });
+            // Таймер показа сообщения
+            // setTimeout(function(){
+            //     document.querySelector('#successAlert').remove();
+            // }, time);
+        };
 
-    // Выводим сообщение в соответствующий Alert bootstrap
-    function displayCounterAlert(say, typeAlert, time, target){
-        $('#successAlert').remove();
-            $('form input[name="col_water"], form input[name="hot_water"]').val('');
-            setTimeout(function(){
-                $('#successAlert').remove();
-            }, time);
-    };
-
-    //Ловим нажатие кнопки формирования платежки
-    $('#formationPayBtn').on('click', function (e) {
-        e.preventDefault();
-        var mForm = $('#formationPayForm').serialize();
-        $.ajax({
-            type : 'POST',
-            data: mForm,
-            success: function (e) {
-                $(`.category__form`).addClass(`d-flex  flex-column  align-items-center`);
-                $(`.category__form`).html(`<div class="flex-fill  alert  alert-success  mt-5  mb-3" id="successAlert">
-                <p>Платежки успешно сформированы!</p>
-                </div>
-                <div><a class="btn btn-link  nav-link" role="button" onclick="javascript:history.back(); return false;">Вернуться на главную</a></div>
-                `);
+        const formData = new FormData(document.getElementById(formID));
+        const request = parceFormData(formData);
+        const response = await fetch(window.location.href, {
+            method: 'POST',
+            headers: {
+            'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+            'X-CSRFToken': request['csrf']
             },
-            error: function (e) {
-                $(`.category__form`).addClass(`d-flex  flex-column  align-items-center`);
-                $(`.category__form`).html(`<div class="flex-fill  alert  alert-danger  mt-5  mb-3" id="successAlert">
-                <p>Что-то пошло не так! Попробуйте чуть позже!</p>
-                </div>
-                <div><a class="btn btn-link  nav-link" role="button" onclick="javascript:history.back(); return false;">Вернуться на главную</a></div>
-                `);
-            },
-        });
-    });
-});
+            body: ''})
+
+        if (response.ok) {
+            let say = `Данные успешно приняты!`;
+            let time = 15000;
+            let typeAlert = `success`;
+            displayCounterAlert(say, typeAlert, time, event.target.id);
+        } else {
+            let say = `Что-то пошло не так! Попробуйте чуть позже!`;
+            let time = 15000;
+            let typeAlert = `danger`;
+            displayCounterAlert(say, typeAlert, time, event.target.id);
+        }
+    }
+
+    //Ловим событие формы CURRENT
+    document.querySelector("#formationPayBtn").addEventListener('click', event => {
+        let formID = 'formationPayForm';
+        saveDataForm(event, formID).then()});
+};

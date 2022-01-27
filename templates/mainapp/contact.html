@@ -44,3 +44,11 @@
     </div><!-- /.container -->
 </section>
 {% endblock content %}
+
+
+{% block js %}
+    <!-- Yandex - maps -->
+    <script src="https://api-maps.yandex.ru/2.1/?lang=ru_RU&amp;apikey=1888f9f3-1174-48c4-b1b4-fa129b355d0d" type="text/javascript"></script>
+    <script src="{% static 'js/ymaps/placemark.js' %}" type="text/javascript"></script>
+{% endblock js %}
+    
