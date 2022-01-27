@@ -16,7 +16,6 @@ jQuery(document).ready(function(){
             return cookieValue;
     }
     var csrftoken = getCookie('csrftoken');
-    console.log(csrftoken);
 
     function csrfSafeMethod(method) {
         // these HTTP methods do not require CSRF protection

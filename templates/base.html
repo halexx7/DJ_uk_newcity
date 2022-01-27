@@ -43,27 +43,30 @@
 </head>
 
 <body>
-    {% get_solo 'personalacc.SiteConfiguration' as site_config %}
-    <header class="header">
-        <nav class="navbar navbar-expand-lg navbar-light bg-warning">
-            <div class="container">
-                <img class="mr-3" src="{% static 'img/icon/house-fill.svg' %}" alt="House" width="30" height="30">
-                <a class="navbar-brand" href="/">{{ site_config.name }}</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
-                    data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
-                    aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span>
-                </button>
-                {% block menu %}
-                {% endblock menu %}
-            </div>
-        </nav>
-    </header>
-
-    {% block content %}
-    {% endblock content %}
-
-    <!-- Footer -->
-    {% include 'mainapp/includes/footer.html' %} 
-     
+    <div class="wrapper">
+        {% get_solo 'personalacc.SiteConfiguration' as site_config %}
+        <header class="header">
+            <nav class="navbar navbar-expand-lg navbar-light bg-warning">
+                <div class="container">
+                    <img class="mr-3" src="{% static 'img/icon/house-fill.svg' %}" alt="House" width="30" height="30">
+                    <a class="navbar-brand" href="/">{{ site_config.name }}</a>
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                        aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span>
+                    </button>
+                    {% block menu %}
+                    {% endblock menu %}
+                </div>
+            </nav>
+        </header>
+        
+        <main class="main">
+            {% block content %}
+            {% endblock content %}
+        </main>
+    
+        <!-- Footer -->
+        {% include 'mainapp/includes/footer.html' %} 
+    </div> 
 </body>
 </html>
