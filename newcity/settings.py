@@ -79,7 +79,7 @@ WSGI_APPLICATION = "newcity.wsgi.application"
 
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
-if not DEBUG:    
+if DEBUG:    
     DATABASES = {
         "default": {
             "ENGINE": os.getenv("POSTGRES_ENGINE"),
@@ -124,7 +124,6 @@ else:
 
 # Internationalization
 # https://docs.djangoproject.com/en/2.2/topics/i18n/
-
 LANGUAGE_CODE = "ru-RU"
 USE_I18N = True
 TIME_ZONE = "UTC"

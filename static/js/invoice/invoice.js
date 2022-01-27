@@ -164,6 +164,6 @@ $('#invoice-pdf').on('click', (function() {
     //используем для увеличения разшения pdf
     html2canvas(pdfContainer, {background: "white", scale: 4}).then(function(canvas) {
         pdf.addImage(canvas, "jpeg", 20, 20, 557, 0);
-        pdf.save('TEST.pdf');
+        pdf.save(`${convertDate(period)}.pdf`);
     });
 }));

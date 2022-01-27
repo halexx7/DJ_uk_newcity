@@ -138,7 +138,7 @@
                                     <p class="text-700">Дом:</p>
                                     <div class="form-row  ml-4">{{ house_count_form.house|as_crispy_field }}</div>
                                 </div>
-                                <div class="user-area__table">
+                                <div class="user-area__table  clear__input">
                                     <table class="user-area__table  table">
                                         <thead>
                                             <tr>
@@ -202,7 +202,7 @@
                             <form class="ml-3  mb-5" id="recalculations_form" name="recalculations_form">
                                 {% csrf_token %}
                                 <input type="hidden" name="form_type" value="recalculations_form">
-                                <div class="row  d-flex  flex-column">
+                                <div class="row  d-flex  flex-column  clear__input">
                                     <div class="mb-3">
                                         <label for="formGroupExampleInput">Лицевой счет</label>
                                         {{ recalculations_form.user|as_crispy_field }}
@@ -263,7 +263,7 @@
                                         <form class="ml-3  mb-5" id="privilege_form" name="privilege_form">
                                             {% csrf_token %}
                                             <input type="hidden" name="form_type" value="privilege_form">
-                                            <div class="row  d-flex  flex-column">
+                                            <div class="row  d-flex  flex-column  clear__input">
                                                 <div class="mb-3">
                                                     <label for="formGroupExampleInput">Лицевой счет</label>
                                                     {{ privilege_form.user|as_crispy_field }}
@@ -308,7 +308,7 @@
                                             <form class="ml-3  mb-5" id="subsidies_form" name="subsidies_form">
                                                 {% csrf_token %}
                                                 <input type="hidden" name="form_type" value="subsidies_form">
-                                                <div class="row  d-flex  flex-column">
+                                                <div class="row  d-flex  flex-column  clear__input">
                                                     <div class="mb-3">
                                                         <label for="formGroupExampleInput">Лицевой счет</label>
                                                         {{ subsidies_form.user|as_crispy_field }}
@@ -355,7 +355,7 @@
                             <form class="ml-3  mb-5" id="payments_form" name="payments_form">
                                 {% csrf_token %}
                                 <input type="hidden" name="form_type" value="payments_form">
-                                <div class="row  d-flex  flex-column">
+                                <div class="row  d-flex  flex-column  clear__input">
                                     <div class="mb-3">
                                         <label for="formGroupExampleInput">Лицевой счет</label>
                                         {{ payments_form.user|as_crispy_field }}
