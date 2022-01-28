@@ -17,7 +17,7 @@
 
 
     <!-- Javascript -->
-    <script src="{% static 'js/jquery/jquery-3.6.0.js' %}"></script>
+    <script src="{% static 'js/jquery/jquery-3.6.0.js' %}"></script> 
     <script src="{% static 'js/jquery/jquery.cookie.js' %}"></script>
     <script src="{% static 'js/bootstrap/bootstrap.bundle.min.js' %}"></script>
     <script src="{% static 'js/jquery/popper.min.js' %}"></script>
@@ -59,7 +59,8 @@
         </main>
     
         <!-- Footer -->
-        {% include 'mainapp/includes/footer.html' %} 
+        {% include 'mainapp/includes/footer.html' %}
+        {% block footer %}{% endblock footer %}
     </div> 
 </body>
 </html>

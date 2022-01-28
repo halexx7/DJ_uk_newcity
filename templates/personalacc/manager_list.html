@@ -393,13 +393,15 @@
     </div>
 {% endblock content %}
 
+{% block js %}
+    <script src="{% static 'js/paccount/form_list.js' %}"></script>
+{% endblock js %}
+
 {% block footer %}
+    <!-- Для работы autocomplete -->
+    <!-- https://django-autocomplete-light.readthedocs.io/en/master/tutorial.html -->
     {{ recalculations_form.media }}
     {{ payments_form.media }}
     {{ privilege_form.media }}
     {{ subsidies_form.media }}
 {% endblock footer %}
-
-{% block js %}
-    <script src="{% static 'js/paccount/form_list.js' %}"></script>
-{% endblock js %}

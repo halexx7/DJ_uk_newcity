@@ -281,7 +281,6 @@ class UserAutocomplete(autocomplete.Select2QuerySetView):
 
 
 class FormationPayments(LoginRequiredMixin, ListView):
-
     Model = User
     template_name = "personalacc/formation_payments.html"
     queryset = User.objects.filter(id=1)
