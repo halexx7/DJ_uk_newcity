@@ -275,7 +275,9 @@ class UserAutocomplete(autocomplete.Select2QuerySetView):
         if not self.request.user.is_authenticated:
             return User.objects.none()
         qs = User.objects.filter(is_staff=False)
-        if self.q:
+        if self.q.isdigit():
+            qs = qs.filter(personal_account__istartswith=self.q)
+        if self.q.isalpha():
             qs = qs.filter(name__istartswith=self.q)
         return qs
 
