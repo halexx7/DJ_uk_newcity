@@ -34,3 +34,4 @@ typing-extensions==3.7.4.3
 virtualenv==20.4.3
 virtualenv-clone==0.5.4
 django-import-export
+django-solo
