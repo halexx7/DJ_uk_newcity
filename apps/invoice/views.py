@@ -12,14 +12,14 @@ from django.utils.safestring import mark_safe
 from django.views.generic.detail import DetailView
 
 
-from authnapp.models import User
-from directory.models import Appartament, Privileges, Services, Subsidies
-from mainapp.mixins.utils import PERIOD
-from mainapp.models import (AverageСalculationBuffer, ConstantPayments,
+from apps.authnapp.models import User
+from apps.directory.models import Appartament, Privileges, Services, Subsidies
+from apps.mainapp.mixins.utils import PERIOD
+from apps.mainapp.models import (AverageСalculationBuffer, ConstantPayments,
                             CurrentCounter, HeaderData, HistoryCounter,
                             MainBook, PaymentOrder, PersonalAccountStatus,
                             Recalculations, Standart, VariablePayments)
-from personalacc.models import SiteConfiguration
+from apps.personalacc.models import SiteConfiguration
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)

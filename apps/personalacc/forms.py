@@ -2,9 +2,9 @@ from crispy_forms.helper import FormHelper
 from dal import autocomplete
 from django import forms
 
-from authnapp.models import User
-from directory.models import Privileges, Services, Subsidies
-from mainapp.models import (CurrentCounter, HouseCurrent, HouseHistory,
+from apps.authnapp.models import User
+from apps.directory.models import Privileges, Services, Subsidies
+from apps.mainapp.models import (CurrentCounter, HouseCurrent, HouseHistory,
                             MainBook, Recalculations)
 
 

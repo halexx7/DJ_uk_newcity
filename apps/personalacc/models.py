@@ -1,7 +1,7 @@
 from django.db import models
 from solo.models import SingletonModel
 
-from mainapp.mixins.utils import ActiveMixin
+from apps.mainapp.mixins.utils import ActiveMixin
 
 
 class SiteConfiguration(SingletonModel, ActiveMixin):

@@ -3,9 +3,9 @@ from crispy_forms.layout import Column, Layout, Row, Submit
 from django import forms
 from django.forms.models import inlineformset_factory
 
-from authnapp.admin import UserCreationForm
-from authnapp.forms import BootstrapStylesMixins
-from directory.models import (Appartament, City, House, Services,
+from apps.authnapp.admin import UserCreationForm
+from apps.authnapp.forms import BootstrapStylesMixins
+from apps.directory.models import (Appartament, City, House, Services,
                               ServicesCategory, Street)
 
 

@@ -8,17 +8,17 @@ from django.template.loader import render_to_string
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, ListView
 
-from authnapp.models import User
-from directory.models import Appartament, Privileges, Subsidies, UserProfile
-from invoice.views import starter
-from mainapp.models import (CurrentCounter, HistoryCounter, HouseCurrent,
+from apps.authnapp.models import User
+from apps.directory.models import Appartament, Privileges, Subsidies, UserProfile
+from apps.invoice.views import starter
+from apps.mainapp.models import (CurrentCounter, HistoryCounter, HouseCurrent,
                             HouseHistory, MainBook, PaymentOrder,
                             PersonalAccountStatus, Recalculations)
-from personalacc.forms import (CurrentCounterForm, HomeCurrentCounterForm,
+from apps.personalacc.forms import (CurrentCounterForm, HomeCurrentCounterForm,
                                HomeHistoryCounterForm, PaymentsForm,
                                PrivilegesForm, RecalculationsForm,
                                SubsidiesForm)
-from personalacc.models import SiteConfiguration
+from apps.personalacc.models import SiteConfiguration
 
 
 class UserPageCreate(LoginRequiredMixin, CreateView):
@@ -269,12 +269,7 @@ class UserAutocomplete(autocomplete.Select2QuerySetView):
 
 
 class FormationPayments(LoginRequiredMixin, ListView):
-<<<<<<< HEAD:apps/personalacc/views.py
-    Model = User
-=======
-
     model = User
->>>>>>> 5e9468d747d8a9ba81a292ff81c8d3828be6ee21:personalacc/views.py
     template_name = "personalacc/formation_payments.html"
     queryset = User.objects.filter(id=1)
 

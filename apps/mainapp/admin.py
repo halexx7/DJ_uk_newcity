@@ -1,8 +1,8 @@
 from django.contrib import admin
 from import_export import resources
 
-from authnapp.models import User
-from mainapp.models import (AverageСalculationBuffer, ConstantPayments,
+from apps.authnapp.models import User
+from apps.mainapp.models import (AverageСalculationBuffer, ConstantPayments,
                             CurrentCounter, HeaderData, HistoryCounter,
                             HouseCurrent, HouseHistory, MainBook, PaymentOrder,
                             PersonalAccountStatus, Recalculations, Standart,

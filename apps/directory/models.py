@@ -4,8 +4,8 @@ from django.db.models.deletion import CASCADE, SET_NULL
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
-from authnapp.models import User
-from mainapp.mixins.utils import ActiveMixin
+from apps.authnapp.models import User
+from apps.mainapp.mixins.utils import ActiveMixin
 
 
 class PostNews(ActiveMixin):

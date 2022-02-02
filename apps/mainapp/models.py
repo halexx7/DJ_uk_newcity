@@ -8,9 +8,9 @@ from django.db.models.deletion import CASCADE, SET_NULL
 from django.db.models.signals import post_save, pre_delete
 from django.dispatch import receiver
 
-from authnapp.models import User
-from directory.models import House, Services
-from mainapp.mixins.utils import (PERIOD, ActiveMixin, CreateUpdateMixin,
+from apps.authnapp.models import User
+from apps.directory.models import House, Services
+from apps.mainapp.mixins.utils import (PERIOD, ActiveMixin, CreateUpdateMixin,
                                   WaterCounterMixin)
 
 logger = logging.getLogger(__name__)
