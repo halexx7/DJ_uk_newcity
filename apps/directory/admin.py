@@ -1,19 +1,9 @@
 from django.contrib import admin
 from import_export import resources
 
-from apps.directory.models import (
-    Appartament,
-    City,
-    House,
-    Metrics,
-    PostNews,
-    Privileges,
-    Services,
-    ServicesCategory,
-    Street,
-    Subsidies,
-    UserProfile,
-)
+from directory.models import (Appartament, City, House, Metrics, PostNews,
+                              Privileges, Services, ServicesCategory, Street,
+                              Subsidies, UserProfile)
 
 
 class ServicesInline(admin.TabularInline):

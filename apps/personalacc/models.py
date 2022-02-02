@@ -1,10 +1,16 @@
 from django.db import models
 from solo.models import SingletonModel
-from apps.mainapp.mixins.utils import ActiveMixin
+
+from mainapp.mixins.utils import ActiveMixin
 
 
 class SiteConfiguration(SingletonModel, ActiveMixin):
-    image = models.ImageField(verbose_name="Главное изображение", upload_to="Изображение", default="slide_1.jpg", help_text="Изображение которое отображается на главной странице")
+    image = models.ImageField(
+        verbose_name="Главное изображение",
+        upload_to="Изображение",
+        default="slide_1.jpg",
+        help_text="Изображение которое отображается на главной странице",
+    )
     name = models.CharField(verbose_name="Название", max_length=128, help_text="УК Новый город")
     city = models.CharField(verbose_name="Город", max_length=128, help_text="г.Тюмень")
     street = models.CharField(verbose_name="Улица", max_length=256, help_text="ул.Свободы")
@@ -48,9 +54,9 @@ class SiteConfiguration(SingletonModel, ActiveMixin):
             "bank": self.bank,
         }
         return requis
-    
+
     def get_absolute_url(self):
-        return f"/media/{self.image}/"
+        return f"/media/{self.image}"
 
     def __str__(self):
         return "Настройки сайта"

@@ -31,7 +31,9 @@
     {% block js %}
     <script id="hello-data" type="application/json">{{ appartaments }}</script>
     <script>
-        const paid = JSON.parse({{ paid }});
+        const paid = {{ paid }};
+        const orders = {{ order }};
+        const stats = {{ status }};
         const period = {{ order }}[0].fields.period;
         const header = JSON.parse({{ order }}[0].fields.header_data);
         const constant = JSON.parse({{ order }}[0].fields.constant_data);
