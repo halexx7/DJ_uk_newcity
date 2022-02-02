@@ -14,7 +14,7 @@ urlpatterns = [
     re_path(r"^directory/", include("apps.directory.urls", namespace="directory")),
     re_path(r"^person/", include("apps.personalacc.urls", namespace="person")),
     re_path(r"^invoice/", include("apps.invoice.urls", namespace="invoice")),
-    re_path(r"^admin/", admin.site.urls, name="admin"),
+    re_path(r"^admin/$", admin.site.urls, name="admin"),
 ]
 
 

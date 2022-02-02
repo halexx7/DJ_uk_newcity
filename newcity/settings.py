@@ -82,24 +82,25 @@ WSGI_APPLICATION = "newcity.wsgi.application"
 
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
-if not DEBUG:    
-    DATABASES = {
-        "default": {
-            "ENGINE": os.getenv("POSTGRES_ENGINE"),
-            "NAME": os.getenv("POSTGRES_DB"),
-            "USER": os.getenv("POSTGRES_USER"),
-            "PASSWORD": os.getenv("POSTGRES_PASSWORD"),
-            "HOST": os.getenv("POSTGRES_HOST"),
-            "PORT": os.getenv("POSTGRES_PORT"),
+# if not DEBUG:    
+DATABASES = {
+    "default": {
+        "ENGINE": os.getenv("POSTGRES_ENGINE"),
+        "NAME": os.getenv("POSTGRES_DB"),
+        "USER": os.getenv("POSTGRES_USER"),
+        "PASSWORD": os.getenv("POSTGRES_PASSWORD"),
+        "HOST": os.getenv("POSTGRES_HOST"),
+        "PORT": os.getenv("POSTGRES_PORT"),
         }
     }
-else:
-    DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': str(BASE_DIR / 'db.sqlite3'),
-    }
-}
+
+# For DEBUG
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': str(BASE_DIR / 'db.sqlite3'),
+#         }
+#     }
 
 
 # Password validation
