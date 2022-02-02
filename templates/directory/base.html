@@ -1,0 +1,75 @@
+{% load staticfiles %}
+
+<!doctype html>
+<html lang="ru">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Useful meta tags -->
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="index, follow, noodp">
+    <meta name="googlebot" content="index, follow">
+    <meta name="google" content="notranslate">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="keywords" content="">
+    <meta name="description" content="">
+
+    {% block css %}
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" type="text/css" href="{% static 'css/bootstrap.min.css' %}">
+
+    <!-- Main CSS -->
+    <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
+    {% endblock css %}
+
+
+    <!-- Главная | УК "Новый Город" -->
+    <title>
+        {% block title %}
+        {{ title|capfirst }}
+        {% endblock title %}
+    </title>
+</head>
+
+<body>
+    <header class="header">
+        <nav class="navbar navbar-expand-lg navbar-light bg-warning">
+            <div class="container"> 
+                <img class="mr-3" src="{% static 'img/icon/house-fill.svg' %}" alt="House" width="30" height="30">
+                <a class="navbar-brand" href="/">УК Новый Город</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                    aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span>
+                </button>
+
+                {% block menu %}
+                {% endblock menu %}
+
+            </div>
+        </nav>
+    </header>
+
+    <section class="edit  mt-5  mb-5  pb-5">
+        <div class="container">
+            <h4 class="mb-3">Справочник</h4>
+
+            <div class="content__item  d-flex  flex-column  w-100  justify-content-center">
+                {% block content %}
+                {% endblock content %}
+            </div>
+        </div>
+    </section>
+
+    <!-- JavaScript -->
+    <script src="{% static 'js/jquery/jquery-3.6.0.js' %}"></script>
+    <script src="{% static 'js/bootstrap/bootstrap.bundle.min.js' %}"></script>
+    {% block js %}
+    {% endblock %}
+</body>
+
+</html>

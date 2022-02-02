@@ -1,0 +1,62 @@
+[
+    {
+        "id": 1,
+        "created": "2022-01-26 21:29:20",
+        "updated": "2022-01-26 21:29:20",
+        "is_active": "1",
+        "city": 1,
+        "street": 4,
+        "number": "1",
+        "add_number": "-",
+        "sq_home": "4567.00",
+        "category_rate": 1
+    },
+    {
+        "id": 3,
+        "created": "2022-01-26 21:29:20",
+        "updated": "2022-01-26 21:29:20",
+        "is_active": "1",
+        "city": 1,
+        "street": 3,
+        "number": "3",
+        "add_number": "-",
+        "sq_home": "7654.00",
+        "category_rate": 1
+    },
+    {
+        "id": 4,
+        "created": "2022-01-26 21:29:20",
+        "updated": "2022-01-26 21:29:20",
+        "is_active": "1",
+        "city": 1,
+        "street": 3,
+        "number": "4",
+        "add_number": "-",
+        "sq_home": "6547.00",
+        "category_rate": 1
+    },
+    {
+        "id": 5,
+        "created": "2022-01-26 21:29:20",
+        "updated": "2022-01-26 21:29:20",
+        "is_active": "1",
+        "city": 1,
+        "street": 3,
+        "number": "5",
+        "add_number": "-",
+        "sq_home": "7654.00",
+        "category_rate": 1
+    },
+    {
+        "id": 2,
+        "created": "2022-01-26 21:29:20",
+        "updated": "2022-01-26 21:29:20",
+        "is_active": "1",
+        "city": 1,
+        "street": 3,
+        "number": "2",
+        "add_number": "-",
+        "sq_home": "6543.00",
+        "category_rate": 1
+    }
+]

@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+
+
+{% block menu %}
+    {% include 'mainapp/includes/inc_menu.html' %}
+{% endblock menu %}
+
+{% block content %}
+    <div class="container">
+        <div class="my-5">
+            <div class="row  mt-5  mb-3  d-flex justify-content-between">
+                <h4 class="col">История перерасчетов</h4>
+                <a href="{% url 'personalacc:manager' %}" class="col  text-right  text-decoration-none">На главную</a>
+            </div>
+            <div class="pagination  my-3">
+                <span class="step-links">
+                    {% if page_obj.has_previous %}
+                        <a href="?page={{ page_obj.previous_page_number }}">&laquo; назад    </a>
+                    {% endif %}
+                    <span class="current  px-3">
+                        Страница {{ page_obj.number }} из {{ page_obj.paginator.num_pages }}.
+                    </span>
+            
+                    {% if page_obj.has_next %}
+                        <a href="?page={{ page_obj.next_page_number }}">    вперед &raquo;</a>
+                    {% endif %}
+                </span>
+            </div>
+            <div class="manager-area__counters-history  mb-5">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Период</th>
+                            <th scope="col">Жилец</th>
+                            <th scope="col">Услуга</th>
+                            <th scope="col">Сумма</th>
+                            <th scope="col">Описание</th>
+                        </tr>
+                    </thead>
+        
+                    {% for el in recalc %}
+                    <tbody>
+                        <tr>
+                            <td>{{ el.id }}</td>
+                            <td>{{ el.period|date:"m - Y" }}</td>
+                            <td>{{ el.user }}</td>
+                            <td>{{ el.service }}</td>
+                            <td>{{ el.recalc }}</td>
+                            <td>{{ el.desc }}</td>
+                        </tr>
+                    </tbody>
+                    {% endfor %}
+        
+                </table> 
+            </div>
+        </div>
+    </div>
+{% endblock content %}

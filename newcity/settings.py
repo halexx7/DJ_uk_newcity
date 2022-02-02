@@ -1,14 +1,11 @@
 import os
-
+from pathlib import Path
 from dotenv import load_dotenv
 
-# Build paths inside the project like this: os.path.join(BASE_DIR, ...)
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+BASE_DIR = Path(__file__).resolve().parent.parent
 load_dotenv(os.path.join(BASE_DIR, ".env"))
 
-
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.getenv("SECRET_KEY")
@@ -16,12 +13,12 @@ SECRET_KEY = os.getenv("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False if os.getenv("DJANGO_PRODUCTION", default=None) else True
 
+
 ALLOWED_HOSTS = ['31.148.203.110', '127.0.0.1', 'localhost']
 # ALLOWED_HOSTS = ['*','127.0.0.1', 'http://localhost:8000']
 
 
 # Application definition
-
 INSTALLED_APPS = [
     "dal",
     "dal_select2",
@@ -32,21 +29,18 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "mainapp",
-    "authnapp",
-    "personalacc",
-    "crispy_forms",
-    "directory",
-    "invoice",
+    
+    "apps.mainapp",
+    "apps.authnapp",
+    "apps.personalacc",
+    "apps.directory",
+    "apps.invoice",
+    
     "solo",
+    "crispy_forms",
+    "import_export",
     'garpix_qa',
 ]
-
-# Auth model
-AUTH_USER_MODEL = "authnapp.User"
-
-
-CRISPY_TEMPLATE_PACK = "bootstrap4"
 
 
 MIDDLEWARE = [
@@ -64,11 +58,14 @@ ROOT_URLCONF = "newcity.urls"
 CSRF_USE_SESSIONS = False
 COOKIE_HTTPONLY = False
 
+CRISPY_TEMPLATE_PACK = "bootstrap4"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],
-        "APP_DIRS": True,
+        'DIRS': [
+            BASE_DIR / 'templates',
+        ],
+        'APP_DIRS': True,
         "OPTIONS": {
             "context_processors": [
                 "django.template.context_processors.debug",
@@ -85,15 +82,22 @@ WSGI_APPLICATION = "newcity.wsgi.application"
 
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
-
-DATABASES = {
-    "default": {
-        "ENGINE": os.getenv("POSTGRES_ENGINE"),
-        "NAME": os.getenv("POSTGRES_DB"),
-        "USER": os.getenv("POSTGRES_USER"),
-        "PASSWORD": os.getenv("POSTGRES_PASSWORD"),
-        "HOST": os.getenv("POSTGRES_HOST"),
-        "PORT": os.getenv("POSTGRES_PORT"),
+if DEBUG:    
+    DATABASES = {
+        "default": {
+            "ENGINE": os.getenv("POSTGRES_ENGINE"),
+            "NAME": os.getenv("POSTGRES_DB"),
+            "USER": os.getenv("POSTGRES_USER"),
+            "PASSWORD": os.getenv("POSTGRES_PASSWORD"),
+            "HOST": os.getenv("POSTGRES_HOST"),
+            "PORT": os.getenv("POSTGRES_PORT"),
+        }
+    }
+else:
+    DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': str(BASE_DIR / 'db.sqlite3'),
     }
 }
 
@@ -123,40 +127,37 @@ else:
 
 # Internationalization
 # https://docs.djangoproject.com/en/2.2/topics/i18n/
-
 LANGUAGE_CODE = "ru-RU"
-
 USE_I18N = True
-
 TIME_ZONE = "UTC"
-
 USE_I18N = True
-
 USE_L10N = True
-
 USE_TZ = True
 
 
 # Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/2.2/howto/static-files/
-
-STATIC_URL = "/static/"
+STATIC_URL = '/static/'
+# STATICFILES_DIRS = (
+#     BASE_DIR / 'static',
+# )
 
 
 if DEBUG:
-    STATICFILES_DIRS = (os.path.join(BASE_DIR, "static"),)
+    STATICFILES_DIRS = (BASE_DIR / 'static',)
 else:
     STATIC_ROOT = os.path.join(BASE_DIR, "static")
 
 
 # Media files
-MEDIA_URL = "/media/Изображения/"
+MEDIA_URL = "/media/"
+# MEDIA_URL = "/media/Изображения/"
 
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 
 
-# Set login path:
-#   https://docs.djangoproject.com/en/2.2/ref/settings/#login-url
+# Пользователи/Авторизация
+AUTH_USER_MODEL = "authnapp.User"
+LOGIN_ERROR_URL = '/'
 LOGIN_URL = "authnapp:login"
 
 
