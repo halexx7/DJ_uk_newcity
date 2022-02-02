@@ -11,9 +11,11 @@ load_dotenv(os.path.join(BASE_DIR, ".env"))
 SECRET_KEY = os.getenv("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.getenv("DEBUG")
+DEBUG = False if os.getenv("DJANGO_PRODUCTION", default=None) else True
 
-ALLOWED_HOSTS = ["*"]
+
+ALLOWED_HOSTS = ['31.148.203.110', '127.0.0.1', 'localhost']
+# ALLOWED_HOSTS = ['*','127.0.0.1', 'http://localhost:8000']
 
 
 # Application definition
@@ -37,6 +39,7 @@ INSTALLED_APPS = [
     "solo",
     "crispy_forms",
     "import_export",
+    'garpix_qa',
 ]
 
 
@@ -138,6 +141,7 @@ STATIC_URL = '/static/'
 #     BASE_DIR / 'static',
 # )
 
+
 if DEBUG:
     STATICFILES_DIRS = (BASE_DIR / 'static',)
 else:
@@ -146,6 +150,8 @@ else:
 
 # Media files
 MEDIA_URL = "/media/"
+# MEDIA_URL = "/media/Изображения/"
+
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 
 
@@ -160,6 +166,23 @@ if not DEBUG:
     DOMAIN_NAME = "http://31.148.203.110:8000"
 else:
     DOMAIN_NAME = "http://localhost:8000"
+
+
+# Celery
+
+REDIS_HOST = os.getenv('REDIS_HOST', 'localhost')
+
+CELERY_BROKER_URL = 'redis://{}:6379/1'.format(REDIS_HOST)
+CELERY_RESULT_BACKEND = 'redis://{}:6379/2'.format(REDIS_HOST)
+# CELERY_RESULT_BACKEND = 'django-db'
+CELERY_ACCEPT_CONTENT = ['application/json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+# CELERY_TIMEZONE = TIME_ZONE
+# CELERY_TASK_ALWAYS_EAGER = TEST
+CELERY_ENABLE_UTC = False
+DJANGO_CELERY_BEAT_TZ_AWARE = False
+
 
 # Read about sending email:
 #   https://docs.djangoproject.com/en/2.2/topics/email/

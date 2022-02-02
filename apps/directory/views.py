@@ -4,20 +4,15 @@ from django.shortcuts import HttpResponseRedirect, get_object_or_404
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, DeleteView, ListView, UpdateView
 
-from apps.authnapp.managers import UserManager
-from apps.authnapp.models import User
-from apps.directory.forms import (
-    AppartamentFormSet,
-    AppartamentsEditForm,
-    CityEditForm,
-    HouseEditForm,
-    ResidentsEditForm,
-    ServicesCategoryEditForm,
-    ServicesEditForm,
-    StreetEditForm,
-)
+from authnapp.managers import UserManager
+from authnapp.models import User
+from directory.forms import (AppartamentFormSet, AppartamentsEditForm,
+                             CityEditForm, HouseEditForm, ResidentsEditForm,
+                             ServicesCategoryEditForm, ServicesEditForm,
+                             StreetEditForm)
 
-from apps.directory.models import Appartament, City, House, Services, ServicesCategory, Street
+from .models import (Appartament, City, House, Services, ServicesCategory,
+                     Street)
 
 
 class DirectoryList(LoginRequiredMixin, ListView):

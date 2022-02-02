@@ -1,17 +1,20 @@
+import logging
 import datetime
 from decimal import Decimal
 
 from django.contrib.postgres.fields import JSONField
-from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models.deletion import CASCADE, SET_NULL
 from django.db.models.signals import post_save, pre_delete
 from django.dispatch import receiver
-from django.utils.translation import gettext_lazy as _
 
-from apps.authnapp.models import User
-from apps.directory.models import House, Services
-from apps.mainapp.mixins.utils import ActiveMixin, CreateUpdateMixin, WaterCounterMixin, PERIOD
+from authnapp.models import User
+from directory.models import House, Services
+from mainapp.mixins.utils import (PERIOD, ActiveMixin, CreateUpdateMixin,
+                                  WaterCounterMixin)
+
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
 
 
 # Общедомовой счетчик (ТЕКУЩИЕ показания)
@@ -23,10 +26,6 @@ class HouseCurrent(WaterCounterMixin):
         ordering = ("-updated",)
         verbose_name = "Домовой счетчик (текущий)"
         verbose_name_plural = "Домовые счетчики (текущие)"
-
-    def clean(self):
-        if self.col_water < 0.01 or self.hot_water < 0.01:
-            raise ValidationError("Допустимы только положительные числа!")
 
     def __str__(self):
         return f"Период - {self.period}, ул.{self.house.street.street}, Дом №{self.house.number}, к.{self.house.add_number}"
@@ -71,7 +70,6 @@ class HouseHistory(WaterCounterMixin):
     def copy_arhive_current_to_history_house(sender, instance, **kwargs):
         house = instance.house_id
         period = instance.period
-        print(type(instance.col_water))
         upd_val = {
             "col_water": instance.col_water,
             "hot_water": instance.hot_water,
@@ -104,7 +102,7 @@ class Standart(ActiveMixin):
     def calculation_of_standart_to_house_current(sender, instance, **kwargs):
         house = instance.house_id
         # period = PERIOD
-        # # TODO PERIOD
+        # TODO PERIOD
         period = instance.period
         hist = HouseHistory.get_last_val(house)[0]
         sq = House.get_item(house)[0].sq_home
@@ -137,7 +135,8 @@ class CurrentCounter(WaterCounterMixin):
                 return obj
             else:
                 return None
-        except:
+        except Exception as e:
+            logger.error(e)
             return None
 
 
@@ -248,7 +247,8 @@ class VariablePayments(ActiveMixin):
         try:
             value = VariablePayments.objects.filter(user=user).first()
             return value
-        except:
+        except Exception as e:
+            logger.error(e)
             return None
 
 
@@ -431,7 +431,7 @@ class AverageСalculationBuffer(CreateUpdateMixin):
 
     class Meta:
         verbose_name = "Буффер средних начислений"
-        unique_together = ('user', 'period')
+        unique_together = ("user", "period")
 
     def __str__(self):
         return f"({self.user.personal_accaunt}) - {self.user.name}"
@@ -441,7 +441,8 @@ class AverageСalculationBuffer(CreateUpdateMixin):
         try:
             buff = AverageСalculationBuffer.objects.filter(user=user).first()
             return buff
-        except:
+        except Exception as e:
+            logger.error(e)
             return False
 
     def get_sum_average_buffer(user):
@@ -451,13 +452,15 @@ class AverageСalculationBuffer(CreateUpdateMixin):
             "user": user,
             "col_water": sum(abs(el.col_water) for el in items),
             "hot_water": sum(abs(el.hot_water) for el in items),
-            "sewage": sum(abs(el.sewage) for el in items)}
+            "sewage": sum(abs(el.sewage) for el in items),
+        }
         return data
 
     def get_dict(self):
-        data = dict()
-        data["user"] = self.user
-        data["col_water"] = self.col_water
-        data["hot_water"] = self.hot_water
-        data["sewage"] = self.sewage
+        data = {
+            "user": self.user,
+            "col_water": self.col_water,
+            "hot_water": self.hot_water,
+            "sewage": self.sewage
+        }
         return data

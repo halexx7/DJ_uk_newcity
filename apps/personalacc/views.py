@@ -3,36 +3,22 @@ import datetime
 from dal import autocomplete
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core import serializers
-from django.db.models.base import Model
 from django.http import JsonResponse
 from django.template.loader import render_to_string
 from django.urls import reverse_lazy
-from django.views.generic import CreateView, DeleteView, ListView, UpdateView
+from django.views.generic import CreateView, ListView
 
-from apps.authnapp.models import User
-from apps.directory.models import Appartament, Privileges, Subsidies, UserProfile
-from apps.invoice.views import starter
-from apps.mainapp.models import (
-    CurrentCounter,
-    HistoryCounter,
-    HouseCurrent,
-    HouseHistory,
-    MainBook,
-    PaymentOrder,
-    PersonalAccountStatus,
-    Recalculations,
-)
-from apps.personalacc.forms import (
-    CurrentCounterForm,
-    HomeCurrentCounterForm,
-    HomeHistoryCounterForm,
-    PaymentsForm,
-    PrivilegesForm,
-    RecalculationsForm,
-    SubsidiesForm,
-)
-from apps.personalacc.models import SiteConfiguration
-from apps.mainapp.mixins.utils import PERIOD
+from authnapp.models import User
+from directory.models import Appartament, Privileges, Subsidies, UserProfile
+from invoice.views import starter
+from mainapp.models import (CurrentCounter, HistoryCounter, HouseCurrent,
+                            HouseHistory, MainBook, PaymentOrder,
+                            PersonalAccountStatus, Recalculations)
+from personalacc.forms import (CurrentCounterForm, HomeCurrentCounterForm,
+                               HomeHistoryCounterForm, PaymentsForm,
+                               PrivilegesForm, RecalculationsForm,
+                               SubsidiesForm)
+from personalacc.models import SiteConfiguration
 
 
 class UserPageCreate(LoginRequiredMixin, CreateView):
@@ -176,7 +162,7 @@ class ManagerPageCreate(LoginRequiredMixin, CreateView):
             user_id=kwargs["user"],
             period=kwargs["period"],
             service_id=kwargs["post"].get("service"),
-            is_auto = False,
+            is_auto=False,
             defaults=update_values,
         )
         instance = Recalculations.get_qty_last_items(5)
@@ -283,7 +269,12 @@ class UserAutocomplete(autocomplete.Select2QuerySetView):
 
 
 class FormationPayments(LoginRequiredMixin, ListView):
+<<<<<<< HEAD:apps/personalacc/views.py
     Model = User
+=======
+
+    model = User
+>>>>>>> 5e9468d747d8a9ba81a292ff81c8d3828be6ee21:personalacc/views.py
     template_name = "personalacc/formation_payments.html"
     queryset = User.objects.filter(id=1)
 
