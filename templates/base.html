@@ -1,0 +1,66 @@
+{% load staticfiles %}
+{% load solo_tags %}
+
+<!doctype html>
+<html lang="ru">
+
+<head>
+    <!-- META -->
+    {% include 'mainapp/includes/head_meta.html' %}
+
+
+    <!-- CSS -->
+    <link rel="stylesheet" type="text/css" href="{% static 'css/bootstrap.min.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/jquery-ui.css' %}">
+    {% block css %}{% endblock css %}
+
+
+    <!-- Javascript -->
+    <script src="{% static 'js/jquery/jquery-3.6.0.js' %}"></script> 
+    <script src="{% static 'js/jquery/jquery.cookie.js' %}"></script>
+    <script src="{% static 'js/bootstrap/bootstrap.bundle.min.js' %}"></script>
+    <script src="{% static 'js/jquery/popper.min.js' %}"></script>
+    <script>
+        // Enable tooltips everywhere
+        $(function () { $('[data-toggle="tooltip"]').tooltip();})
+    </script>
+    {% block js %}{% endblock js %}
+
+
+    <title>
+        {% block title %}
+            {{ title|capfirst }}
+        {% endblock title %}
+    </title>
+</head>
+
+<body>
+    <div class="wrapper">
+        {% get_solo 'personalacc.SiteConfiguration' as site_config %}
+        <header class="header">
+            <nav class="navbar navbar-expand-lg navbar-light bg-warning">
+                <div class="container">
+                    <img class="mr-3" src="{% static 'img/icon/house-fill.svg' %}" alt="House" width="30" height="30">
+                    <a class="navbar-brand" href="/">{{ site_config.name }}</a>
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                        aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span>
+                    </button>
+                    {% block menu %}
+                    {% endblock menu %}
+                </div>
+            </nav>
+        </header>
+        
+        <main class="main">
+            {% block content %}
+            {% endblock content %}
+        </main>
+    
+        <!-- Footer -->
+        {% include 'mainapp/includes/footer.html' %}
+        {% block footer %}{% endblock footer %}
+    </div> 
+</body>
+</html>

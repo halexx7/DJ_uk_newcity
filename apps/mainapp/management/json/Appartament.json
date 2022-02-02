@@ -1,0 +1,38 @@
+[
+    {
+        "id": 1,
+        "created": "2022-01-26 21:29:20",
+        "updated": "2022-01-26 21:29:20",
+        "is_active": "1",
+        "user": 5,
+        "house": 2,
+        "number": "1",
+        "add_number": "0",
+        "sq_appart": "76.00",
+        "num_owner": 3
+    },
+    {
+        "id": 2,
+        "created": "2022-01-26 21:29:20",
+        "updated": "2022-01-26 21:29:20",
+        "is_active": "1",
+        "user": 6,
+        "house": 2,
+        "number": "2",
+        "add_number": "0",
+        "sq_appart": "54.00",
+        "num_owner": 2
+    },
+    {
+        "id": 3,
+        "created": "2022-01-26 21:29:20",
+        "updated": "2022-01-26 21:29:20",
+        "is_active": "1",
+        "user": 7,
+        "house": 2,
+        "number": "3",
+        "add_number": "0",
+        "sq_appart": "65.00",
+        "num_owner": 2
+    }
+]

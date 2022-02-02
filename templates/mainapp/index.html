@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% load solo_tags %}
+
+
+{% block menu %}
+    {% include 'mainapp/includes/inc_menu.html' %}
+{% endblock menu %}
+
+
+{% block content %}
+{% get_solo 'personalacc.SiteConfiguration' as site_config %}
+<!-- Intro Slider -->
+<section class="intro">
+    <div class="container">
+        <div class="intro__img">
+            <img src="{{ site_config.get_absolute_url }}" class="d-block w-100" alt="...">
+        </div>
+    </div>
+</section>
+
+<!-- Content -->
+<section class="content">
+    <div class="container  pt-5">
+        <div class="content__item  my-5  pb-5">
+            <div class="row">
+                {% for new in news %}
+                <hr style="color: #000; height: 1px; width: 100%">
+                <div class="row">
+                    <h2>{{ new.title }}</h2>
+                    <p>{{ new.content }}</p>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock content %}
