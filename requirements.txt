@@ -16,7 +16,7 @@ icecream==2.1.1
 isort==5.8.0
 mypy-extensions==0.4.3
 pathspec==0.8.1
-Pillow==8.2.0
+Pillow==9.0.0
 pipenv==2020.11.15
 psycopg2-binary==2.8.6
 ptvsd==4.3.2
