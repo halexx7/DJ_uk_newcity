@@ -35,5 +35,5 @@ virtualenv==20.4.3
 virtualenv-clone==0.5.4
 django-import-export
 django-solo
-celary
+celery
 garpix_qa

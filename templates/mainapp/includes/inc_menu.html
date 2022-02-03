@@ -21,7 +21,7 @@
                 <span class="caret"></span>
             {% elif user.is_superuser %}
             <a class="nav-link text-dark" aria-current="page"
-                href="admin/">Админка</a>
+                href="{% url 'admin:index' %}">Админка</a>
             {% endif %}
             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                 <a class="dropdown-item" href="{% url 'auth:edit' user.pk %}">{{ "профиль"|upper }}</a>

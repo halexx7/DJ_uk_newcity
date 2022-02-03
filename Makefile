@@ -2,6 +2,7 @@ run:
 	python3 manage.py runserver
 
 install:
+	cp example.env .env
 	python3 -m pip install --upgrade pip
 	python3 -m venv venv
 	source ./venv/bin/activate
@@ -21,3 +22,4 @@ relite:
 refac:
 	isort .
 	black -l120 .
+
