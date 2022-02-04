@@ -8,7 +8,7 @@ install:
 	source ./venv/bin/activate
 	pip install -r requirements.txt
 
-relite:
+clndb:
 	rm -rf ./apps/authnapp/migrations/00*
 	rm -rf ./apps/directory/migrations/00*
 	rm -rf ./apps/invoice/migrations/00*

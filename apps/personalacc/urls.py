@@ -10,6 +10,7 @@ urlpatterns = [
     re_path(r"^manager/$", personalacc.ManagerPageCreate.as_view(), name="manager"),
     # Autocomplete
     re_path(r"^manager/dal_user/$", personalacc.UserAutocomplete.as_view(), name="dal_user"),
+    re_path(r"^manager/autocomplete/$", personalacc.TestAutocomplete.as_view(), name="autocomplete"),
     
     re_path(r"^manager/formation_payments/$", personalacc.FormationPayments.as_view(), name="formation_payments"),
     re_path(r"^manager/receivable/$", personalacc.AccountsReceivableListView.as_view(), name="receivable"),

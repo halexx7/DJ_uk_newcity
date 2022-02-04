@@ -153,3 +153,10 @@ dumps/
 
 # Temp file
 tmp/
+
+
+# Миграции
+apps/authnapp/migrations/
+apps/directory/migrations/
+apps/mainapp/migrations/
+apps/personalacc/migrations/
