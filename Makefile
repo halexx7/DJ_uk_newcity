@@ -15,6 +15,8 @@ clndb:
 	rm -rf ./apps/mainapp/migrations/00*
 	rm -rf ./apps/personalacc/migrations/00*
 
+	rm -rf ./data/postgresql/*
+
 	python3 manage.py makemigrations
 	python3 manage.py migrate
 	python3 manage.py dbimport

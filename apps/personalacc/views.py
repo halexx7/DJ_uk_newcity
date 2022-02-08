@@ -130,7 +130,7 @@ class ManagerPageCreate(LoginRequiredMixin, CreateView):
                     form = el(post)
                     if form.is_valid():
                         func = handle[cls]
-                        ser_instance = func(self, form=form, post=post, user=user, period=period)
+                        ser_instance = func(self, form=form, post=post, user=int(user), period=period)
                         return JsonResponse({"instance": ser_instance}, status=200)
                     else:
                         return JsonResponse({"error": form.errors}, status=400)
@@ -291,13 +291,6 @@ class TestAutocomplete(ListView):
             users = User.objects.values('id','personal_account', 'name').filter(is_staff=False)
             buffer = {}
             for i in users:
-                buffer[f'{i["personal_account"]} - {i["name"]}'] = i['id']
-                # buffer[i['id']] = f'({i["personal_account"]}) {i["name"]}'
-            
-            # body = json.loads(self.request.body.decode(encoding='utf-8'))
-            # q = body['value']
-            # if q.isdigit():
-            #     qs = qs.filter(personal_account__istartswith=q)
-            # if q.isalpha():
-            #     qs = qs.filter(name__istartswith=q)
+                buffer[i['personal_account']] = [i['name'], i['id']]
             return JsonResponse({"value": buffer}, status=200)
+        

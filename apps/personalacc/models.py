@@ -11,8 +11,8 @@ class SiteConfiguration(SingletonModel, ActiveMixin):
         default="slide_1.jpg",
         help_text="Изображение которое отображается на главной странице",
     )
-    name = models.CharField(verbose_name="Название", max_length=128, help_text="УК Новый город")
-    city = models.CharField(verbose_name="Город", max_length=128, help_text="г.Тюмень")
+    tagline = models.CharField(verbose_name="Слоган", max_length=128, help_text="Работа найдется для каждого")
+    city = models.CharField(verbose_name="Город", max_length=128, help_text="Москва")
     street = models.CharField(verbose_name="Улица", max_length=256, help_text="ул.Свободы")
     num_building = models.CharField(verbose_name="Номер здания", max_length=5, help_text="д.5")
     phone = models.CharField(
@@ -33,8 +33,9 @@ class SiteConfiguration(SingletonModel, ActiveMixin):
     lon = models.CharField(verbose_name="Долгота", max_length=64, blank=True, help_text="65.564430")
 
     footer_copyright = models.CharField(
-        max_length=256, blank=True, default="Все права защищены © Тюмень 2015 - 2021 гг.", verbose_name="Футер копирайт"
+        max_length=256, blank=True, default="Все права защищены © Москва 2021 - 2022 гг.", verbose_name="Футер копирайт"
     )
+    
 
     def get_full_name(self):
         name = {

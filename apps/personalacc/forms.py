@@ -130,6 +130,13 @@ class PaymentsForm(forms.ModelForm):
         self.fields["direction"].queryset = MainBook.objects.all().filter(direction="D")
         self.helper = FormHelper()
         self.helper.form_show_labels = False
+        
+        for field_name, field in self.fields.items():
+            if field_name == 'period':
+                field.label = 'Период'
+
+                field.widget.attrs['readonly'] = True
+                field.help_text = ''
 
     class Meta:
         model = MainBook

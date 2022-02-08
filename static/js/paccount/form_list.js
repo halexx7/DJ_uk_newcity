@@ -93,11 +93,11 @@ window.onload = function() {
         let reDrawDiv = '.subsidies_list';
         saveDataForm(event, formID, reDrawDiv).then()})
 
-    //Ловим событие формы PAYNENTS
-    document.querySelector("#paymentsBtn").addEventListener('click', event => {
-        let formID = 'payments_form';
-        let reDrawDiv = '.payments_list';
-        saveDataForm(event, formID, reDrawDiv).then()})
+    // //Ловим событие формы PAYNENTS
+    // document.querySelector("#paymentsBtn").addEventListener('click', event => {
+    //     let formID = 'payments_form';
+    //     let reDrawDiv = '.payments_list';
+    //     saveDataForm(event, formID, reDrawDiv).then()})
 
 
     // =============================
