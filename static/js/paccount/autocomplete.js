@@ -186,4 +186,28 @@ async function autocomplete(inp) {
         let formID = 'payments_form';
         let reDrawDiv = 'paymentsList';
         saveDataForm(event, formID, reDrawDiv).then()});
+
+    // //Ловим событие формы CURRENT
+    // document.querySelector("#currentCountBtn").addEventListener('click', event => {
+    //     let formID = 'house_count_form';
+    //     let reDrawDiv = '.house-current_list';
+    //     saveDataForm(event, formID, reDrawDiv).then()})
+
+    //Ловим событие формы RECALCULATIONS
+    document.querySelector("#recalcBtn").addEventListener('click', event => {
+        let formID = 'recalculations_form';
+        let reDrawDiv = 'recalcList';
+        saveDataForm(event, formID, reDrawDiv).then()})
+
+    // //Ловим событие формы PRIVILEGE
+    // document.querySelector("#privilegeBtn").addEventListener('click', event => {
+    //     let formID = 'privilege_form';
+    //     let reDrawDiv = '.privileges_list';
+    //     saveDataForm(event, formID, reDrawDiv).then()})
+
+    // //Ловим событие формы SUBSIDIES
+    // document.querySelector("#subsidiesBtn").addEventListener('click', event => {
+    //     let formID = 'subsidies_form';
+    //     let reDrawDiv = '.subsidies_list';
+    //     saveDataForm(event, formID, reDrawDiv).then()})
 }

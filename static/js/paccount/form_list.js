@@ -75,11 +75,11 @@ window.onload = function() {
         let reDrawDiv = '.house-current_list';
         saveDataForm(event, formID, reDrawDiv).then()})
 
-    //Ловим событие формы RECALCULATIONS
-    document.querySelector("#recalcBtn").addEventListener('click', event => {
-        let formID = 'recalculations_form';
-        let reDrawDiv = '.recalc_list';
-        saveDataForm(event, formID, reDrawDiv).then()})
+    // //Ловим событие формы RECALCULATIONS
+    // document.querySelector("#recalcBtn").addEventListener('click', event => {
+    //     let formID = 'recalculations_form';
+    //     let reDrawDiv = '.recalc_list';
+    //     saveDataForm(event, formID, reDrawDiv).then()})
 
     //Ловим событие формы PRIVILEGE
     document.querySelector("#privilegeBtn").addEventListener('click', event => {
