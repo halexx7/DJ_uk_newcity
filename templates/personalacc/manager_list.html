@@ -245,34 +245,24 @@
                                         aria-labelledby="v-pills-privilegies-tab">
 
                                         <h4 class="mb-4">Добваить льготу</h4>
-                                        <div class="alert alert-warning" role="alert">
-                                            <p>Для обновления данных, просто введите данные заново!</p>
-                                        </div>
+                                        
                                         <div class="manager-privileges__form">
-                                            
-                                        <form class="ml-3  mb-5" id="privilege_form" name="privilege_form">
-                                            {% csrf_token %}
-                                            <input type="hidden" name="form_type" value="privilege_form">
-                                            <div class="row  d-flex  flex-column  clear__input">
-                                                <div class="mb-3">
-                                                    <label for="formGroupExampleInput">Лицевой счет</label>
-                                                    {{ privilege_form.user|as_crispy_field }}
+                                            <form class="ml-3  mb-5" id="privilege_form" name="privilege_form">
+                                                {% csrf_token %}
+                                                <input type="hidden" name="form_type" value="privilege_form">
+                                                <div class="alert alert-warning" role="alert">
+                                                    <p>Для обновления данных, просто введите данные заново!</p>
                                                 </div>
-                                                <div class="mb-3">
-                                                    <label for="formGroupExampleInput">Услуга</label>
-                                                    {{ privilege_form.service|as_crispy_field }}
-                                                </div>
-                                                <div class="mb-3">
-                                                    <label for="formGroupExampleInput2">Скидка, %</label>
-                                                    {{ privilege_form.sale|as_crispy_field }}
-                                                </div>
-                                                <div class="">
-                                                    <label for="formGroupExampleInput2">Описание</label>
-                                                    {{ privilege_form.desc|as_crispy_field }}
-                                                </div>
-                                            </div>
-                                            <button action="{% url 'person:user' %}" type="button" class="btn  btn-primary  my-2" id="privilegeBtn">Внести</button>
-                                        </form>
+                                                {% for field in privilege_form %}
+                                                    <div class="row  mb-4">
+                                                        {% if field.label != "" %}
+                                                            <label class="col-sm-4 col-form-label" for="{{ field.auto_id }}">{{ field.label }}</label>
+                                                            <div class="col-sm-8">{{ field }}</div>
+                                                        {% endif %}
+                                                    </div>
+                                                {% endfor %}
+                                                <button action="{% url 'person:user' %}" type="button" class="btn  btn-primary  my-2  w-100" id="privilegeBtn">Внести</button>
+                                            </form>
                                         </div>
                                         
                                         <div class="row  mt-5  mb-3  d-flex  justify-content-between  align-items-center">
@@ -281,7 +271,7 @@
                                                 <a href="{% url 'personalacc:privileges_history' %}" class="col  text-right  text-decoration-none">История льгот</a>
                                             </div>
                                         </div>
-                                        <div class="privileges_list">
+                                        <div class="privileges_list" id="privilegesList">
                                             {% include 'personalacc/includes/privileges_short_story.html' %}
                                         </div>
                                     </div>
@@ -382,14 +372,11 @@
 
 {% block footer %}
     <script>
-        autocomplete(document.getElementById("personalaccInput"));
+        // Слушает инпут на изменение (Autocomplete)
+        document.addEventListener('input', function(e) {
+            if ( e.target.id == 'personalaccInput' ) {
+                autocomplete(e.target);
+            }
+        });
     </script>
-    {% comment %}
-        <!-- Для работы autocomplete -->
-        <!-- https://django-autocomplete-light.readthedocs.io/en/master/tutorial.html -->
-        {{ recalculations_form.media }}
-        {{ payments_form.media }}
-        {{ privilege_form.media }}
-        {{ subsidies_form.media }}
-    {% endcomment %}
 {% endblock footer %}

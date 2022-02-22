@@ -194,16 +194,16 @@ async function autocomplete(inp) {
     //     saveDataForm(event, formID, reDrawDiv).then()})
 
     //Ловим событие формы RECALCULATIONS
-    document.querySelector("#recalcBtn").addEventListener('click', event => {
+    document.getElementById("recalcBtn").addEventListener('click', event => {
         let formID = 'recalculations_form';
         let reDrawDiv = 'recalcList';
         saveDataForm(event, formID, reDrawDiv).then()})
 
-    // //Ловим событие формы PRIVILEGE
-    // document.querySelector("#privilegeBtn").addEventListener('click', event => {
-    //     let formID = 'privilege_form';
-    //     let reDrawDiv = '.privileges_list';
-    //     saveDataForm(event, formID, reDrawDiv).then()})
+    //Ловим событие формы PRIVILEGE
+    document.getElementById("privilegeBtn").addEventListener('click', event => {
+        let formID = 'privilege_form';
+        let reDrawDiv = 'privilegesList';
+        saveDataForm(event, formID, reDrawDiv).then()})
 
     // //Ловим событие формы SUBSIDIES
     // document.querySelector("#subsidiesBtn").addEventListener('click', event => {

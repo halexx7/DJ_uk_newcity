@@ -67,11 +67,7 @@ class RecalculationsForm(forms.ModelForm):
         # Отправляем фильтрованные данные в форму
         self.fields["service"].queryset = Services.objects.filter(const=False)
         
-        for field_name, field in self.fields.items():
-            if field_name == 'period':
-                field.label = 'Период'
-                field.widget.attrs['readonly'] = True
-            
+        for field_name, field in self.fields.items():            
             if field_name == 'user':
                 field.label = 'Лицевой счет'
                 field.widget = forms.TextInput()
@@ -104,25 +100,24 @@ class SubsidiesForm(forms.ModelForm):
 
 
 class PrivilegesForm(forms.ModelForm):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.fields["service"].queryset = Services.objects.filter(const=False)
-        self.helper = FormHelper()
-        self.helper.form_show_labels = False
-
+    
     class Meta:
         model = Privileges
-        exclude = ("is_active", "created", "updated")
-        widgets = {
-            "user": autocomplete.ModelSelect2(
-                url="dal_user/",
-                attrs={
-                    "class": "form-control",
-                    "data-pleaceholder": "Начните набирать имя жильца...",
-                    "data-minimum-input-length": 3,
-                },
-            )
-        }
+        exclude = ('is_active', 'created', 'updated')
+     
+    
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Отправляем фильтрованные данные в форму
+        self.fields["service"].queryset = Services.objects.filter(const=False)
+        
+        for field_name, field in self.fields.items():            
+            if field_name == 'user':
+                field.label = 'Лицевой счет'
+                field.widget = forms.TextInput()
+                field.widget.attrs['id'] = 'personalaccInput'
+
+            field.widget.attrs['class'] = 'form-control  field_form'
 
 
 class PaymentsForm(forms.ModelForm):
