@@ -47,10 +47,9 @@ async function autocomplete(inp) {
             }, time);};
     
         const formData = new FormData(document.getElementById(formID));
-        if (formData.has('personallacc')) {
-            const key = formData.get('personallacc').slice(0 ,6);
-            formData.delete('personallacc');
-            formData.append('user', resp.value[key][1]);
+        if (formData.has('user')) {
+            const key = formData.get('user').slice(0 ,6);
+            formData.append('personalacc', key);
         }
 
         request.body = parceFormData(formData);
@@ -68,7 +67,9 @@ async function autocomplete(inp) {
             let time = 15000;
             let typeAlert = `success`;
             displayCounterAlert(say, typeAlert, time, event.target.id);
-            document.querySelector(reDrawDiv).innerHTML = json.instance;
+            let one = document.getElementById(reDrawDiv);
+            one.innerHTML = json.instance;
+
         } else {
             let say = `Что-то пошло не так! Попробуйте чуть позже!`;
             let time = 15000;
@@ -77,6 +78,7 @@ async function autocomplete(inp) {
         }
     }
 
+    // Асинхронный запрос на сервер
     async function getAjaxRequest(body) {
         const response = await fetch(request.url, {
             method: 'POST',
@@ -103,7 +105,7 @@ async function autocomplete(inp) {
 
         arr = []
         for (let [key, value] of Object.entries(resp.value)) {
-            arr.push(`${key} - ${value[0]}`);
+            arr.push(`${key} - ${value}`);
         }
 
         a = document.createElement("DIV");
@@ -182,9 +184,6 @@ async function autocomplete(inp) {
     //Ловим событие формы PAYMENTS
     document.querySelector("#paymentsBtn").addEventListener('click', event => {
         let formID = 'payments_form';
-        let reDrawDiv = '.payments_list';
+        let reDrawDiv = 'paymentsList';
         saveDataForm(event, formID, reDrawDiv).then()});
 }
-
-
-

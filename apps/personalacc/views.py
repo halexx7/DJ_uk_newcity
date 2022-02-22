@@ -111,8 +111,13 @@ class ManagerPageCreate(LoginRequiredMixin, CreateView):
         return context
 
     def post(self, *args, **kwargs):
-        post = self.request.POST
-        user = self.request.POST.get("user")
+        post = self.request.POST.copy()
+        user = User.get_by_user_acc(post.get('personalacc'))
+        # Удаляем кривого юзера str и не нужную инфу
+        post.pop('user')
+        post.pop('personalacc')
+        # Устанавливаем id юзера для корректного сохранения данных
+        post.__setitem__('user', user.id)
         # TODO PERIOD
         # period = PERIOD
         period = datetime.datetime.now().date().replace(day=1)
@@ -130,7 +135,7 @@ class ManagerPageCreate(LoginRequiredMixin, CreateView):
                     form = el(post)
                     if form.is_valid():
                         func = handle[cls]
-                        ser_instance = func(self, form=form, post=post, user=int(user), period=period)
+                        ser_instance = func(self, form=form, post=post, user=user.id, period=period)
                         return JsonResponse({"instance": ser_instance}, status=200)
                     else:
                         return JsonResponse({"error": form.errors}, status=400)
@@ -288,9 +293,9 @@ class TestAutocomplete(ListView):
             if not self.request.user.is_authenticated:
                 return User.objects.none()
             qs = User.objects.filter(is_staff=False)
-            users = User.objects.values('id','personal_account', 'name').filter(is_staff=False)
+            users = User.objects.values('personal_account', 'name').filter(is_staff=False)
             buffer = {}
             for i in users:
-                buffer[i['personal_account']] = [i['name'], i['id']]
+                buffer[i['personal_account']] = i['name']
             return JsonResponse({"value": buffer}, status=200)
         

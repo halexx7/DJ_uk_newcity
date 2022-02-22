@@ -103,6 +103,10 @@ class User(AbstractBaseUser, PermissionsMixin):
             return False
         else:
             return True
+    
+    @staticmethod
+    def get_by_user_acc(pers_acc):
+        return User.objects.filter(personal_account=int(pers_acc)).first()
 
 
 # Подсели на сигнал после сохранения модели

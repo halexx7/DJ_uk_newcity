@@ -16,38 +16,72 @@
 
             <form class="form-horizontal" action="{% url 'auth:edit' object.pk %}" method="post"
                 enctype="multipart/form-data">
+                <h1 class="mb-3">Редактирование профиля</h1>
                 {% csrf_token %}
                 {% if next_page %}
                     <input type="hidden" name="next_page" value="{{ next_page }}">
                 {% endif %}
-                {% for field in form %}
-                    <div class="form-group">
-                        {{ field.label }}
-                        {{ field }}
-                    </div>
 
-                    {% if field.errors %}
-                        <div class="alert  alert-danger">
-                            {{ field.errors }}
+                
+                {% comment %}
+                    {% for field in form %}
+                        <div class="form-group">
+                            {{ field.label }}
+                            {{ field }}
                         </div>
+
+                        {% if field.errors %}
+                            <div class="alert  alert-danger">
+                                {{ field.errors }}
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+
+
+                    {% if not user.is_staff and not user.is_superuser %}
+                    <table class="table">
+                        {{ profile_form.management_form }}
+                        {{ profile_form.non_form_errors }}
+                        
+                            {% for form in profile_form %}
+                            <div class="list-inline">
+                                {{ form.as_p }}
+                            </div>
+                                {% if form.errors %}
+                                    <div class="alert  alert-danger">
+                                        {{ form.errors }}
+                                    </div>
+                                {% endif %}
+                            {% endfor %}
+                    </table>
                     {% endif %}
+                {% endcomment %}
+
+                {% for field in form %}
+                    <div class="row mb-2">
+                        {% if field.label != "" and field.label != "Пароль" %}
+                            <label class="col-sm-4 col-form-label" for="{{ field.auto_id }}">{{ field.label }}</label>
+                            <div class="col-sm-8">
+                                {{ field }}
+                            </div>
+                        {% else %}
+                        {% endif %}
+                    </div>
                 {% endfor %}
+                    
                 {% if not user.is_staff and not user.is_superuser %}
-                <table class="table">
                     {{ profile_form.management_form }}
                     {{ profile_form.non_form_errors }}
-                    
-                        {% for form in profile_form %}
-                        <div class="list-inline">
-                            {{ form.as_p }}
-                        </div>
-                            {% if form.errors %}
-                                <div class="alert  alert-danger">
-                                    {{ form.errors }}
+                    {% for field in profile_form %}
+                        <div class="row mb-2">
+                            {% if field.label != "" and field.label != "Пароль"%}
+                                <label class="col-sm-4 col-form-label" for="{{ field.auto_id }}">{{ field.label }}</label>
+                                <div class="col-sm-8">
+                                    {{ field }}
                                 </div>
                             {% endif %}
-                        {% endfor %}
-                </table>
+                        </div>
+                    {% endfor %}
                 {% endif %}
                 <br>
 

@@ -22,7 +22,7 @@
                     </div>
                 {% endif %}
                 {% for field in form %}
-                    <div class="form-group">
+                    <div class="form-floating mb-4">
                         {{ field.label }}
                         {{ field }}
                     </div>
@@ -34,7 +34,7 @@
                 {% endfor %}
                 <br>
                 <a href='{% url "auth:password_reset" %}' class="text-decoration-none  text-right">Забыли пароль?</a>
-                <input class="btn btn-outline-primary btn-block" type="submit" value="войти">
+                <button class="w-100 btn btn-lg btn-primary" type="submit">Войти</button>
             </form>
         </div>
     </div>

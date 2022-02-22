@@ -105,7 +105,7 @@ window.onload = function() {
     // =============================
 
     //Ловим событие формы COUNTERFORM
-    document.querySelector("#counterBtn").addEventListener('click', event => {
+    document.getElementById('counterBtn').addEventListener('click', event => {
         let formID = 'counterForm';
         let reDrawDiv = '';  //TODO Добавить на страницу к ЮЗЕРУ таблицу с введенными данными
         saveDataForm(event, formID, reDrawDiv).then()})

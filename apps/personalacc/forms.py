@@ -125,29 +125,25 @@ class PrivilegesForm(forms.ModelForm):
 
 
 class PaymentsForm(forms.ModelForm):
+    
+    class Meta:
+        model = MainBook
+        exclude = ("created", "updated", "is_active")
+     
+    
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields["direction"].queryset = MainBook.objects.all().filter(direction="D")
-        self.helper = FormHelper()
-        self.helper.form_show_labels = False
         
         for field_name, field in self.fields.items():
             if field_name == 'period':
                 field.label = 'Период'
-
                 field.widget.attrs['readonly'] = True
-                field.help_text = ''
+            
+            if field_name == 'user':
+                field.label = 'Лицевой счет'
+                field.widget = forms.TextInput()
+                field.widget.attrs['id'] = 'personalaccInput'
 
-    class Meta:
-        model = MainBook
-        exclude = ("created", "updated")
-        widgets = {
-            "user": autocomplete.ModelSelect2(
-                url="dal_user/",
-                attrs={
-                    "class": "form-control",
-                    "data-pleaceholder": "Начните набирать имя жильца...",
-                    "data-minimum-input-length": 3,
-                },
-            )
-        }
+            field.widget.attrs['class'] = 'form-control  field_form'
+            field.help_text = ''

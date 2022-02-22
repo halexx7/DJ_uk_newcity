@@ -11,7 +11,7 @@ class SiteConfiguration(SingletonModel, ActiveMixin):
         default="slide_1.jpg",
         help_text="Изображение которое отображается на главной странице",
     )
-    tagline = models.CharField(verbose_name="Слоган", max_length=128, help_text="Работа найдется для каждого")
+    name = models.CharField(verbose_name="Название", max_length=128, help_text="УК Домовенок")
     city = models.CharField(verbose_name="Город", max_length=128, help_text="Москва")
     street = models.CharField(verbose_name="Улица", max_length=256, help_text="ул.Свободы")
     num_building = models.CharField(verbose_name="Номер здания", max_length=5, help_text="д.5")

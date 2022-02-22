@@ -8,13 +8,14 @@
     <!-- META -->
     {% include 'mainapp/includes/head_meta.html' %}
 
-
     <!-- CSS -->
     <link rel="stylesheet" type="text/css" href="{% static 'css/bootstrap.min.css' %}">
     <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
     <link rel="stylesheet" type="text/css" href="{% static 'css/jquery-ui.css' %}">
     {% block css %}{% endblock css %}
 
+    <!-- Favicon -->
+    <link rel="shortcut icon" type="image/png" href="{% static 'favicon.ico' %}"/>
 
     <!-- Javascript -->
     <script src="{% static 'js/jquery/jquery-3.6.0.js' %}"></script> 
