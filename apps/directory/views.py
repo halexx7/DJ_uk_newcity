@@ -171,13 +171,18 @@ class CityDeleteView(LoginRequiredMixin, DeleteView):
 
 class StreetListView(LoginRequiredMixin, ListView):
     model = Street
+    paginate_by = 50
     template_name = "directory/streets.html"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["city"] = get_object_or_404(City, pk=self.kwargs["pk"])
-        context["streets"] = Street.objects.filter(city__pk=self.kwargs["pk"]).order_by("street")
+        context["streets"] = Street.objects.filter(city__pk=self.kwargs["pk"]).order_by("id")
         return context
+    
+    def get_queryset(self):
+        qs = Street.objects.filter(city__pk=self.kwargs["pk"]).order_by("id")
+        return qs
 
 
 class StreetCreateView(LoginRequiredMixin, CreateView):

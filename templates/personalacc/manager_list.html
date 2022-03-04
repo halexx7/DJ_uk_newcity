@@ -279,34 +279,23 @@
                                     <!-- Link-SUBSIDIES -->
                                     <div class="tab-pane fade" id="v-pills-grant" role="tabpanel"
                                         aria-labelledby="v-pills-grant-tab">
-
                                         <h4 class="mb-4">Добваить субсидию</h4>
-                                        <div class="alert alert-warning" role="alert">
-                                            <p>Для обновления данных, просто введите данные заново!</p>
-                                        </div>
                                         <div class="manager-privileges__form">
                                             <form class="ml-3  mb-5" id="subsidies_form" name="subsidies_form">
                                                 {% csrf_token %}
                                                 <input type="hidden" name="form_type" value="subsidies_form">
-                                                <div class="row  d-flex  flex-column  clear__input">
-                                                    <div class="mb-3">
-                                                        <label for="formGroupExampleInput">Лицевой счет</label>
-                                                        {{ subsidies_form.user|as_crispy_field }}
-                                                    </div>
-                                                    <div class="mb-3">
-                                                        <label for="formGroupExampleInput">Услуга</label>
-                                                        {{ subsidies_form.service|as_crispy_field }}
-                                                    </div>
-                                                    <div class="mb-3">
-                                                        <label for="formGroupExampleInput2">Скидка, %</label>
-                                                        {{ subsidies_form.sale|as_crispy_field }}
-                                                    </div>
-                                                    <div class="">
-                                                        <label for="formGroupExampleInput2">Описание</label>
-                                                        {{ subsidies_form.desc|as_crispy_field }}
-                                                    </div>
+                                                <div class="alert alert-warning" role="alert">
+                                                    <p>Для обновления данных, просто введите данные заново!</p>
                                                 </div>
-                                                <button action="{% url 'person:user' %}" type="button" class="btn  btn-primary  my-2" id="subsidiesBtn">Внести</button>
+                                                {% for field in subsidies_form %}
+                                                    <div class="row  mb-4">
+                                                        {% if field.label != "" %}
+                                                            <label class="col-sm-4 col-form-label" for="{{ field.auto_id }}">{{ field.label }}</label>
+                                                            <div class="col-sm-8">{{ field }}</div>
+                                                        {% endif %}
+                                                    </div>
+                                                {% endfor %}
+                                                <button action="{% url 'person:user' %}" type="button" class="btn  btn-primary  my-2  w-100" id="subsidiesBtn">Внести</button>
                                             </form>
                                         </div>
                                         <div class="row  mt-5  mb-3  d-flex  justify-content-between  align-items-center">
@@ -374,7 +363,8 @@
     <script>
         // Слушает инпут на изменение (Autocomplete)
         document.addEventListener('input', function(e) {
-            if ( e.target.id == 'personalaccInput' ) {
+            let subStr = 'personalaccInp';
+            if ( e.target.id.includes(subStr) ) {
                 autocomplete(e.target);
             }
         });

@@ -96,7 +96,20 @@ async function autocomplete(inp) {
 
     inp.addEventListener("input", async function(e) {
         let a, b, i, body, val = this.value;
-        closeAllLists();
+        // closeAllLists();
+
+        // Проверяем добавлен ли уже елемент - Выпадающий список
+        a = document.getElementById(`${this.id}-autocomplete-list`);
+        if (!a) {
+            // Если нет, то создаем
+            a = document.createElement("DIV");
+            a.setAttribute("id", this.id + "-autocomplete-list");
+            a.setAttribute("class", "autocomplete-items");
+        } else {
+            // если да, то чистим
+            a.innerHTML = '';
+        }
+
         if (!val || (val.length < 3)) { return false;}
         currentFocus = -1;
 
@@ -108,9 +121,9 @@ async function autocomplete(inp) {
             arr.push(`${key} - ${value}`);
         }
 
-        a = document.createElement("DIV");
-        a.setAttribute("id", this.id + "autocomplete-list");
-        a.setAttribute("class", "autocomplete-items");
+        // a = document.createElement("DIV");
+        // a.setAttribute("id", this.id + "-autocomplete-list");
+        // a.setAttribute("class", "autocomplete-items");
 
         this.parentNode.appendChild(a);
         for (i = 0; i < arr.length; i++) {
@@ -122,7 +135,7 @@ async function autocomplete(inp) {
 
                 b.addEventListener("click", function(e) {
                 inp.value = this.getElementsByTagName("input")[0].value;
-                closeAllLists();
+                // closeAllLists();
             });
             a.appendChild(b);
           }
@@ -171,7 +184,7 @@ async function autocomplete(inp) {
     function closeAllLists(elmnt) {
       var x = document.getElementsByClassName("autocomplete-items");
       for (var i = 0; i < x.length; i++) {
-        if (elmnt != x[i] && elmnt != inp) {
+        if (elmnt != x[i] && elmnt == inp) {
         x[i].parentNode.removeChild(x[i]);
       }
     }
