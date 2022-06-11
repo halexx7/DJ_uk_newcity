@@ -25,6 +25,10 @@ class CurrentCounterForm(forms.ModelForm):
         self.fields["user"].queryset = User.objects.filter(id=kwargs["initial"]["user"])
         for field_name, field in self.fields.items():
             field.widget.attrs["class"] = "form-control"
+            if field_name == 'user':
+                field.label = 'Лицевой счет'
+                field.widget.attrs['readonly'] = True
+                
         self.helper = FormHelper()
         self.helper.form_show_labels = False
 

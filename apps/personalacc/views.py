@@ -267,8 +267,10 @@ class UserAutocomplete(autocomplete.Select2QuerySetView):
         if not self.request.user.is_authenticated:
             return User.objects.none()
         qs = User.objects.filter(is_staff=False)
+        # Выбираем по лицевому счету
         if self.q.isdigit():
             qs = qs.filter(personal_account__istartswith=self.q)
+        # или выбираем по Фамилии
         if self.q.isalpha():
             qs = qs.filter(name__istartswith=self.q)
         return qs
@@ -298,4 +300,3 @@ class TestAutocomplete(ListView):
             for i in users:
                 buffer[i['personal_account']] = i['name']
             return JsonResponse({"value": buffer}, status=200)
-        
