@@ -327,9 +327,13 @@
                                     </div>
                                     {% for field in payments_form %}
                                         <div class="row  mb-4">
-                                            {% if field.label != "" %}
+                                            {% if field.label != "" and field.label != "Период"%}
                                                 <label class="col-sm-4 col-form-label" for="{{ field.auto_id }}">{{ field.label }}</label>
                                                 <div class="col-sm-8">{{ field }}</div>
+                                            {% endif %}
+                                            {% if field.label == "Период" %}
+                                                <label class="col-sm-4 col-form-label" for="{{ field.auto_id }}">{{ field.label }}</label>
+                                                <div class="col-sm-8"><input type="text" class="form-control  field_form" value="{% now 'F Y' %}" readonly></div>
                                             {% endif %}
                                         </div>
                                     {% endfor %}
@@ -369,4 +373,4 @@
             }
         });
     </script>
-{% endblock footer %}1
+{% endblock footer %}

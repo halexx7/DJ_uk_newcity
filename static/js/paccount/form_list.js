@@ -27,6 +27,8 @@ window.onload = function() {
             // Чистим поля после отправики данных
             clearInput(document.querySelectorAll('div.clear__input input'));
             clearInput(document.querySelectorAll('form select'));
+            clearInput(document.querySelectorAll('form input:not([readonly]):not([type=hidden])'));
+            clearInput(document.querySelectorAll('form textarea'));
 
             // Создаем новый div
             let helper = document.createElement('div');
@@ -75,38 +77,38 @@ window.onload = function() {
         let reDrawDiv = '.house-current_list';
         saveDataForm(event, formID, reDrawDiv).then()})
 
-    // //Ловим событие формы RECALCULATIONS
-    // document.querySelector("#recalcBtn").addEventListener('click', event => {
-    //     let formID = 'recalculations_form';
-    //     let reDrawDiv = '.recalc_list';
-    //     saveDataForm(event, formID, reDrawDiv).then()})
+    //Ловим событие формы RECALCULATIONS
+    document.querySelector("#recalcBtn").addEventListener('click', event => {
+        let formID = 'recalculations_form';
+        let reDrawDiv = '.recalc_list';
+        saveDataForm(event, formID, reDrawDiv).then()})
 
-    // //Ловим событие формы PRIVILEGE
-    // document.querySelector("#privilegeBtn").addEventListener('click', event => {
-    //     let formID = 'privilege_form';
-    //     let reDrawDiv = '.privileges_list';
-    //     saveDataForm(event, formID, reDrawDiv).then()})
+    //Ловим событие формы PRIVILEGE
+    document.querySelector("#privilegeBtn").addEventListener('click', event => {
+        let formID = 'privilege_form';
+        let reDrawDiv = '.privileges_list';
+        saveDataForm(event, formID, reDrawDiv).then()})
 
-    // //Ловим событие формы SUBSIDIES
-    // document.querySelector("#subsidiesBtn").addEventListener('click', event => {
-    //     let formID = 'subsidies_form';
-    //     let reDrawDiv = '.subsidies_list';
-    //     saveDataForm(event, formID, reDrawDiv).then()})
+    //Ловим событие формы SUBSIDIES
+    document.querySelector("#subsidiesBtn").addEventListener('click', event => {
+        let formID = 'subsidies_form';
+        let reDrawDiv = '.subsidies_list';
+        saveDataForm(event, formID, reDrawDiv).then()})
 
-    // //Ловим событие формы PAYNENTS
-    // document.querySelector("#paymentsBtn").addEventListener('click', event => {
-    //     let formID = 'payments_form';
-    //     let reDrawDiv = '.payments_list';
-    //     saveDataForm(event, formID, reDrawDiv).then()})
+    //Ловим событие формы PAYNENTS
+    document.querySelector("#paymentsBtn").addEventListener('click', event => {
+        let formID = 'payments_form';
+        let reDrawDiv = '.payments_list';
+        saveDataForm(event, formID, reDrawDiv).then()})
 
 
     // =============================
     // ======== USER_LIST ==========
     // =============================
 
-    // //Ловим событие формы COUNTERFORM
-    // document.getElementById('counterBtn').addEventListener('click', event => {
-    //     let formID = 'counterForm';
-    //     let reDrawDiv = '';  //TODO Добавить на страницу к ЮЗЕРУ таблицу с введенными данными
-    //     saveDataForm(event, formID, reDrawDiv).then()})
+    //Ловим событие формы COUNTERFORM
+    document.getElementById('counterBtn').addEventListener('click', event => {
+        let formID = 'counterForm';
+        let reDrawDiv = '';  //TODO Добавить на страницу к ЮЗЕРУ таблицу с введенными данными
+        saveDataForm(event, formID, reDrawDiv).then()})
 }

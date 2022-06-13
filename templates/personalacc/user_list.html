@@ -207,3 +207,20 @@
         </div>
     </div>
 {% endblock content %}
+
+{% block js %}
+    <script src="{% static 'js/paccount/form_list.js' %}"></script>
+    <script src="{% static 'js/paccount/autocomplete.js' %}"></script>
+{% endblock js %}
+
+{% block footer %}
+    <script>
+        // Слушает инпут на изменение (Autocomplete)
+        document.addEventListener('input', function(e) {
+            let subStr = 'personalaccInp';
+            if (e.target.id.includes(subStr)) {
+                autocomplete(e.target);
+            }
+        });
+    </script>
+{% endblock footer %}

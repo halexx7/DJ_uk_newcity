@@ -52,9 +52,9 @@ class Command(BaseCommand):
                 if not result.has_errors():
                     resource.import_data(dataset, dry_run=False)
                 else:
-                    print(f'error import model: {name}')
+                    print(f'\033[1;31mERROR\033[0m import model: {name}')
                     return
-            print('OK', f'exported {len(data)} rows')
+            print('\033[1;32mOK\033[0m', f'exported {len(data)} rows')
 
         if model.__name__ == User.__name__:
             for user in User.objects.all():

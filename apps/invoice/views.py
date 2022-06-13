@@ -22,7 +22,8 @@ from apps.mainapp.models import (AverageСalculationBuffer, ConstantPayments,
 from apps.personalacc.models import SiteConfiguration
 
 logger = logging.getLogger(__name__)
-logger.setLevel(logging.DEBUG)
+logging.basicConfig(filename="invoice.log", level=logging.DEBUG) 
+# logger.setLevel(logging.DEBUG)
 
 
 class InvoiceViews(DetailView):

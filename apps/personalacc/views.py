@@ -112,12 +112,14 @@ class ManagerPageCreate(LoginRequiredMixin, CreateView):
 
     def post(self, *args, **kwargs):
         post = self.request.POST.copy()
-        user = User.get_by_user_acc(post.get('personalacc'))
-        # Удаляем кривого юзера str и не нужную инфу
-        post.pop('user')
-        post.pop('personalacc')
-        # Устанавливаем id юзера для корректного сохранения данных
-        post.__setitem__('user', user.id)
+        user = None
+        if post.__contains__('user'):
+            personalacc = post.get('user')[:7]
+            user = User.get_by_user_acc(personalacc)
+            # Удаляем кривого юзера str и не нужную инфу
+            post.pop('user')
+            # Устанавливаем id юзера для корректного сохранения данных
+            post.__setitem__('user', user.id)
         # TODO PERIOD
         # period = PERIOD
         period = datetime.datetime.now().date().replace(day=1)
@@ -135,7 +137,7 @@ class ManagerPageCreate(LoginRequiredMixin, CreateView):
                     form = el(post)
                     if form.is_valid():
                         func = handle[cls]
-                        ser_instance = func(self, form=form, post=post, user=user.id, period=period)
+                        ser_instance = func(self, form=form, post=post, user=user.id if user else None, period=period)
                         return JsonResponse({"instance": ser_instance}, status=200)
                     else:
                         return JsonResponse({"error": form.errors}, status=400)
@@ -261,7 +263,7 @@ class AccountsReceivableListView(LoginRequiredMixin, ListView):
         return context
 
 
-class UserAutocomplete(autocomplete.Select2QuerySetView):
+class TestUserAutocomplete(autocomplete.Select2QuerySetView):
     def get_queryset(self):
         # Don't forget to filter out results depending on the visitor!
         if not self.request.user.is_authenticated:
@@ -289,7 +291,7 @@ class FormationPayments(LoginRequiredMixin, ListView):
             return JsonResponse({"alert": "NOT OK!"}, status=400)
 
 
-class TestAutocomplete(ListView):
+class UserAutocomplete(ListView):
     def post(self, *args, **kwargs):
         if self.request.is_ajax:
             if not self.request.user.is_authenticated:
