@@ -13,8 +13,7 @@ from apps.directory.models import House, Services
 from apps.mainapp.mixins.utils import (PERIOD, ActiveMixin, CreateUpdateMixin,
                                   WaterCounterMixin)
 
-logger = logging.getLogger(__name__)
-logger.setLevel(logging.DEBUG)
+from newcity.config_logger import logger
 
 
 # Общедомовой счетчик (ТЕКУЩИЕ показания)
@@ -136,7 +135,7 @@ class CurrentCounter(WaterCounterMixin):
             else:
                 return None
         except Exception as e:
-            logger.error(e)
+            logger.error(f'Не введены индивидуальные счетчики, err: {e}')
             return None
 
 
