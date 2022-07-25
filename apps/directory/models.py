@@ -223,7 +223,7 @@ class Subsidies(ActiveMixin):
         verbose_name_plural = "009 Субсидии"
 
     def __str__(self):
-        return f"{self.user.user.name} ({self.user.user.personal_account}) - {self.service.name}"
+        return f"{self.user.name} ({self.user.personal_account}) - {self.service.name}"
 
     @staticmethod
     def get_items(user):

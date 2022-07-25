@@ -214,7 +214,7 @@ class ConstantPayments(ActiveMixin):
         verbose_name_plural = "Платежи (постоянные)"
 
     def __str__(self):
-        return f"({self.user.personal_accaunt}) - {self.user.name}"
+        return f"({self.user.personal_account}) - {self.user.name}"
 
     @staticmethod
     def get_item(user):
@@ -235,7 +235,7 @@ class VariablePayments(ActiveMixin):
         verbose_name_plural = "Платежи (переменные)"
 
     def __str__(self):
-        return f"({self.user.personal_accaunt}) - {self.user.name} ({self.period})"
+        return f"({self.user.personal_account}) - {self.user.name} ({self.period})"
 
     @staticmethod
     def get_items(user):
@@ -391,7 +391,7 @@ class PersonalAccountStatus(CreateUpdateMixin):
         verbose_name_plural = "Состояния счетов"
 
     def __str__(self):
-        return f"({self.user.personal_accaunt}) - {self.user.name} ({self.amount})"
+        return f"({self.user.personal_account}) - {self.user.name} ({self.amount})"
 
     # Перерасчет, когда вносится?
     @staticmethod
@@ -433,7 +433,7 @@ class AverageСalculationBuffer(CreateUpdateMixin):
         unique_together = ("user", "period")
 
     def __str__(self):
-        return f"({self.user.personal_accaunt}) - {self.user.name}"
+        return f"({self.user.personal_account}) - {self.user.name}"
 
     @staticmethod
     def get_item(user):
