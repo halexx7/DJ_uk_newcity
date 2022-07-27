@@ -21,9 +21,7 @@ from apps.mainapp.models import (AverageСalculationBuffer, ConstantPayments,
                             Recalculations, Standart, VariablePayments)
 from apps.personalacc.models import SiteConfiguration
 
-logger = logging.getLogger(__name__)
-logging.basicConfig(filename="invoice.log", level=logging.DEBUG) 
-# logger.setLevel(logging.DEBUG)
+from newcity.config_logger import logger
 
 
 class InvoiceViews(DetailView):
@@ -55,11 +53,9 @@ def get_calc_const():
 
     for user in users:
         try:
-            data = []
-            total = 0
-            pre_total = 0
+            data, total, pre_total = [], 0, 0
 
-            user_id = User.objects.get(id=user.id)
+            user = User.objects.get(id=user.id)
             appart = Appartament.objects.get(user=user)
             for el in rate:
                 element = {
@@ -90,7 +86,7 @@ def get_calc_const():
                 "total": decimal.Decimal(total),
                 "pre_total": decimal.Decimal(total),
             }
-            obj, created = ConstantPayments.objects.update_or_create(user=user_id, defaults=update_values)
+            obj, created = ConstantPayments.objects.update_or_create(user=user, defaults=update_values)
         except Exception as e:
             logger.error(e)
             continue
@@ -104,16 +100,16 @@ def get_calc_variable():
     rate = Services.get_varybose_payments(1)
 
     for user in users:
+        data = []
+        total, pre_total = 0, 0
+        user = User.objects.get(id=user.id)
+        appa = Appartament.get_item(user.id)[0]
+        stand = Standart.get_last_val(appa.house_id)
+        sq_appa = appa.sq_appart
+        hist = HistoryCounter.get_last_val(user.id)
+        curr = {"user": user, "standart": False}
+        object_curr = CurrentCounter.get_last_val(user)
         try:
-            data = []
-            total, pre_total = 0, 0
-            user = User.objects.get(id=user.id)
-            appa = Appartament.get_item(user.id)[0]
-            stand = Standart.get_last_val(appa.house_id)
-            sq_appa = appa.sq_appart
-            hist = HistoryCounter.get_last_val(user.id)
-            curr = {"user": user, "standart": False}
-            object_curr = CurrentCounter.get_last_val(user)
             if object_curr:
                 # Если счетчики введены, считаем объем
                 curr["period"] = object_curr.period
@@ -129,25 +125,25 @@ def get_calc_variable():
                 curr["volume_hot"] = stand.hot_water * sq_appa
                 curr["volume_sewage"] = curr["volume_col"] + curr["volume_hot"]
                 curr["period"] = PERIOD - datetime.timedelta(days=1)
-
-            subs = Subsidies.get_items(user.id)
-            priv = Privileges.get_items(user.id)
-
-            for el in rate:
-                calc = get_calc_service(el, curr, subs, priv)
-                data.append(calc)
-                total += calc["total"]
-                pre_total += calc["pre_total"]
-
-            update_values = {
-                "data": json.dumps(data, ensure_ascii=False, default=str),
-                "total": decimal.Decimal(total),
-                "pre_total": decimal.Decimal(pre_total),
-            }
-            obj, created = VariablePayments.objects.update_or_create(user=user, period=PERIOD, defaults=update_values)
-        except Exception as e:
-            logger.error(e)
+        except Exception as err:
+            logger.error(f'Не введены общие счетчики текущий период, err: {err}')
             continue
+
+        subs = Subsidies.get_items(user.id)
+        priv = Privileges.get_items(user.id)
+
+        for el in rate:
+            calc = get_calc_service(el, curr, subs, priv)
+            data.append(calc)
+            total += calc["total"]
+            pre_total += calc["pre_total"]
+
+        update_values = {
+            "data": json.dumps(data, ensure_ascii=False, default=str),
+            "total": decimal.Decimal(total),
+            "pre_total": decimal.Decimal(pre_total),
+        }
+        obj, created = VariablePayments.objects.update_or_create(user=user, period=PERIOD, defaults=update_values)
     return (data, total, pre_total)
 
 

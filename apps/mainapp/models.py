@@ -13,8 +13,7 @@ from apps.directory.models import House, Services
 from apps.mainapp.mixins.utils import (PERIOD, ActiveMixin, CreateUpdateMixin,
                                   WaterCounterMixin)
 
-logger = logging.getLogger(__name__)
-logger.setLevel(logging.DEBUG)
+from newcity.config_logger import logger
 
 
 # Общедомовой счетчик (ТЕКУЩИЕ показания)
@@ -124,7 +123,7 @@ class CurrentCounter(WaterCounterMixin):
         verbose_name_plural = "Индивидуальные счетчики (текущие)"
 
     def __str__(self):
-        return f"({self.user.personal_accaunt}) - {self.user.name} ({self.period})"
+        return f"({self.user.personal_account}) - {self.user.name} ({self.period})"
 
     @staticmethod
     def get_last_val(user):
@@ -136,7 +135,7 @@ class CurrentCounter(WaterCounterMixin):
             else:
                 return None
         except Exception as e:
-            logger.error(e)
+            logger.error(f'Не введены индивидуальные счетчики, err: {e}')
             return None
 
 
@@ -215,7 +214,7 @@ class ConstantPayments(ActiveMixin):
         verbose_name_plural = "Платежи (постоянные)"
 
     def __str__(self):
-        return f"({self.user.personal_accaunt}) - {self.user.name}"
+        return f"({self.user.personal_account}) - {self.user.name}"
 
     @staticmethod
     def get_item(user):
@@ -236,7 +235,7 @@ class VariablePayments(ActiveMixin):
         verbose_name_plural = "Платежи (переменные)"
 
     def __str__(self):
-        return f"({self.user.personal_accaunt}) - {self.user.name} ({self.period})"
+        return f"({self.user.personal_account}) - {self.user.name} ({self.period})"
 
     @staticmethod
     def get_items(user):
@@ -262,7 +261,7 @@ class HeaderData(CreateUpdateMixin):
         verbose_name_plural = "(Платежка) данные шапок"
 
     def __str__(self):
-        return f"({self.user.personal_accaunt}) - {self.user.name}"
+        return f"({self.user.personal_account}) - {self.user.name}"
 
     @staticmethod
     def get_item(user):
@@ -287,7 +286,7 @@ class MainBook(ActiveMixin):
         verbose_name_plural = "Главная книга"
 
     def __str__(self):
-        return f"({self.user.personal_accaunt}) - {self.user.name}, {self.direction} ({self.period})"
+        return f"({self.user.personal_account}) - {self.user.name}, {self.direction} ({self.period})"
 
     @staticmethod
     def get_user_debit(user):
@@ -350,7 +349,7 @@ class PaymentOrder(ActiveMixin):
         verbose_name_plural = "(Платежка)"
 
     def __str__(self):
-        return f"({self.user.personal_accaunt}) - {self.user.name} ({self.period})"
+        return f"({self.user.personal_account}) - {self.user.name} ({self.period})"
 
     def get_last_val(self):
         return PaymentOrder.objects.filter(user=self.user)[0:1]
@@ -392,7 +391,7 @@ class PersonalAccountStatus(CreateUpdateMixin):
         verbose_name_plural = "Состояния счетов"
 
     def __str__(self):
-        return f"({self.user.personal_accaunt}) - {self.user.name} ({self.amount})"
+        return f"({self.user.personal_account}) - {self.user.name} ({self.amount})"
 
     # Перерасчет, когда вносится?
     @staticmethod
@@ -434,7 +433,7 @@ class AverageСalculationBuffer(CreateUpdateMixin):
         unique_together = ("user", "period")
 
     def __str__(self):
-        return f"({self.user.personal_accaunt}) - {self.user.name}"
+        return f"({self.user.personal_account}) - {self.user.name}"
 
     @staticmethod
     def get_item(user):
