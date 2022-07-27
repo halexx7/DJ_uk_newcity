@@ -123,7 +123,7 @@ class CurrentCounter(WaterCounterMixin):
         verbose_name_plural = "Индивидуальные счетчики (текущие)"
 
     def __str__(self):
-        return f"({self.user.personal_accaunt}) - {self.user.name} ({self.period})"
+        return f"({self.user.personal_account}) - {self.user.name} ({self.period})"
 
     @staticmethod
     def get_last_val(user):
@@ -261,7 +261,7 @@ class HeaderData(CreateUpdateMixin):
         verbose_name_plural = "(Платежка) данные шапок"
 
     def __str__(self):
-        return f"({self.user.personal_accaunt}) - {self.user.name}"
+        return f"({self.user.personal_account}) - {self.user.name}"
 
     @staticmethod
     def get_item(user):
@@ -286,7 +286,7 @@ class MainBook(ActiveMixin):
         verbose_name_plural = "Главная книга"
 
     def __str__(self):
-        return f"({self.user.personal_accaunt}) - {self.user.name}, {self.direction} ({self.period})"
+        return f"({self.user.personal_account}) - {self.user.name}, {self.direction} ({self.period})"
 
     @staticmethod
     def get_user_debit(user):
@@ -349,7 +349,7 @@ class PaymentOrder(ActiveMixin):
         verbose_name_plural = "(Платежка)"
 
     def __str__(self):
-        return f"({self.user.personal_accaunt}) - {self.user.name} ({self.period})"
+        return f"({self.user.personal_account}) - {self.user.name} ({self.period})"
 
     def get_last_val(self):
         return PaymentOrder.objects.filter(user=self.user)[0:1]
