@@ -1,9 +1,11 @@
 from crispy_forms.helper import FormHelper
 from dal import autocomplete
 from django import forms
+from django.db.models import Q, Value, CharField, F
+from django.db.models.functions import Concat
 
 from apps.authnapp.models import User
-from apps.directory.models import Privileges, Services, Subsidies
+from apps.directory.models import Privileges, Services, Subsidies, Appartament
 from apps.mainapp.models import (CurrentCounter, HouseCurrent, HouseHistory,
                             MainBook, Recalculations)
 
@@ -145,3 +147,63 @@ class PaymentsForm(forms.ModelForm):
 
             field.widget.attrs['class'] = 'form-control  field_form'
             field.help_text = ''
+
+
+class PersonalAccountCardForm(forms.ModelForm):
+    """
+    Карточка лицевого счета - для работы с частью связанныз полей по User
+    """
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field_name, field in self.fields.items():
+            field.widget.attrs["class"] = "form-control"
+        self.helper = FormHelper()
+        self.helper.form_show_labels = False
+        # получаем и добавляем связанные поля по FK
+        name = kwargs.get('name', '')
+        super(PersonalAccountCardForm, self).__init__(*args, **kwargs)
+        self.fields['sq_appartament'] = forms.ModelChoiceField(queryset=Appartament.objects.filter(user__name=name).values('sq_appartament'))
+        self.fields['num_owner'] = forms.ModelChoiceField(queryset=Appartament.objects.filter(user__name=name).values('num_owner'))
+        self.fields['rate'] = forms.ModelChoiceField(
+            queryset=Appartament.objects.filter(user__name=name).values('house__category_rate__category__rate'))
+        self.fields['addr'] = forms.ModelChoiceField(
+            queryset=Appartament.objects.filter(user__name=name).annotate(
+                addr=Concat(
+                    F('house__city__city'),
+                    Value(' '),
+                    F('house__street__street'),
+                    Value(' '),
+                    F('house__number'),
+                    Value(' '),
+                    F('house__add_number'),
+                    Value(' '),
+                    F('house__add_number'),
+                    Value(' '),
+                    F('number'),
+                    output_field=CharField()
+                )
+            ).values('addr')
+        )
+
+    class Meta:
+        model = User
+        fields = ("personal_account", "name")
+
+
+class PersonalAccountCardMainBookForm(forms.ModelForm):
+    """
+    Карточка лицевого счета - для работы с частью связанных полей по MainBook
+    """
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field_name, field in self.fields.items():
+            field.widget.attrs["class"] = "form-control"
+        self.helper = FormHelper()
+        self.helper.form_show_labels = False
+        # MainBook.get_user_debit(user=user)
+        name = kwargs.get('name', '')
+        super(PersonalAccountCardMainBookForm, self).__init__(*args, **kwargs)
+
+    class Meta:
+        model = MainBook
+        fields = ("amount", "direction", "period")

@@ -21,4 +21,5 @@ urlpatterns = [
     ),
     re_path(r"^manager/subsidies_history/$", personalacc.SubsidiesHistoryListView.as_view(), name="subsidies_history"),
     re_path(r"^manager/payments_history/$", personalacc.PaymentsHistoryListView.as_view(), name="payments_history"),
+    re_path(r"^manager/personal_account_card/$", personalacc.PersonalAccountCard.as_view(), name="personal_account_card"),
 ]

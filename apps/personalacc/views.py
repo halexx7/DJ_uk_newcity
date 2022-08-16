@@ -16,9 +16,9 @@ from apps.mainapp.models import (CurrentCounter, HistoryCounter, HouseCurrent,
                             HouseHistory, MainBook, PaymentOrder,
                             PersonalAccountStatus, Recalculations)
 from apps.personalacc.forms import (CurrentCounterForm, HomeCurrentCounterForm,
-                               HomeHistoryCounterForm, PaymentsForm,
-                               PrivilegesForm, RecalculationsForm,
-                               SubsidiesForm)
+                                    HomeHistoryCounterForm, PaymentsForm,
+                                    PrivilegesForm, RecalculationsForm,
+                                    SubsidiesForm, PersonalAccountCardForm, PersonalAccountCardMainBookForm)
 from apps.personalacc.models import SiteConfiguration
 
 
@@ -302,3 +302,15 @@ class UserAutocomplete(ListView):
             for i in users:
                 buffer[i['personal_account']] = i['name']
             return JsonResponse({"value": buffer}, status=200)
+
+
+class PersonalAccountCard(LoginRequiredMixin, CreateView):
+    form_class = PersonalAccountCardForm
+    form_classes = {
+        "personal_account_card": PersonalAccountCardForm,
+        "personal_account_card_main_book": PersonalAccountCardMainBookForm,
+
+    }
+    template_name = "personalacc/manager_list.html"
+    success_url = reverse_lazy("person:manager")
+
